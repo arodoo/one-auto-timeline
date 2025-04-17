@@ -88,12 +88,13 @@ if (!empty($_SESSION['4M8e7M5b1R2e8s']) && !empty($user)) {
     }
 
     // Get total sections dynamically
-    $totalSections = countSectionFiles();
-
-    // Add mapping array for display numbers
+    $totalSections = countSectionFiles();    // Create sequential display numbers without gaps
     $displayNumbers = [];
+    $counter = 1;
     for ($i = 1; $i <= $totalSections; $i++) {
-        $displayNumbers[$i] = ($i > 9) ? $i - 1 : $i;
+        if ($i != 9) { // Skip only section 9
+            $displayNumbers[$i] = $counter++;
+        }
     }
     ?>
     <link rel="stylesheet" href="/panel/Constats/constant-form/index-file-etape.css">
@@ -122,10 +123,10 @@ if (!empty($_SESSION['4M8e7M5b1R2e8s']) && !empty($user)) {
                                 continue;
                             }
 
-                            $sectionPath = "/panel/Constats/constant-form/FormHandler/Section_{$i}.php";
-
+                            $sectionPath = "/panel/Constats/constant-form/FormHandler/Section_{$i}.php";                            // Get display number from our mapping
+                            $sectionNumber = $displayNumbers[$i];
+                            
                             // In jumelage mode, rename display numbers
-                            $sectionNumber = $i;
                             if ($isJumelageMode) {
                                 if ($i == 3)
                                     $sectionNumber = 1;
