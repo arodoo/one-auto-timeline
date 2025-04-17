@@ -15,18 +15,12 @@ if (!window.section2Handler) {
             }
             this.initializeObserver();
             this.initVehicleControls();
-        }
-
-        populateFormData(data) {
-            console.log('Populating form with data:', data);
+        }        populateFormData(data) {
             Object.entries(data).forEach(([dbName, value]) => {
                 const input = document.querySelector(`[data-db-name="${dbName}"]`);
                 if (input) {
                     input.value = value;
                     this.storeInLocalStorage(input.id, dbName, value);
-                    console.log(`Set ${dbName} to ${value}`);
-                } else {
-                    console.log(`Input not found for ${dbName}`);
                 }
             });
         }
@@ -37,15 +31,11 @@ if (!window.section2Handler) {
                 dbName: dbName,
                 value: value
             }));
-        }
-
-        initializeObserver() {
+        }        initializeObserver() {
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
-                        console.log('Section is visible, checking for data');
                         if (window.section2FormData) {
-                            console.log('Found form data, populating');
                             this.populateFormData(window.section2FormData);
                         }
                         observer.disconnect();
