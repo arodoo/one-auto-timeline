@@ -1,0 +1,81 @@
+/* Form Wizard Navigation */
+.form-wizard .nav-wizard li .nav-link.done span {
+    background-color: rgb(227, 225, 81) !important;
+    color: white;
+    border: 0px !important;
+}
+
+.form-wizard .nav-wizard li .nav-link.done::after {
+    background-color: rgb(227, 225, 81) !important;
+}
+
+.form-wizard .nav-wizard li .nav-link span {
+    background-color: rgb(182, 181, 65) !important;
+    color: white;
+    border: 0px !important;
+}
+
+.form-wizard .nav-wizard li .nav-link::after {
+    background-color: rgb(182, 181, 65) !important;
+}
+
+.form-wizard .nav-wizard li .nav-link:hover {
+    transform: scale(1.1);
+    opacity: 0.8;
+}
+
+/* Incomplete Info Modal */
+#incompleteInfoModal .modal-content {
+    background-color: rgb(182, 181, 65) !important;
+    color: white !important;
+}
+
+#incompleteInfoModal .btn-secondary {
+    background-color: white !important;
+    color: rgb(182, 181, 65) !important;
+    border: 1px solid rgb(182, 181, 65) !important;
+}
+
+#incompleteInfoModal .btn-secondary:hover {
+    background-color: rgb(182, 181, 65) !important;
+    color: white !important;
+}
+
+#incompleteInfoModal h5 {
+    color: white !important;
+}
+
+/* Headings */
+h2 {
+    margin: 0 0 10px 0;
+}
+
+h3 {
+    color: #e3e151;
+}
+
+.tall-row .form-label {
+    min-height: 50px;
+}
+@media (max-width: 768px) {
+    .tall-row .form-label {
+        min-height: auto;
+    }
+}
+
+/* Transitions */
+.transition-section {
+    transition: opacity 0.5s ease-in-out;
+}
+
+.transition-section.hidden {
+    opacity: 0;
+}
+
+button.btn {
+    transition: opacity 0.5s ease-in-out;
+}
+
+button.btn.hidden {
+    opacity: 0;
+}

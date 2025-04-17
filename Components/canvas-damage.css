@@ -1,0 +1,23 @@
+.vehicle-damage-container {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+    max-width: 250px; 
+    margin: 0 auto;
+}
+
+.vehicle-image {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.damage-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    cursor: crosshair;
+    z-index: 1;
+}
