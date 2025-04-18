@@ -255,7 +255,7 @@
 				<label>Téléphone fixe</label>
 				<input type="text" id='Telephone' name='Telephone' class="form-control"
 					placeholder="<?php echo 'Téléphone'; ?>" value="<?php echo htmlspecialchars($Telephone); ?>"
-					style='<?php echo "$coloorpccc1telfixe"; ?> height: 35px;'
+					style='<?php echo "$coloorpccc1telfixe"; ?>'
 					maxlength="10" pattern="\d{10}" inputmode="numeric" required />
 			</div>
 
@@ -265,12 +265,139 @@
 				<input type="text" id='Telephone_portable' name='Telephone_portable' class="form-control"
 					placeholder="<?php echo 'Portable'; ?>"
 					value="<?php echo htmlspecialchars(!empty($Telephone_portable) ? $Telephone_portable : $Telephone); ?>"
-					style='<?php echo "$coloorpccc1portable"; ?> height: 35px;'
+					style='<?php echo "$coloorpccc1portable"; ?>'
 					maxlength="10" pattern="\d{10}" inputmode="numeric" required />
 			</div>
 
 		</div>
 
+	</div>
+
+	<div style='clear: both; margin-bottom: 15px;'></div>
+
+	<div class="background-white">
+		<hr />
+		<h2 class="style_color"><?php echo "Informations d'assurance"; ?></h2>
+		<hr />
+
+		<script>
+		$(document).ready(function() {
+			// Convert date inputs to timestamps before form submission
+			$("#modification_post").click(function() {
+				// Get date values
+				var fromDate = $("#valid_from_date").val();
+				var toDate = $("#valid_to_date").val();
+				
+				// Convert to timestamps if dates are provided
+				if(fromDate) {
+					var timestamp = Math.floor(new Date(fromDate).getTime() / 1000);
+					$("#valid_from").val(timestamp);
+					console.log("From date converted: " + fromDate + " -> " + timestamp);
+				}
+				
+				if(toDate) {
+					var timestamp = Math.floor(new Date(toDate).getTime() / 1000);
+					$("#valid_to").val(timestamp);
+					console.log("To date converted: " + toDate + " -> " + timestamp);
+				}
+			});
+			
+			// Initialize date fields from timestamps when page loads
+			var fromTimestamp = $("#valid_from").val();
+			var toTimestamp = $("#valid_to").val();
+			
+			if(fromTimestamp && fromTimestamp > 0) {
+				var date = new Date(fromTimestamp * 1000);
+				var dateString = date.getFullYear() + '-' + 
+								String(date.getMonth() + 1).padStart(2, '0') + '-' + 
+								String(date.getDate()).padStart(2, '0');
+				$("#valid_from_date").val(dateString);
+				console.log("Initialized from date: " + fromTimestamp + " -> " + dateString);
+			}
+			
+			if(toTimestamp && toTimestamp > 0) {
+				var date = new Date(toTimestamp * 1000);
+				var dateString = date.getFullYear() + '-' + 
+								String(date.getMonth() + 1).padStart(2, '0') + '-' + 
+								String(date.getDate()).padStart(2, '0');
+				$("#valid_to_date").val(dateString);
+				console.log("Initialized to date: " + toTimestamp + " -> " + dateString);
+			}
+		});
+		</script>
+
+		<div class="row">
+			<div class="col-sm-6 style_color" style='margin-bottom: 15px;'>
+				<label>Nom de la société d'assurance</label>
+				<input type="text" id='company_name' name='company_name' class="form-control"
+					placeholder="Nom de la société d'assurance"
+					value="<?php echo isset($insurance_data) ? htmlspecialchars($insurance_data['company_name']) : ''; ?>" />
+			</div>
+			<div class="col-sm-6 style_color" style='margin-bottom: 15px;'>
+				<label>N° de contrat</label>
+				<input type="text" id='contract_number' name='contract_number' class="form-control"
+					placeholder="N° de contrat"
+					value="<?php echo isset($insurance_data) ? htmlspecialchars($insurance_data['contract_number']) : ''; ?>" />
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col-sm-6 style_color" style='margin-bottom: 15px;'>
+				<label>N° de carte verte</label>
+				<input type="text" id='green_card_number' name='green_card_number' class="form-control"
+					placeholder="N° de carte verte"
+					value="<?php echo isset($insurance_data) ? htmlspecialchars($insurance_data['green_card_number']) : ''; ?>" />
+			</div>
+			<div class="col-sm-6 style_color" style='margin-bottom: 15px;'>
+				<label>Agence d'assurance</label>
+				<input type="text" id='agency_name' name='agency_name' class="form-control"
+					placeholder="Nom de l'agence"
+					value="<?php echo isset($insurance_data) ? htmlspecialchars($insurance_data['agency_name']) : ''; ?>" />
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col-sm-6 style_color" style='margin-bottom: 15px;'>
+				<label>Adresse de l'agence</label>
+				<input type="text" id='agency_address' name='agency_address' class="form-control"
+					placeholder="Adresse de l'agence"
+					value="<?php echo isset($insurance_data) ? htmlspecialchars($insurance_data['agency_address']) : ''; ?>" />
+			</div>
+			<div class="col-sm-6 style_color" style='margin-bottom: 15px;'>
+				<label>Pays de l'agence</label>
+				<input type="text" id='agency_country' name='agency_country' class="form-control"
+					placeholder="Pays de l'agence"
+					value="<?php echo isset($insurance_data) ? htmlspecialchars($insurance_data['agency_country']) : ''; ?>" />
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col-sm-6 style_color" style='margin-bottom: 15px;'>
+				<label>Email de l'agence</label>
+				<input type="text" id='agency_email' name='agency_email' class="form-control"
+					placeholder="Email de l'agence"
+					value="<?php echo isset($insurance_data) ? htmlspecialchars($insurance_data['agency_email']) : ''; ?>" />
+			</div>
+			<div class="col-sm-6 style_color" style='margin-bottom: 15px;'>
+				<label>Validité</label>
+				<div class="row">
+					<div class="col-sm-6">
+						<label>Du</label>
+						<input type="date" id='valid_from_date' name='valid_from_date' class="form-control"
+							value="<?php echo isset($insurance_data) && !empty($insurance_data['valid_from']) ? date('Y-m-d', $insurance_data['valid_from']) : ''; ?>" />
+						<input type="hidden" id='valid_from' name='valid_from' 
+							value="<?php echo isset($insurance_data) ? htmlspecialchars($insurance_data['valid_from']) : ''; ?>" />
+					</div>
+					<div class="col-sm-6">
+						<label>Au</label>
+						<input type="date" id='valid_to_date' name='valid_to_date' class="form-control"
+							value="<?php echo isset($insurance_data) && !empty($insurance_data['valid_to']) ? date('Y-m-d', $insurance_data['valid_to']) : ''; ?>" />
+						<input type="hidden" id='valid_to' name='valid_to'
+							value="<?php echo isset($insurance_data) ? htmlspecialchars($insurance_data['valid_to']) : ''; ?>" />
+					</div>
+				</div>
+			</div>
+		</div>
 	</div>
 
 	<div style='clear: both; margin-bottom: 15px;'></div>
@@ -291,7 +418,7 @@
 					<label>Nom société</label>
 					<input type="text" id='Nom_societe' name='Nom_societe' class="form-control"
 						placeholder="<?php echo "Nom société"; ?>*" value="<?php echo "$Nom_societe"; ?>"
-						style='<?php echo "$coloorpccc1telfixe"; ?> height: 35px;' />
+						style='<?php echo "$coloorpccc1telfixe"; ?>' />
 				</div>
 
 
@@ -299,7 +426,7 @@
 					<label>Siret</label>
 					<input type="text" id='Numero_identification' name='Numero_identification' class="form-control"
 						placeholder="<?php echo "Siret"; ?>" value="<?php echo "$Numero_identification"; ?>"
-						style='<?php echo "$coloorpccc1portable"; ?> height: 35px;' />
+						style='<?php echo "$coloorpccc1portable"; ?>' />
 				</div>
 			</div>
 

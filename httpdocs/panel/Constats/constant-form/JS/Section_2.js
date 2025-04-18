@@ -12,6 +12,7 @@ if (!window.section2Handler) {
         init() {
             if (window.section2FormData) {
                 this.populateFormData(window.section2FormData);
+                this.populateInsuranceFields(window.section2FormData);
             }
             this.initializeObserver();
             this.initVehicleControls();
@@ -37,6 +38,7 @@ if (!window.section2Handler) {
                     if (entry.isIntersecting) {
                         if (window.section2FormData) {
                             this.populateFormData(window.section2FormData);
+                            this.populateInsuranceFields(window.section2FormData);
                         }
                         observer.disconnect();
                     }
@@ -98,6 +100,67 @@ if (!window.section2Handler) {
                     }
                 }
             });
+        }
+        
+        populateInsuranceFields(data) {
+            // Handle insurance company field
+            if (data.s2_insurance_name) {
+                const insuranceCompanyField = document.querySelector('input[name="insuranceCompanyA"]');
+                if (insuranceCompanyField) {
+                    insuranceCompanyField.value = data.s2_insurance_name;
+                    this.storeInLocalStorage(insuranceCompanyField.id, 'insuranceCompanyA', data.s2_insurance_name);
+                }
+            }
+            
+            // Handle policy number field
+            if (data.s2_insurance_contract) {
+                const policyField = document.querySelector('input[name="policyNumberA"]');
+                if (policyField) {
+                    policyField.value = data.s2_insurance_contract;
+                    this.storeInLocalStorage(policyField.id, 'policyNumberA', data.s2_insurance_contract);
+                }
+            }
+            
+            // Handle green card number field
+            if (data.s2_insurance_green_card) {
+                const greenCardField = document.querySelector('input[name="greenCardNumberA"]');
+                if (greenCardField) {
+                    greenCardField.value = data.s2_insurance_green_card;
+                    this.storeInLocalStorage(greenCardField.id, 'greenCardNumberA', data.s2_insurance_green_card);
+                }
+            }
+            
+            // Handle validity dates
+            if (data.s2_insurance_valid_from) {
+                const validFromField = document.querySelector('[data-db-name="s2_insurance_valid_from"]');
+                if (validFromField) {
+                    // Convert Unix timestamp to YYYY-MM-DD
+                    const date = new Date(data.s2_insurance_valid_from * 1000);
+                    const dateStr = date.toISOString().split('T')[0];
+                    validFromField.value = dateStr;
+                    this.storeInLocalStorage(validFromField.id, 's2_insurance_valid_from', dateStr);
+                }
+            }
+            
+            if (data.s2_insurance_valid_to) {
+                const validToField = document.querySelector('[data-db-name="s2_insurance_valid_to"]');
+                if (validToField) {
+                    // Convert Unix timestamp to YYYY-MM-DD
+                    const date = new Date(data.s2_insurance_valid_to * 1000);
+                    const dateStr = date.toISOString().split('T')[0];
+                    validToField.value = dateStr;
+                    this.storeInLocalStorage(validToField.id, 's2_insurance_valid_to', dateStr);
+                }
+            }
+            
+            // Handle agency information
+            if (data.s2_agency_name || data.s2_insurance_agency) {
+                const agencyField = document.querySelector('[data-db-name="s2_insurance_agency"]');
+                if (agencyField) {
+                    agencyField.value = data.s2_agency_name || data.s2_insurance_agency;
+                    this.storeInLocalStorage(agencyField.id, 's2_insurance_agency', agencyField.value);
+                }
+            }
         }
     }
     

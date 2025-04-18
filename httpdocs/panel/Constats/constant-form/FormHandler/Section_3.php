@@ -1,5 +1,6 @@
 <?php
 include_once '../Components/FormHeaderGenerator.php';
+require_once '../Components/Section3DataLoader.php';
 
 // Ensure the session is started
 if (session_status() == PHP_SESSION_NONE) {
@@ -9,10 +10,29 @@ if (session_status() == PHP_SESSION_NONE) {
 // Check if we're in jumelage mode
 $isJumelageMode = isset($_SESSION['jumelage_mode']) && $_SESSION['jumelage_mode'] === true;
 
+// Load form data only when in jumelage mode - the DataLoader will check if user is B
+$formData = [];
+try {
+    if (!empty($_SESSION['4M8e7M5b1R2e8s']) && !empty($user)) {
+        $dataLoader = new Section3DataLoader($bdd, $id_oo, $isJumelageMode);
+        $formData = $dataLoader->loadUserData();
+        error_log("Section 3 data loading attempted. In jumelage mode: " . ($isJumelageMode ? "Yes" : "No"));
+    }
+} catch (Exception $e) {
+    error_log("Error in Section 3 data loading: " . $e->getMessage());
+}
+
 // Better debugging output
 error_log("Section_3.php - Session data: " . json_encode($_SESSION));
 error_log("Section_3.php - isJumelageMode: " . ($isJumelageMode ? "true" : "false"));
 ?>
+
+<script>
+    // Make form data available to JavaScript
+    window.section3FormData = <?php echo json_encode($formData); ?>;
+    window.isJumelageMode = <?php echo $isJumelageMode ? 'true' : 'false'; ?>;
+</script>
+
 <div class="container">
     <div class="alert alert-info mt-3 jumelage-info-message" style="display: none;">
         <i class="fas fa-info-circle"></i> Les informations du conducteur B seront remplies par <span

@@ -153,6 +153,76 @@ if (!empty($_SESSION['4M8e7M5b1R2e8s']) && !empty($user)) {
 				));
 				$sql_update->closeCursor();
 			}
+
+			// Save insurance data
+			if (isset($_POST['company_name']) || isset($_POST['contract_number'])) {
+				try {
+					// Check if a record already exists for this user
+					$req_check = $bdd->prepare("SELECT id FROM membres_insurance WHERE id_membre = ?");
+					$req_check->execute(array($id_oo));
+					$exists = $req_check->fetch();
+					$req_check->closeCursor();
+					
+					if ($exists) {
+						// Update existing record
+						$sql_update = $bdd->prepare("UPDATE membres_insurance SET 
+							company_name = ?,
+							contract_number = ?,
+							green_card_number = ?,
+							valid_from = ?,
+							valid_to = ?,
+							agency_name = ?,
+							agency_address = ?,
+							agency_country = ?,
+							agency_email = ?,
+							updated_at = NOW()
+							WHERE id_membre = ?");
+						$sql_update->execute(array(
+							htmlspecialchars($_POST['company_name']),
+							htmlspecialchars($_POST['contract_number']),
+							htmlspecialchars($_POST['green_card_number']),
+							!empty($_POST['valid_from']) ? intval($_POST['valid_from']) : null,
+							!empty($_POST['valid_to']) ? intval($_POST['valid_to']) : null,
+							htmlspecialchars($_POST['agency_name']),
+							htmlspecialchars($_POST['agency_address']),
+							htmlspecialchars($_POST['agency_country']),
+							htmlspecialchars($_POST['agency_email']),
+							$id_oo
+						));
+						$sql_update->closeCursor();
+					} else {
+						// Insert new record
+						$sql_insert = $bdd->prepare("INSERT INTO membres_insurance (
+							id_membre,
+							company_name,
+							contract_number,
+							green_card_number,
+							valid_from,
+							valid_to,
+							agency_name,
+							agency_address,
+							agency_country,
+							agency_email)
+							VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+						$sql_insert->execute(array(
+							$id_oo,
+							htmlspecialchars($_POST['company_name']),
+							htmlspecialchars($_POST['contract_number']),
+							htmlspecialchars($_POST['green_card_number']),
+							!empty($_POST['valid_from']) ? intval($_POST['valid_from']) : null,
+							!empty($_POST['valid_to']) ? intval($_POST['valid_to']) : null,
+							htmlspecialchars($_POST['agency_name']),
+							htmlspecialchars($_POST['agency_address']),
+							htmlspecialchars($_POST['agency_country']),
+							htmlspecialchars($_POST['agency_email'])
+						));
+						$sql_insert->closeCursor();
+					}
+				} catch (Exception $e) {
+					error_log("Error saving insurance data: " . $e->getMessage());
+				}
+			}
+
 			$mail_compte_concerne = $Mail;
 			$module_log = "PROFIL";
 			$action_sujet_log = "Notification de modification de vos données personnelles";
