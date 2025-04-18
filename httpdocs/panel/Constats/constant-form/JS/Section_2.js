@@ -15,12 +15,18 @@ if (!window.section2Handler) {
             }
             this.initializeObserver();
             this.initVehicleControls();
-        }populateFormData(data) {
+        }        populateFormData(data) {
             Object.entries(data).forEach(([dbName, value]) => {
                 const input = document.querySelector(`[data-db-name="${dbName}"]`);
                 if (input) {
-                    input.value = value;
-                    this.storeInLocalStorage(input.id, dbName, value);
+                    // Set default "France" for country fields if empty
+                    if ((dbName === 's2_insured_country' || dbName === 's2_driver_country') && (!value || value === '')) {
+                        input.value = 'France';
+                        this.storeInLocalStorage(input.id, dbName, 'France');
+                    } else {
+                        input.value = value;
+                        this.storeInLocalStorage(input.id, dbName, value);
+                    }
                 }
             });
         }

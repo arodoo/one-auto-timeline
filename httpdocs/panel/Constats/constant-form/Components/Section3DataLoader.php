@@ -59,24 +59,22 @@ class Section3DataLoader {
                 $stmt = $this->bdd->prepare("SELECT * FROM membres WHERE id = ?");
                 $stmt->execute(array($this->user_id));
                 
-                if ($user = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                    // Basic user info for vehicle B
+                if ($user = $stmt->fetch(PDO::FETCH_ASSOC)) {                    // Basic user info for vehicle B
                     $data['s3_insured_name'] = $user['nom'];
                     $data['s3_insured_firstname'] = $user['prenom'];
                     $data['s3_insured_address'] = $user['adresse'];
                     $data['s3_insured_postal'] = $user['cp'];
                     $data['s3_insured_city'] = $user['ville'];
                     $data['s3_insured_contact'] = $user['mail'];
-                    $data['s3_insured_country'] = $user['Pays'];
+                    $data['s3_insured_country'] = $user['Pays'] ?? 'France';
                     
                     // Driver info for vehicle B
                     $data['s3_driver_name'] = $user['nom'];
                     $data['s3_driver_firstname'] = $user['prenom'];
-                    $data['s3_driver_birthdate'] = $user['datenaissance'];
-                    $data['s3_driver_address'] = $user['adresse'];
+                    $data['s3_driver_birthdate'] = $user['datenaissance'];                    $data['s3_driver_address'] = $user['adresse'];
                     $data['s3_driver_postal'] = $user['cp'];
                     $data['s3_driver_city'] = $user['ville'];
-                    $data['s3_driver_country'] = $user['Pays'];
+                    $data['s3_driver_country'] = $user['Pays'] ?? 'France';
                     $data['s3_driver_phone'] = !empty($user['Telephone_portable']) ? 
                         $user['Telephone_portable'] : $user['Telephone'];
                 }

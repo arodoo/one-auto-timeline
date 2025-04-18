@@ -77,15 +77,27 @@ document.addEventListener('DOMContentLoaded', function() {
                 } else if (element.type === 'radio') {
                     if (element.value === window.section3FormData[dbName]) {
                         element.checked = true;
+                    }                } else {
+                    // Set default "France" for country fields if empty
+                    if ((dbName === 's3_insured_country' || dbName === 's3_driver_country') && 
+                        (!window.section3FormData[dbName] || window.section3FormData[dbName] === '')) {
+                        element.value = 'France';
+                    } else {
+                        element.value = window.section3FormData[dbName];
                     }
-                } else {
-                    element.value = window.section3FormData[dbName];
                 }
                 
                 // Save to localStorage to ensure form persistence
                 if (element.id) {
-                    localStorage.setItem(element.id, element.type === 'checkbox' ? 
-                        (element.checked ? 'true' : 'false') : element.value);
+                    let valueToStore = element.type === 'checkbox' ? 
+                        (element.checked ? 'true' : 'false') : element.value;
+                    
+                    // Store as JSON object for consistency with Section_2.js
+                    localStorage.setItem(element.id, JSON.stringify({
+                        table: 'constats_vehicle_b',
+                        dbName: dbName,
+                        value: valueToStore
+                    }));
                 }
                 
                 // Trigger change event to ensure dependent fields update
