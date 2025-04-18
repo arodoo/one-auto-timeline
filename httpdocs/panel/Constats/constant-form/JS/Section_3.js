@@ -163,14 +163,74 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }
         }
-        
-        // Fill agency office information (new field)
+          // Fill agency office information (new field)
         if (window.section3FormData['s3_insurance_agency']) {
             const agencyOfficeField = document.querySelector('input[name="agencyOfficeB"]');
             if (agencyOfficeField) {
                 agencyOfficeField.value = window.section3FormData['s3_insurance_agency'];
                 if (agencyOfficeField.id) {
                     localStorage.setItem(agencyOfficeField.id, agencyOfficeField.value);
+                }
+            }
+        }
+
+        // Handle driver license fields
+        // Driver license number
+        if (window.section3FormData['s3_license_number']) {
+            const licenseField = document.querySelector('[data-db-name="s3_license_number"]');
+            if (licenseField) {
+                licenseField.value = window.section3FormData['s3_license_number'];
+                if (licenseField.id) {
+                    localStorage.setItem(licenseField.id, licenseField.value);
+                }
+            }
+        }
+        
+        // Driver license category
+        if (window.section3FormData['s3_license_category']) {
+            const categoryField = document.querySelector('[data-db-name="s3_license_category"]');
+            if (categoryField) {
+                categoryField.value = window.section3FormData['s3_license_category'];
+                if (categoryField.id) {
+                    localStorage.setItem(categoryField.id, categoryField.value);
+                }
+            }
+        }
+          // Driver license valid until date
+        if (window.section3FormData['s3_license_valid_until']) {
+            const validUntilField = document.querySelector('[data-db-name="s3_license_valid_until"]');
+            if (validUntilField) {
+                // Convert Unix timestamp to YYYY-MM-DD
+                const date = new Date(window.section3FormData['s3_license_valid_until'] * 1000);
+                const dateStr = date.toISOString().split('T')[0];
+                validUntilField.value = dateStr;
+                if (validUntilField.id) {
+                    localStorage.setItem(validUntilField.id, dateStr);
+                }
+            }
+        }
+        
+        // Handle driver birthdate (Date de naissance) from license data
+        if (window.section3FormData['s3_driver_birthdate']) {
+            const birthDateField = document.querySelector('[data-db-name="s3_driver_birthdate"]');
+            if (birthDateField) {
+                // Convert Unix timestamp to YYYY-MM-DD
+                const date = new Date(window.section3FormData['s3_driver_birthdate'] * 1000);
+                const dateStr = date.toISOString().split('T')[0];
+                birthDateField.value = dateStr;
+                if (birthDateField.id) {
+                    localStorage.setItem(birthDateField.id, dateStr);
+                }
+            }
+        }
+        
+        // Handle driver country (Pays) from license data
+        if (window.section3FormData['s3_driver_country']) {
+            const countryField = document.querySelector('[data-db-name="s3_driver_country"]');
+            if (countryField) {
+                countryField.value = window.section3FormData['s3_driver_country'];
+                if (countryField.id) {
+                    localStorage.setItem(countryField.id, countryField.value);
                 }
             }
         }

@@ -34,6 +34,19 @@ if (!empty($_SESSION['4M8e7M5b1R2e8s']) && !empty($user)) {
 	} catch (Exception $e) {
 		error_log("Error loading insurance data: " . $e->getMessage());
 	}
+	
+	// Load driver license data for this user
+	$driver_license_data = [];
+	try {
+		$req_license = $bdd->prepare("SELECT * FROM membres_driver_license WHERE id_membre = ?");
+		$req_license->execute(array($id_oo));
+		if ($row_license = $req_license->fetch()) {
+			$driver_license_data = $row_license;
+		}
+		$req_license->closeCursor();
+	} catch (Exception $e) {
+		error_log("Error loading driver license data: " . $e->getMessage());
+	}
 
 ?>
 

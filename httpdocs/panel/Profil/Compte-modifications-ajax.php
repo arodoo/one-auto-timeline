@@ -227,6 +227,73 @@ if (!empty($_SESSION['4M8e7M5b1R2e8s']) && !empty($user)) {
 				}
 			}
 
+			// Save driver license data
+			if (isset($_POST['license_number']) || isset($_POST['license_category'])) {
+				try {
+					// Check if a record already exists for this user
+					$req_check = $bdd->prepare("SELECT id FROM membres_driver_license WHERE id_membre = ?");
+					$req_check->execute(array($id_oo));
+					$exists = $req_check->fetch();
+					$req_check->closeCursor();
+					
+					if ($exists) {
+						// Update existing record
+						$sql_update = $bdd->prepare("UPDATE membres_driver_license SET 
+							license_number = ?,
+							license_category = ?,
+							license_valid_until = ?,
+							license_issue_date = ?,
+							license_issue_place = ?,
+							license_country = ?,
+							license_restrictions = ?,
+							license_authority = ?,
+							updated_at = NOW()
+							WHERE id_membre = ?");
+						$sql_update->execute(array(
+							htmlspecialchars($_POST['license_number']),
+							htmlspecialchars($_POST['license_category']),
+							!empty($_POST['license_valid_until']) ? intval($_POST['license_valid_until']) : null,
+							!empty($_POST['license_issue_date']) ? intval($_POST['license_issue_date']) : null,
+							htmlspecialchars($_POST['license_issue_place']),
+							htmlspecialchars($_POST['license_country']),
+							htmlspecialchars($_POST['license_restrictions']),
+							htmlspecialchars($_POST['license_authority']),
+							$id_oo
+						));
+						$sql_update->closeCursor();
+					} else {
+						// Insert new record
+						$sql_insert = $bdd->prepare("INSERT INTO membres_driver_license (
+							id_membre,
+							license_number,
+							license_category,
+							license_valid_until,
+							license_issue_date,
+							license_issue_place,
+							license_country,
+							license_restrictions,
+							license_authority)
+							VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+						$sql_insert->execute(array(
+							$id_oo,
+							htmlspecialchars($_POST['license_number']),
+							htmlspecialchars($_POST['license_category']),
+							!empty($_POST['license_valid_until']) ? intval($_POST['license_valid_until']) : null,
+							!empty($_POST['license_issue_date']) ? intval($_POST['license_issue_date']) : null,
+							htmlspecialchars($_POST['license_issue_place']),
+							htmlspecialchars($_POST['license_country']),
+							htmlspecialchars($_POST['license_restrictions']),
+							htmlspecialchars($_POST['license_authority'])
+						));
+						$sql_insert->closeCursor();
+					}
+					
+					error_log("Driver license data saved successfully for user ID: " . $id_oo);
+				} catch (Exception $e) {
+					error_log("Error saving driver license data: " . $e->getMessage());
+				}
+			}
+
 			$mail_compte_concerne = $Mail;
 			$module_log = "PROFIL";
 			$action_sujet_log = "Notification de modification de vos données personnelles";

@@ -7,16 +7,15 @@ if (!window.section2Handler) {
             } else {
                 this.init();
             }
-        }
-
-        init() {
+        }        init() {
             if (window.section2FormData) {
                 this.populateFormData(window.section2FormData);
                 this.populateInsuranceFields(window.section2FormData);
+                this.populateDriverLicenseFields(window.section2FormData);
             }
             this.initializeObserver();
             this.initVehicleControls();
-        }        populateFormData(data) {
+        }populateFormData(data) {
             Object.entries(data).forEach(([dbName, value]) => {
                 const input = document.querySelector(`[data-db-name="${dbName}"]`);
                 if (input) {
@@ -39,6 +38,7 @@ if (!window.section2Handler) {
                         if (window.section2FormData) {
                             this.populateFormData(window.section2FormData);
                             this.populateInsuranceFields(window.section2FormData);
+                            this.populateDriverLicenseFields(window.section2FormData);
                         }
                         observer.disconnect();
                     }
@@ -160,13 +160,64 @@ if (!window.section2Handler) {
                     this.storeInLocalStorage(agencyOfficeField.id, 's2_insurance_agency', data.s2_insurance_agency);
                 }
             }
-            
-            // Handle agency name information (Nom de l'agence)
+              // Handle agency name information (Nom de l'agence)
             if (data.s2_agency_name) {
                 const agencyNameField = document.querySelector('[data-db-name="s2_agency_name"]');
                 if (agencyNameField) {
                     agencyNameField.value = data.s2_agency_name;
                     this.storeInLocalStorage(agencyNameField.id, 's2_agency_name', data.s2_agency_name);
+                }
+            }
+        }
+        
+        populateDriverLicenseFields(data) {
+            // Handle driver license number
+            if (data.s2_license_number) {
+                const licenseField = document.querySelector('[data-db-name="s2_license_number"]');
+                if (licenseField) {
+                    licenseField.value = data.s2_license_number;
+                    this.storeInLocalStorage(licenseField.id, 's2_license_number', data.s2_license_number);
+                }
+            }
+            
+            // Handle driver license category
+            if (data.s2_license_category) {
+                const categoryField = document.querySelector('[data-db-name="s2_license_category"]');
+                if (categoryField) {
+                    categoryField.value = data.s2_license_category;
+                    this.storeInLocalStorage(categoryField.id, 's2_license_category', data.s2_license_category);
+                }
+            }
+              // Handle driver license valid until date - convert from UNIX timestamp to YYYY-MM-DD
+            if (data.s2_license_valid_until) {
+                const validUntilField = document.querySelector('[data-db-name="s2_license_valid_until"]');
+                if (validUntilField) {
+                    // Convert Unix timestamp to YYYY-MM-DD
+                    const date = new Date(data.s2_license_valid_until * 1000);
+                    const dateStr = date.toISOString().split('T')[0];
+                    validUntilField.value = dateStr;
+                    this.storeInLocalStorage(validUntilField.id, 's2_license_valid_until', dateStr);
+                }
+            }
+            
+            // Handle driver birthdate (Date de naissance) from license data
+            if (data.s2_driver_birthdate) {
+                const birthDateField = document.querySelector('[data-db-name="s2_driver_birthdate"]');
+                if (birthDateField) {
+                    // Convert Unix timestamp to YYYY-MM-DD
+                    const date = new Date(data.s2_driver_birthdate * 1000);
+                    const dateStr = date.toISOString().split('T')[0];
+                    birthDateField.value = dateStr;
+                    this.storeInLocalStorage(birthDateField.id, 's2_driver_birthdate', dateStr);
+                }
+            }
+            
+            // Handle driver country (Pays) from license data
+            if (data.s2_driver_country) {
+                const countryField = document.querySelector('[data-db-name="s2_driver_country"]');
+                if (countryField) {
+                    countryField.value = data.s2_driver_country;
+                    this.storeInLocalStorage(countryField.id, 's2_driver_country', data.s2_driver_country);
                 }
             }
         }

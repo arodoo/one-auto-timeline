@@ -96,9 +96,37 @@ class Section3DataLoader {
                     $data['s3_agency_name'] = $insurance['agency_name'];
                     $data['s3_agency_address'] = $insurance['agency_address'];
                     $data['s3_agency_country'] = $insurance['agency_country'];
-                    $data['s3_agency_email'] = $insurance['agency_email'];
-                }
+                    $data['s3_agency_email'] = $insurance['agency_email'];                }
                 $stmt->closeCursor();
+                
+                // Load driver license data for User B
+                try {
+                    $licenseStmt = $this->bdd->prepare("SELECT * FROM membres_driver_license WHERE id_membre = ?");
+                    $licenseStmt->execute(array($this->user_id));
+                      if ($license = $licenseStmt->fetch(PDO::FETCH_ASSOC)) {
+                        // Map driver license data to form fields
+                        $data['s3_license_number'] = $license['license_number'] ?? '';
+                        $data['s3_license_category'] = $license['license_category'] ?? '';
+                        $data['s3_license_valid_until'] = $license['license_valid_until'] ?? '';
+                        
+                        // Map additional driver fields from license data
+                        // Use license country for driver country if available
+                        if (!empty($license['license_country'])) {
+                            $data['s3_driver_country'] = $license['license_country'];
+                        }
+                        
+                        // Use driver birthdate if stored in license data
+                        if (!empty($license['license_issue_date'])) {
+                            $data['s3_driver_birthdate'] = $license['license_issue_date'];
+                        }
+                        
+                        error_log("Section3DataLoader: Successfully loaded driver license data for user ID: " . $this->user_id);
+                    } else {
+                        error_log("Section3DataLoader: No driver license data found for user ID: " . $this->user_id);
+                    }
+                } catch (Exception $e) {
+                    error_log("Error loading driver license data in Section3DataLoader: " . $e->getMessage());
+                }
                 
                 error_log("Section3DataLoader: Successfully loaded Vehicle B data for user in jumelage mode");
             } catch (Exception $e) {

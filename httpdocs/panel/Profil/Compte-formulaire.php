@@ -410,6 +410,128 @@
 
 	<div style='clear: both; margin-bottom: 15px;'></div>
 
+	<div class="background-white">
+		<hr />
+		<h2 class="style_color">Informations du permis de conduire</h2>
+		<hr />
+		
+		<!-- JavaScript for Driver License Date Conversion -->
+		<script>
+		$(document).ready(function() {
+			// License valid until date change handler - convert to Unix timestamp
+			$("#license_valid_until_date").change(function() {
+				if ($(this).val()) {
+					var timestamp = Math.floor(new Date($(this).val()).getTime() / 1000);
+					$("#license_valid_until").val(timestamp);
+					console.log("License valid until date converted to timestamp: " + timestamp);
+				} else {
+					$("#license_valid_until").val('');
+				}
+			});
+
+			// License issue date change handler - convert to Unix timestamp
+			$("#license_issue_date_display").change(function() {
+				if ($(this).val()) {
+					var timestamp = Math.floor(new Date($(this).val()).getTime() / 1000);
+					$("#license_issue_date").val(timestamp);
+					console.log("License issue date converted to timestamp: " + timestamp);
+				} else {
+					$("#license_issue_date").val('');
+				}
+			});
+
+			// Initialize date fields from timestamps on page load
+			function initializeLicenseDates() {
+				var validUntilTimestamp = $("#license_valid_until").val();
+				var issueDateTimestamp = $("#license_issue_date").val();
+				
+				if(validUntilTimestamp && validUntilTimestamp > 0) {
+					var date = new Date(validUntilTimestamp * 1000);
+					var dateString = date.toISOString().split('T')[0];
+					$("#license_valid_until_date").val(dateString);
+				}
+				
+				if(issueDateTimestamp && issueDateTimestamp > 0) {
+					var date = new Date(issueDateTimestamp * 1000);
+					var dateString = date.toISOString().split('T')[0];
+					$("#license_issue_date_display").val(dateString);
+				}
+			}
+			
+			// Initialize dates when page loads
+			initializeLicenseDates();
+		});
+		</script>
+
+		<div class="row">
+			<div class="col-sm-6 style_color" style='margin-bottom: 15px;'>
+				<label>Numéro de permis</label>
+				<input type="text" id='license_number' name='license_number' class="form-control"
+					placeholder="Numéro de permis"
+					value="<?php echo isset($driver_license_data['license_number']) ? htmlspecialchars($driver_license_data['license_number']) : ''; ?>" />
+			</div>
+			<div class="col-sm-6 style_color" style='margin-bottom: 15px;'>
+				<label>Catégorie</label>
+				<input type="text" id='license_category' name='license_category' class="form-control"
+					placeholder="Catégorie (A, B, etc.)"
+					value="<?php echo isset($driver_license_data['license_category']) ? htmlspecialchars($driver_license_data['license_category']) : ''; ?>" />
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col-sm-6 style_color" style='margin-bottom: 15px;'>
+				<label>Valide jusqu'au</label>
+				<input type="date" id='license_valid_until_date' name='license_valid_until_date' class="form-control"
+					value="<?php echo isset($driver_license_data['license_valid_until']) && !empty($driver_license_data['license_valid_until']) ? 
+					date('Y-m-d', $driver_license_data['license_valid_until']) : ''; ?>" />
+				<!-- Hidden field to store Unix timestamp -->
+				<input type="hidden" id='license_valid_until' name='license_valid_until'
+					value="<?php echo isset($driver_license_data['license_valid_until']) ? $driver_license_data['license_valid_until'] : ''; ?>" />
+			</div>
+			<div class="col-sm-6 style_color" style='margin-bottom: 15px;'>
+				<label>Date de délivrance</label>
+				<input type="date" id='license_issue_date_display' name='license_issue_date_display' class="form-control"
+					value="<?php echo isset($driver_license_data['license_issue_date']) && !empty($driver_license_data['license_issue_date']) ? 
+					date('Y-m-d', $driver_license_data['license_issue_date']) : ''; ?>" />
+				<!-- Hidden field to store Unix timestamp -->
+				<input type="hidden" id='license_issue_date' name='license_issue_date'
+					value="<?php echo isset($driver_license_data['license_issue_date']) ? $driver_license_data['license_issue_date'] : ''; ?>" />
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col-sm-6 style_color" style='margin-bottom: 15px;'>
+				<label>Lieu de délivrance</label>
+				<input type="text" id='license_issue_place' name='license_issue_place' class="form-control"
+					placeholder="Lieu de délivrance"
+					value="<?php echo isset($driver_license_data['license_issue_place']) ? htmlspecialchars($driver_license_data['license_issue_place']) : ''; ?>" />
+			</div>
+			<div class="col-sm-6 style_color" style='margin-bottom: 15px;'>
+				<label>Pays de délivrance</label>
+				<input type="text" id='license_country' name='license_country' class="form-control"
+					placeholder="Pays de délivrance"
+					value="<?php echo isset($driver_license_data['license_country']) ? htmlspecialchars($driver_license_data['license_country']) : ''; ?>" />
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col-sm-6 style_color" style='margin-bottom: 15px;'>
+				<label>Restrictions</label>
+				<input type="text" id='license_restrictions' name='license_restrictions' class="form-control"
+					placeholder="Restrictions éventuelles"
+					value="<?php echo isset($driver_license_data['license_restrictions']) ? htmlspecialchars($driver_license_data['license_restrictions']) : ''; ?>" />
+			</div>
+			<div class="col-sm-6 style_color" style='margin-bottom: 15px;'>
+				<label>Autorité de délivrance</label>
+				<input type="text" id='license_authority' name='license_authority' class="form-control"
+					placeholder="Autorité ayant délivré le permis"
+					value="<?php echo isset($driver_license_data['license_authority']) ? htmlspecialchars($driver_license_data['license_authority']) : ''; ?>" />
+			</div>
+		</div>
+	</div>
+
+	<div style='clear: both; margin-bottom: 15px;'></div>
+
 	<?php
 	if ($statut_compte_oo == 2 || $statut_compte_oo == 3 || $statut_compte_oo == 4 || $statut_compte_oo == 5 || $statut_compte_oo == 6) {
 	?>
