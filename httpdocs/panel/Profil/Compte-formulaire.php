@@ -349,12 +349,20 @@
 					value="<?php echo isset($insurance_data) ? htmlspecialchars($insurance_data['green_card_number']) : ''; ?>" />
 			</div>
 			<div class="col-sm-6 style_color" style='margin-bottom: 15px;'>
-				<label>Agence d'assurance</label>
+				<label>Agence (ou bureau, ou courtier)</label>
+				<input type="text" id='agency_office' name='agency_office' class="form-control"
+					placeholder="Agence (ou bureau, ou courtier)"
+					value="<?php echo isset($insurance_data) ? htmlspecialchars($insurance_data['agency_office']) : ''; ?>" />
+			</div>
+		</div>
+		
+		<div class="row">
+			<div class="col-sm-6 style_color" style='margin-bottom: 15px;'>
+				<label>Nom de l'agence</label>
 				<input type="text" id='agency_name' name='agency_name' class="form-control"
 					placeholder="Nom de l'agence"
 					value="<?php echo isset($insurance_data) ? htmlspecialchars($insurance_data['agency_name']) : ''; ?>" />
 			</div>
-		</div>
 
 		<div class="row">
 			<div class="col-sm-6 style_color" style='margin-bottom: 15px;'>

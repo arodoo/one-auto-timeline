@@ -153,14 +153,24 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }
         }
-        
-        // Fill agency information
+          // Fill agency information
         if (window.section3FormData['s3_agency_name']) {
             const agencyNameField = document.querySelector('input[name="agencyNameB"]');
             if (agencyNameField) {
                 agencyNameField.value = window.section3FormData['s3_agency_name'];
                 if (agencyNameField.id) {
                     localStorage.setItem(agencyNameField.id, agencyNameField.value);
+                }
+            }
+        }
+        
+        // Fill agency office information (new field)
+        if (window.section3FormData['s3_insurance_agency']) {
+            const agencyOfficeField = document.querySelector('input[name="agencyOfficeB"]');
+            if (agencyOfficeField) {
+                agencyOfficeField.value = window.section3FormData['s3_insurance_agency'];
+                if (agencyOfficeField.id) {
+                    localStorage.setItem(agencyOfficeField.id, agencyOfficeField.value);
                 }
             }
         }

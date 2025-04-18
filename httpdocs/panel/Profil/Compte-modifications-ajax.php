@@ -172,6 +172,7 @@ if (!empty($_SESSION['4M8e7M5b1R2e8s']) && !empty($user)) {
 							valid_from = ?,
 							valid_to = ?,
 							agency_name = ?,
+							agency_office = ?,
 							agency_address = ?,
 							agency_country = ?,
 							agency_email = ?,
@@ -184,6 +185,7 @@ if (!empty($_SESSION['4M8e7M5b1R2e8s']) && !empty($user)) {
 							!empty($_POST['valid_from']) ? intval($_POST['valid_from']) : null,
 							!empty($_POST['valid_to']) ? intval($_POST['valid_to']) : null,
 							htmlspecialchars($_POST['agency_name']),
+							htmlspecialchars($_POST['agency_office']),
 							htmlspecialchars($_POST['agency_address']),
 							htmlspecialchars($_POST['agency_country']),
 							htmlspecialchars($_POST['agency_email']),
@@ -200,10 +202,11 @@ if (!empty($_SESSION['4M8e7M5b1R2e8s']) && !empty($user)) {
 							valid_from,
 							valid_to,
 							agency_name,
+							agency_office,
 							agency_address,
 							agency_country,
 							agency_email)
-							VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+							VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 						$sql_insert->execute(array(
 							$id_oo,
 							htmlspecialchars($_POST['company_name']),
@@ -212,6 +215,7 @@ if (!empty($_SESSION['4M8e7M5b1R2e8s']) && !empty($user)) {
 							!empty($_POST['valid_from']) ? intval($_POST['valid_from']) : null,
 							!empty($_POST['valid_to']) ? intval($_POST['valid_to']) : null,
 							htmlspecialchars($_POST['agency_name']),
+							htmlspecialchars($_POST['agency_office']),
 							htmlspecialchars($_POST['agency_address']),
 							htmlspecialchars($_POST['agency_country']),
 							htmlspecialchars($_POST['agency_email'])

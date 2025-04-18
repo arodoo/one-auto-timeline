@@ -88,11 +88,11 @@ class Section3DataLoader {
                 if ($insurance = $stmt->fetch(PDO::FETCH_ASSOC)) {
                     $data['s3_insurance_name'] = $insurance['company_name'];
                     $data['s3_insurance_contract'] = $insurance['contract_number'];
-                    $data['s3_insurance_green_card'] = $insurance['green_card_number'];
-                    $data['s3_insurance_valid_from'] = $insurance['valid_from'];
+                    $data['s3_insurance_green_card'] = $insurance['green_card_number'];                    $data['s3_insurance_valid_from'] = $insurance['valid_from'];
                     $data['s3_insurance_valid_to'] = $insurance['valid_to'];
                     
                     // Agency info
+                    $data['s3_insurance_agency'] = $insurance['agency_office'] ?? ''; // New field for agency/office/broker
                     $data['s3_agency_name'] = $insurance['agency_name'];
                     $data['s3_agency_address'] = $insurance['agency_address'];
                     $data['s3_agency_country'] = $insurance['agency_country'];

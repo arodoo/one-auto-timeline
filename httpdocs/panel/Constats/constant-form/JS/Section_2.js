@@ -152,13 +152,21 @@ if (!window.section2Handler) {
                     this.storeInLocalStorage(validToField.id, 's2_insurance_valid_to', dateStr);
                 }
             }
+              // Handle agency office information (Agence ou bureau ou courtier)
+            if (data.s2_insurance_agency) {
+                const agencyOfficeField = document.querySelector('[data-db-name="s2_insurance_agency"]');
+                if (agencyOfficeField) {
+                    agencyOfficeField.value = data.s2_insurance_agency;
+                    this.storeInLocalStorage(agencyOfficeField.id, 's2_insurance_agency', data.s2_insurance_agency);
+                }
+            }
             
-            // Handle agency information
-            if (data.s2_agency_name || data.s2_insurance_agency) {
-                const agencyField = document.querySelector('[data-db-name="s2_insurance_agency"]');
-                if (agencyField) {
-                    agencyField.value = data.s2_agency_name || data.s2_insurance_agency;
-                    this.storeInLocalStorage(agencyField.id, 's2_insurance_agency', agencyField.value);
+            // Handle agency name information (Nom de l'agence)
+            if (data.s2_agency_name) {
+                const agencyNameField = document.querySelector('[data-db-name="s2_agency_name"]');
+                if (agencyNameField) {
+                    agencyNameField.value = data.s2_agency_name;
+                    this.storeInLocalStorage(agencyNameField.id, 's2_agency_name', data.s2_agency_name);
                 }
             }
         }

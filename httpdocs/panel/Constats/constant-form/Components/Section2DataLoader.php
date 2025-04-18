@@ -48,9 +48,9 @@ class Section2DataLoader {
                     // Add insurance data to the result array
                     $data['s2_insurance_name'] = $insurance['company_name'] ?? '';
                     $data['s2_insurance_contract'] = $insurance['contract_number'] ?? '';
-                    $data['s2_insurance_green_card'] = $insurance['green_card_number'] ?? '';
-                    $data['s2_insurance_valid_from'] = $insurance['valid_from'] ?? '';
+                    $data['s2_insurance_green_card'] = $insurance['green_card_number'] ?? '';                    $data['s2_insurance_valid_from'] = $insurance['valid_from'] ?? '';
                     $data['s2_insurance_valid_to'] = $insurance['valid_to'] ?? '';
+                    $data['s2_insurance_agency'] = $insurance['agency_office'] ?? ''; // New field: agency/office/broker 
                     $data['s2_agency_name'] = $insurance['agency_name'] ?? '';
                     $data['s2_agency_address'] = $insurance['agency_address'] ?? '';
                     $data['s2_agency_country'] = $insurance['agency_country'] ?? '';
