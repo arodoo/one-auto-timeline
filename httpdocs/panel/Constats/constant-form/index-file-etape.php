@@ -65,12 +65,26 @@ if (!empty($_SESSION['4M8e7M5b1R2e8s']) && !empty($user)) {
                 }
             }
         }
-    }
-
-    // Set global JavaScript indicators for jumelage mode
+    }    // Set global JavaScript indicators for jumelage mode
     if ($isJumelageMode) {
         echo '<script>document.body.classList.add("jumelage-mode");</script>';
         echo '<script>window.isJumelageMode = true;</script>';
+        
+        // Add this block to preload section3FormData for jumelage mode
+        require_once 'Components/Section3DataLoader.php';
+        $section3Loader = new Section3DataLoader($bdd, $id_oo, true); // Pass true for isJumelageMode
+        $section3Data = $section3Loader->loadUserData();
+        error_log("index-file-etape.php: Preloading section3FormData in jumelage mode for user ID: " . $id_oo);
+        
+        echo '<script>window.section3FormData = ' . json_encode($section3Data) . ';</script>';
+        echo '<script>console.log("Preloaded section3FormData:", window.section3FormData);</script>';
+        
+        // Make jumelageConstatId available in JavaScript
+        if (isset($_SESSION['jumelage_constat_id'])) {
+            $jumelageConstatId = $_SESSION['jumelage_constat_id'];
+            echo '<script>window.jumelageConstatId = ' . $jumelageConstatId . ';</script>';
+            echo '<script>console.log("Setting jumelageConstatId to: " + window.jumelageConstatId);</script>';
+        }
     }
 
     require_once 'dataHandler/FormManager.php';

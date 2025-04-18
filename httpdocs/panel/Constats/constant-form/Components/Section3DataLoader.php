@@ -14,11 +14,16 @@ class Section3DataLoader {
      * @param PDO $bdd Database connection
      * @param int $user_id Current user ID
      * @param bool $is_jumelage Whether we're in jumelage mode
-     */
-    public function __construct($bdd, $user_id, $is_jumelage = false) {
+     */    public function __construct($bdd, $user_id, $is_jumelage = false) {
         $this->bdd = $bdd;
         $this->user_id = $user_id;
         $this->is_jumelage = $is_jumelage;
+        
+        error_log("Section3DataLoader constructor called - user_id: {$user_id}, is_jumelage: " . ($is_jumelage ? "true" : "false"));
+        
+        // Debug session variables
+        error_log("Section3DataLoader - SESSION jumelage_mode: " . (isset($_SESSION['jumelage_mode']) ? $_SESSION['jumelage_mode'] : 'not set'));
+        error_log("Section3DataLoader - SESSION jumelage_constat_id: " . (isset($_SESSION['jumelage_constat_id']) ? $_SESSION['jumelage_constat_id'] : 'not set'));
     }
 
     /**
@@ -26,20 +31,18 @@ class Section3DataLoader {
      * User B is the recipient who fills out the Vehicle B section
      * 
      * @return bool True if User B, false otherwise
-     */
-    private function isUserB() {
+     */    private function isUserB() {
+        error_log("Section3DataLoader isUserB() check - is_jumelage: " . ($this->is_jumelage ? "true" : "false"));
+        
         if (!$this->is_jumelage) {
+            error_log("Section3DataLoader isUserB(): Not in jumelage mode, returning false");
             return false;
         }
         
-        // In jumelage mode, check if we're User B (recipient)
-        // User B typically accesses via share_token or is marked in the session
-        if ((isset($_GET['share_token']) && !empty($_GET['share_token'])) || 
-            (isset($_SESSION['is_user_b']) && $_SESSION['is_user_b'] === true)) {
-            return true;
-        }
+        error_log("Section3DataLoader isUserB(): In jumelage mode, forcing User B behavior");
         
-        return false;
+        // When in jumelage mode, always treat as User B for data loading purposes
+        return true;
     }
 
     /**

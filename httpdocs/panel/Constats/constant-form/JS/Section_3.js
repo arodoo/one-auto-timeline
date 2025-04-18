@@ -1,252 +1,310 @@
-// Initialize the vehicle type controls for Section 3
-function initVehicleControlsB() {
-    const motorizedRadio = document.getElementById('motorizedRadioB');
-    const trailerRadio = document.getElementById('trailerRadioB');
-    const moteurSection = document.getElementById('moteurSectionB');
-    const remorqueSection = document.getElementById('remorqueSectionB');
-
-    if (!motorizedRadio || !trailerRadio || !moteurSection || !remorqueSection) {
-        // Elements not ready yet, try again in 100ms
-        setTimeout(initVehicleControlsB, 100);
-        return;
-    }
-
-    const moteurInputs = moteurSection.querySelectorAll('input');
-    const remorqueInputs = remorqueSection.querySelectorAll('input');
-
-    function clearLocalStorageForInputs(inputs) {
-        inputs.forEach(input => {
-            const id = input.id;
-            if (id && localStorage.getItem(id)) {
-                localStorage.removeItem(id);
-            }
-        });
-    }
-
-    function toggleSections(showMoteur) {
-        moteurSection.style.opacity = showMoteur ? '1' : '0.5';
-        remorqueSection.style.opacity = showMoteur ? '0.5' : '1';
-        
-        moteurInputs.forEach(input => {
-            input.disabled = !showMoteur;
-            if (!showMoteur) {
-                input.value = '';
-                clearLocalStorageForInputs(moteurInputs);
-            }
-        });
-        
-        remorqueInputs.forEach(input => {
-            input.disabled = showMoteur;
-            if (showMoteur) {
-                input.value = '';
-                clearLocalStorageForInputs(remorqueInputs);
-            }
-        });
-    }
-
-    motorizedRadio.addEventListener('change', () => toggleSections(true));
-    trailerRadio.addEventListener('change', () => toggleSections(false));
-
-    // Initial state
-    toggleSections(true);
-}
-
-// Start the initialization
-initVehicleControlsB();
-
-
-// Auto-populate Section 3 form fields when in jumelage mode and user is B
-document.addEventListener('DOMContentLoaded', function() {
-    console.log("Section 3 script loaded");
-    console.log("Jumelage mode:", window.isJumelageMode);
-    console.log("Form data available:", !!window.section3FormData && Object.keys(window.section3FormData).length > 0);
-
-    // Check if we're in jumelage mode and have form data to auto-fill
-    if (window.isJumelageMode && window.section3FormData && Object.keys(window.section3FormData).length > 0) {
-        console.log("Auto-filling section 3 form with user data");
-        
-        // Loop through all form inputs with data-db-name attribute
-        document.querySelectorAll('[data-db-name]').forEach(function(element) {
-            const dbName = element.getAttribute('data-db-name');
+// filepath: d:\zProyectos\01One\auto\constant-form\httpdocs\panel\Constats\constant-form\JS\Section_3.js
+// Only create the handler if it doesn't already exist
+if (!window.section3Handler) {
+    class Section3DataHandler {
+        constructor() {
+            console.log("Section3DataHandler constructor called");
             
-            if (dbName && window.section3FormData[dbName] !== undefined) {
-                if (element.type === 'checkbox') {
-                    element.checked = window.section3FormData[dbName] === '1' || 
-                                     window.section3FormData[dbName] === 'yes' || 
-                                     window.section3FormData[dbName] === true;
-                } else if (element.type === 'radio') {
-                    if (element.value === window.section3FormData[dbName]) {
-                        element.checked = true;
-                    }                } else {
-                    // Set default "France" for country fields if empty
-                    if ((dbName === 's3_insured_country' || dbName === 's3_driver_country') && 
-                        (!window.section3FormData[dbName] || window.section3FormData[dbName] === '')) {
-                        element.value = 'France';
+            // Save original data immediately to prevent loss
+            if (window.section3FormData) {
+                this.originalData = JSON.parse(JSON.stringify(window.section3FormData));
+                console.log("Backed up section3FormData at constructor:", 
+                    Object.keys(this.originalData).length + " fields");
+            } else {
+                this.originalData = null;
+                console.log("No section3FormData available at constructor time");
+            }
+            
+            // Initialize on DOM ready
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', () => this.init());
+            } else {
+                this.init();
+            }
+        }
+        
+        init() {
+            console.log("Section3DataHandler init called");
+            // Restore data if needed
+            this.ensureDataAvailable();
+            
+            // Only proceed if we have data and are in jumelage mode
+            if (window.section3FormData && window.isJumelageMode) {
+                console.log("Populating section 3 data - jumelage mode active");
+                this.populateFormData(window.section3FormData);
+                this.populateSpecialFields(window.section3FormData);
+            } else {
+                console.log("Skipping section3 data population:", {
+                    dataAvailable: !!window.section3FormData,
+                    isJumelageMode: window.isJumelageMode
+                });
+            }
+            
+            // Initialize vehicle controls
+            this.initVehicleControls();
+            
+            // Setup observer for delayed field loading
+            this.initializeObserver();
+        }
+        
+        ensureDataAvailable() {
+            if (!window.section3FormData && this.originalData) {
+                console.log("Restoring section3FormData from backup");
+                window.section3FormData = JSON.parse(JSON.stringify(this.originalData));
+                return true;
+            }
+            return !!window.section3FormData;
+        }
+        
+        populateFormData(data) {
+            console.log("Running populateFormData with: ", Object.keys(data).length + " fields");
+            
+            // Get all fields with data-db-name attributes starting with s3_
+            const fields = document.querySelectorAll('[data-db-name^="s3_"]');
+            console.log(`Found ${fields.length} fields to populate`);
+            
+            fields.forEach(input => {
+                const dbName = input.getAttribute('data-db-name');
+                if (dbName && data[dbName] !== undefined) {
+                    console.log(`Populating ${dbName} with ${data[dbName]}`);
+                    
+                    if (input.type === 'checkbox') {
+                        input.checked = data[dbName] === '1' || 
+                                        data[dbName] === 'yes' || 
+                                        data[dbName] === true;
+                    } else if (input.type === 'radio') {
+                        input.checked = input.value === data[dbName];
                     } else {
-                        element.value = window.section3FormData[dbName];
+                        // Set default "France" for country fields if empty
+                        if ((dbName === 's3_insured_country' || dbName === 's3_driver_country') && 
+                            (!data[dbName] || data[dbName] === '')) {
+                            input.value = 'France';
+                            this.storeInLocalStorage(input.id, dbName, 'France');
+                        } else {
+                            input.value = data[dbName];
+                            this.storeInLocalStorage(input.id, dbName, data[dbName]);
+                        }
+                    }
+                    
+                    // Trigger change event
+                    const event = new Event('change', { bubbles: true });
+                    input.dispatchEvent(event);
+                }
+            });
+        }
+        
+        storeInLocalStorage(inputId, dbName, value) {
+            if (!inputId) return;
+            
+            localStorage.setItem(inputId, JSON.stringify({
+                table: 'constats_vehicle_b',
+                dbName: dbName,
+                value: value
+            }));
+        }
+        
+        populateSpecialFields(data) {
+            // Insurance company name
+            if (data.s3_insurance_name) {
+                const field = document.querySelector('input[name="insuranceCompanyB"]');
+                if (field) {
+                    field.value = data.s3_insurance_name;
+                    this.storeInLocalStorage(field.id, 's3_insurance_name', data.s3_insurance_name);
+                }
+            }
+            
+            // Insurance contract number
+            if (data.s3_insurance_contract) {
+                const field = document.querySelector('input[name="policyNumberB"]');
+                if (field) {
+                    field.value = data.s3_insurance_contract;
+                    this.storeInLocalStorage(field.id, 's3_insurance_contract', data.s3_insurance_contract);
+                }
+            }
+            
+            // Green card number
+            if (data.s3_insurance_green_card) {
+                const field = document.querySelector('input[name="greenCardNumberB"]');
+                if (field) {
+                    field.value = data.s3_insurance_green_card;
+                    this.storeInLocalStorage(field.id, 's3_insurance_green_card', data.s3_insurance_green_card);
+                }
+            }
+            
+            // Insurance validity dates - convert timestamps to YYYY-MM-DD
+            if (data.s3_insurance_valid_from) {
+                const field = document.querySelector('input[name="validFromB"]');
+                if (field) {
+                    const date = new Date(data.s3_insurance_valid_from * 1000);
+                    const dateStr = date.toISOString().split('T')[0];
+                    field.value = dateStr;
+                    this.storeInLocalStorage(field.id, 's3_insurance_valid_from', dateStr);
+                }
+            }
+            
+            if (data.s3_insurance_valid_to) {
+                const field = document.querySelector('input[name="validToB"]');
+                if (field) {
+                    const date = new Date(data.s3_insurance_valid_to * 1000);
+                    const dateStr = date.toISOString().split('T')[0];
+                    field.value = dateStr;
+                    this.storeInLocalStorage(field.id, 's3_insurance_valid_to', dateStr);
+                }
+            }
+            
+            // Agency information
+            if (data.s3_agency_name) {
+                const field = document.querySelector('input[name="agencyNameB"]');
+                if (field) {
+                    field.value = data.s3_agency_name;
+                    this.storeInLocalStorage(field.id, 's3_agency_name', data.s3_agency_name);
+                }
+            }
+            
+            if (data.s3_insurance_agency) {
+                const field = document.querySelector('input[name="agencyOfficeB"]');
+                if (field) {
+                    field.value = data.s3_insurance_agency;
+                    this.storeInLocalStorage(field.id, 's3_insurance_agency', data.s3_insurance_agency);
+                }
+            }
+            
+            // Driver license fields
+            if (data.s3_license_number) {
+                const field = document.querySelector('[data-db-name="s3_license_number"]');
+                if (field) {
+                    field.value = data.s3_license_number;
+                    this.storeInLocalStorage(field.id, 's3_license_number', data.s3_license_number);
+                }
+            }
+            
+            if (data.s3_license_category) {
+                const field = document.querySelector('[data-db-name="s3_license_category"]');
+                if (field) {
+                    field.value = data.s3_license_category;
+                    this.storeInLocalStorage(field.id, 's3_license_category', data.s3_license_category);
+                }
+            }
+            
+            // Handle dates that need timestamp conversion
+            if (data.s3_license_valid_until) {
+                const field = document.querySelector('[data-db-name="s3_license_valid_until"]');
+                if (field) {
+                    const date = new Date(data.s3_license_valid_until * 1000);
+                    const dateStr = date.toISOString().split('T')[0];
+                    field.value = dateStr;
+                    this.storeInLocalStorage(field.id, 's3_license_valid_until', dateStr);
+                }
+            }
+            
+            if (data.s3_driver_birthdate) {
+                const field = document.querySelector('[data-db-name="s3_driver_birthdate"]');
+                if (field) {
+                    const date = new Date(data.s3_driver_birthdate * 1000);
+                    const dateStr = date.toISOString().split('T')[0];
+                    field.value = dateStr;
+                    this.storeInLocalStorage(field.id, 's3_driver_birthdate', dateStr);
+                }
+            }
+            
+            // Driver country field
+            if (data.s3_driver_country) {
+                const field = document.querySelector('[data-db-name="s3_driver_country"]');
+                if (field) {
+                    field.value = data.s3_driver_country;
+                    this.storeInLocalStorage(field.id, 's3_driver_country', data.s3_driver_country);
+                }
+            }
+            
+            console.log("Special fields populated for Section 3");
+        }
+        
+        initializeObserver() {
+            // Set up observer for delayed DOM loading
+            const observer = new MutationObserver((mutations) => {
+                // Check if any form fields have appeared
+                const firstField = document.querySelector('[data-db-name^="s3_"]');
+                
+                if (firstField && this.ensureDataAvailable() && window.isJumelageMode) {
+                    console.log("Form fields detected by MutationObserver");
+                    this.populateFormData(window.section3FormData);
+                    this.populateSpecialFields(window.section3FormData);
+                    
+                    // Stop observing once we've populated fields
+                    observer.disconnect();
+                }
+            });
+
+            // Start observing the document body for DOM changes
+            observer.observe(document.body, { childList: true, subtree: true });
+            
+            console.log("MutationObserver set up for Section 3");
+        }
+        
+        initVehicleControls() {
+            const initControls = () => {
+                const elements = {
+                    motorizedRadio: document.getElementById('motorizedRadioB'),
+                    trailerRadio: document.getElementById('trailerRadioB'),
+                    moteurSection: document.getElementById('moteurSectionB'),
+                    remorqueSection: document.getElementById('remorqueSectionB')
+                };
+
+                if (!Object.values(elements).every(el => el)) {
+                    setTimeout(initControls, 100);
+                    return;
+                }
+
+                this.setupVehicleTypeToggle(elements);
+            };
+
+            initControls();
+        }
+        
+        setupVehicleTypeToggle(elements) {
+            const { motorizedRadio, trailerRadio, moteurSection, remorqueSection } = elements;
+            const moteurInputs = moteurSection.querySelectorAll('input');
+            const remorqueInputs = remorqueSection.querySelectorAll('input');
+
+            const toggleSections = (showMoteur) => {
+                moteurSection.style.opacity = showMoteur ? '1' : '0.5';
+                remorqueSection.style.opacity = showMoteur ? '0.5' : '1';
+                
+                this.toggleInputs(moteurInputs, !showMoteur);
+                this.toggleInputs(remorqueInputs, showMoteur);
+            };
+
+            motorizedRadio.addEventListener('change', () => toggleSections(true));
+            trailerRadio.addEventListener('change', () => toggleSections(false));
+            toggleSections(true); // Default to motorized
+        }
+        
+        toggleInputs(inputs, disable) {
+            inputs.forEach(input => {
+                input.disabled = disable;
+                if (disable) {
+                    input.value = '';
+                    if (input.id) {
+                        localStorage.removeItem(input.id);
                     }
                 }
-                
-                // Save to localStorage to ensure form persistence
-                if (element.id) {
-                    let valueToStore = element.type === 'checkbox' ? 
-                        (element.checked ? 'true' : 'false') : element.value;
-                    
-                    // Store as JSON object for consistency with Section_2.js
-                    localStorage.setItem(element.id, JSON.stringify({
-                        table: 'constats_vehicle_b',
-                        dbName: dbName,
-                        value: valueToStore
-                    }));
-                }
-                
-                // Trigger change event to ensure dependent fields update
-                const event = new Event('change', { bubbles: true });
-                element.dispatchEvent(event);
-            }
-        });
-        
-        // Fill insurance company fields
-        if (window.section3FormData['s3_insurance_name']) {
-            const insuranceCompanyField = document.querySelector('input[name="insuranceCompanyB"]');
-            if (insuranceCompanyField) {
-                insuranceCompanyField.value = window.section3FormData['s3_insurance_name'];
-                if (insuranceCompanyField.id) {
-                    localStorage.setItem(insuranceCompanyField.id, insuranceCompanyField.value);
-                }
-            }
+            });
         }
-        
-        // Fill insurance contract number
-        if (window.section3FormData['s3_insurance_contract']) {
-            const contractNumberField = document.querySelector('input[name="policyNumberB"]');
-            if (contractNumberField) {
-                contractNumberField.value = window.section3FormData['s3_insurance_contract'];
-                if (contractNumberField.id) {
-                    localStorage.setItem(contractNumberField.id, contractNumberField.value);
-                }
-            }
-        }
-        
-        // Fill green card number
-        if (window.section3FormData['s3_insurance_green_card']) {
-            const greenCardField = document.querySelector('input[name="greenCardNumberB"]');
-            if (greenCardField) {
-                greenCardField.value = window.section3FormData['s3_insurance_green_card'];
-                if (greenCardField.id) {
-                    localStorage.setItem(greenCardField.id, greenCardField.value);
-                }
-            }
-        }
-        
-        // Handle validity dates
-        if (window.section3FormData['s3_insurance_valid_from']) {
-            const validFromField = document.querySelector('input[name="validFromB"]');
-            if (validFromField) {
-                // Convert timestamp to date string in the format YYYY-MM-DD
-                const date = new Date(window.section3FormData['s3_insurance_valid_from'] * 1000);
-                const dateStr = date.toISOString().split('T')[0];
-                validFromField.value = dateStr;
-                if (validFromField.id) {
-                    localStorage.setItem(validFromField.id, validFromField.value);
-                }
-            }
-        }
-        
-        if (window.section3FormData['s3_insurance_valid_to']) {
-            const validToField = document.querySelector('input[name="validToB"]');
-            if (validToField) {
-                // Convert timestamp to date string in the format YYYY-MM-DD
-                const date = new Date(window.section3FormData['s3_insurance_valid_to'] * 1000);
-                const dateStr = date.toISOString().split('T')[0];
-                validToField.value = dateStr;
-                if (validToField.id) {
-                    localStorage.setItem(validToField.id, validToField.value);
-                }
-            }
-        }
-          // Fill agency information
-        if (window.section3FormData['s3_agency_name']) {
-            const agencyNameField = document.querySelector('input[name="agencyNameB"]');
-            if (agencyNameField) {
-                agencyNameField.value = window.section3FormData['s3_agency_name'];
-                if (agencyNameField.id) {
-                    localStorage.setItem(agencyNameField.id, agencyNameField.value);
-                }
-            }
-        }
-          // Fill agency office information (new field)
-        if (window.section3FormData['s3_insurance_agency']) {
-            const agencyOfficeField = document.querySelector('input[name="agencyOfficeB"]');
-            if (agencyOfficeField) {
-                agencyOfficeField.value = window.section3FormData['s3_insurance_agency'];
-                if (agencyOfficeField.id) {
-                    localStorage.setItem(agencyOfficeField.id, agencyOfficeField.value);
-                }
-            }
-        }
-
-        // Handle driver license fields
-        // Driver license number
-        if (window.section3FormData['s3_license_number']) {
-            const licenseField = document.querySelector('[data-db-name="s3_license_number"]');
-            if (licenseField) {
-                licenseField.value = window.section3FormData['s3_license_number'];
-                if (licenseField.id) {
-                    localStorage.setItem(licenseField.id, licenseField.value);
-                }
-            }
-        }
-        
-        // Driver license category
-        if (window.section3FormData['s3_license_category']) {
-            const categoryField = document.querySelector('[data-db-name="s3_license_category"]');
-            if (categoryField) {
-                categoryField.value = window.section3FormData['s3_license_category'];
-                if (categoryField.id) {
-                    localStorage.setItem(categoryField.id, categoryField.value);
-                }
-            }
-        }
-          // Driver license valid until date
-        if (window.section3FormData['s3_license_valid_until']) {
-            const validUntilField = document.querySelector('[data-db-name="s3_license_valid_until"]');
-            if (validUntilField) {
-                // Convert Unix timestamp to YYYY-MM-DD
-                const date = new Date(window.section3FormData['s3_license_valid_until'] * 1000);
-                const dateStr = date.toISOString().split('T')[0];
-                validUntilField.value = dateStr;
-                if (validUntilField.id) {
-                    localStorage.setItem(validUntilField.id, dateStr);
-                }
-            }
-        }
-        
-        // Handle driver birthdate (Date de naissance) from license data
-        if (window.section3FormData['s3_driver_birthdate']) {
-            const birthDateField = document.querySelector('[data-db-name="s3_driver_birthdate"]');
-            if (birthDateField) {
-                // Convert Unix timestamp to YYYY-MM-DD
-                const date = new Date(window.section3FormData['s3_driver_birthdate'] * 1000);
-                const dateStr = date.toISOString().split('T')[0];
-                birthDateField.value = dateStr;
-                if (birthDateField.id) {
-                    localStorage.setItem(birthDateField.id, dateStr);
-                }
-            }
-        }
-        
-        // Handle driver country (Pays) from license data
-        if (window.section3FormData['s3_driver_country']) {
-            const countryField = document.querySelector('[data-db-name="s3_driver_country"]');
-            if (countryField) {
-                countryField.value = window.section3FormData['s3_driver_country'];
-                if (countryField.id) {
-                    localStorage.setItem(countryField.id, countryField.value);
-                }
-            }
-        }
-        
-        console.log("Section 3 auto-fill complete");
     }
-});
+    
+    // Create global instance to handle Section 3
+    console.log("Creating Section3DataHandler instance");
+    window.section3Handler = new Section3DataHandler();
+    
+    // For backward compatibility, implement the pollForFormFields function
+    // but have it use our handler
+    window.pollForFormFields = function() {
+        if (window.section3Handler && window.section3Handler.ensureDataAvailable()) {
+            console.log("pollForFormFields called, using section3Handler");
+            window.section3Handler.populateFormData(window.section3FormData);
+            window.section3Handler.populateSpecialFields(window.section3FormData);
+            return true;
+        }
+        return false;
+    };
+}

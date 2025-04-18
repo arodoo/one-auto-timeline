@@ -17,6 +17,12 @@ try {
         $dataLoader = new Section3DataLoader($bdd, $id_oo, $isJumelageMode);
         $formData = $dataLoader->loadUserData();
         error_log("Section 3 data loading attempted. In jumelage mode: " . ($isJumelageMode ? "Yes" : "No"));
+        
+        // Make the form data available to JavaScript
+        echo '<script>';
+        echo 'window.section3FormData = ' . json_encode($formData) . ';';
+        echo 'console.log("Section 3 form data loaded:", window.section3FormData);';
+        echo '</script>';
     }
 } catch (Exception $e) {
     error_log("Error in Section 3 data loading: " . $e->getMessage());
@@ -28,8 +34,13 @@ error_log("Section_3.php - isJumelageMode: " . ($isJumelageMode ? "true" : "fals
 ?>
 
 <script>
-    // Make form data available to JavaScript
-    window.section3FormData = <?php echo json_encode($formData); ?>;
+    // Only set data if it doesn't already exist
+    if (!window.section3FormData || Object.keys(window.section3FormData).length === 0) {
+        window.section3FormData = <?php echo json_encode($formData); ?>;
+        console.log("Section 3 data set by secondary script");
+    } else {
+        console.log("Preserving existing section3FormData");
+    }
     window.isJumelageMode = <?php echo $isJumelageMode ? 'true' : 'false'; ?>;
 </script>
 
