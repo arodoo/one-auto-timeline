@@ -3,16 +3,11 @@
 if (!window.section3Handler) {
     class Section3DataHandler {
         constructor() {
-            console.log("Section3DataHandler constructor called");
-            
             // Save original data immediately to prevent loss
             if (window.section3FormData) {
                 this.originalData = JSON.parse(JSON.stringify(window.section3FormData));
-                console.log("Backed up section3FormData at constructor:", 
-                    Object.keys(this.originalData).length + " fields");
             } else {
                 this.originalData = null;
-                console.log("No section3FormData available at constructor time");
             }
             
             // Initialize on DOM ready
@@ -24,20 +19,13 @@ if (!window.section3Handler) {
         }
         
         init() {
-            console.log("Section3DataHandler init called");
             // Restore data if needed
             this.ensureDataAvailable();
             
             // Only proceed if we have data and are in jumelage mode
             if (window.section3FormData && window.isJumelageMode) {
-                console.log("Populating section 3 data - jumelage mode active");
                 this.populateFormData(window.section3FormData);
                 this.populateSpecialFields(window.section3FormData);
-            } else {
-                console.log("Skipping section3 data population:", {
-                    dataAvailable: !!window.section3FormData,
-                    isJumelageMode: window.isJumelageMode
-                });
             }
             
             // Initialize vehicle controls
@@ -49,7 +37,6 @@ if (!window.section3Handler) {
         
         ensureDataAvailable() {
             if (!window.section3FormData && this.originalData) {
-                console.log("Restoring section3FormData from backup");
                 window.section3FormData = JSON.parse(JSON.stringify(this.originalData));
                 return true;
             }
@@ -57,17 +44,12 @@ if (!window.section3Handler) {
         }
         
         populateFormData(data) {
-            console.log("Running populateFormData with: ", Object.keys(data).length + " fields");
-            
             // Get all fields with data-db-name attributes starting with s3_
             const fields = document.querySelectorAll('[data-db-name^="s3_"]');
-            console.log(`Found ${fields.length} fields to populate`);
             
             fields.forEach(input => {
                 const dbName = input.getAttribute('data-db-name');
                 if (dbName && data[dbName] !== undefined) {
-                    console.log(`Populating ${dbName} with ${data[dbName]}`);
-                    
                     if (input.type === 'checkbox') {
                         input.checked = data[dbName] === '1' || 
                                         data[dbName] === 'yes' || 
@@ -215,8 +197,6 @@ if (!window.section3Handler) {
                     this.storeInLocalStorage(field.id, 's3_driver_country', data.s3_driver_country);
                 }
             }
-            
-            console.log("Special fields populated for Section 3");
         }
         
         initializeObserver() {
@@ -226,7 +206,6 @@ if (!window.section3Handler) {
                 const firstField = document.querySelector('[data-db-name^="s3_"]');
                 
                 if (firstField && this.ensureDataAvailable() && window.isJumelageMode) {
-                    console.log("Form fields detected by MutationObserver");
                     this.populateFormData(window.section3FormData);
                     this.populateSpecialFields(window.section3FormData);
                     
@@ -237,8 +216,6 @@ if (!window.section3Handler) {
 
             // Start observing the document body for DOM changes
             observer.observe(document.body, { childList: true, subtree: true });
-            
-            console.log("MutationObserver set up for Section 3");
         }
         
         initVehicleControls() {
@@ -293,14 +270,11 @@ if (!window.section3Handler) {
     }
     
     // Create global instance to handle Section 3
-    console.log("Creating Section3DataHandler instance");
     window.section3Handler = new Section3DataHandler();
     
     // For backward compatibility, implement the pollForFormFields function
-    // but have it use our handler
     window.pollForFormFields = function() {
         if (window.section3Handler && window.section3Handler.ensureDataAvailable()) {
-            console.log("pollForFormFields called, using section3Handler");
             window.section3Handler.populateFormData(window.section3FormData);
             window.section3Handler.populateSpecialFields(window.section3FormData);
             return true;
