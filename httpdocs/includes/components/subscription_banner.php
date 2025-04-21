@@ -11,7 +11,7 @@ if (!function_exists('get_banner_message')) {
 }
 
 // Only show banner for logged in users
-if (isset($_SESSION['id']) && !empty($_SESSION['id']) && isset($_SESSION['mail']) && !empty($_SESSION['mail'])) {
+if (!empty($user)) {
     $user_id = $_SESSION['id'];
     $user_email = $_SESSION['mail'];
     

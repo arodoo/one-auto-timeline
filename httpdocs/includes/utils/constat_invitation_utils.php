@@ -249,26 +249,23 @@ function get_banner_message($user_id, $user_email) {
  * @param array $data Banner data
  * @return string HTML for the banner
  */
-function render_subscription_banner($data) {
+function render_subscription_banner($data)
+{
     ob_start();
     ?>
-    <div class="alert alert-<?php echo $data['type']; ?> subscription-banner" role="alert">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-md-9">
-                    <?php echo $data['message']; ?>
-                </div>
-                <?php if (!empty($data['button_text']) && !empty($data['button_url'])): ?>
-                <div class="col-md-3 text-right">
-                    <a href="<?php echo $data['button_url']; ?>" class="btn btn-<?php echo $data['type'] == 'warning' ? 'warning' : 'primary'; ?>">
+        <div class="alert alert-<?php echo $data['type']; ?> subscription-banner" role="alert" style="margin-top: 20px; margin-bottom: 20px; padding: 15px; background-color: #fff3cd; color: #856404; border-color: #ffeeba; border: 1px solid transparent; border-radius: 0.25rem; display: flex; justify-content: space-between; align-items: center;">
+            <div style="flex: 1;">
+                <strong>Action requise :</strong> <?php echo $data['message']; ?>
+            </div>
+            <?php if (!empty($data['button_text']) && !empty($data['button_url'])): ?>
+                <div style="margin-left: 20px;">
+                    <a href="<?php echo $data['button_url']; ?>" class="btn btn-warning" style="color: #212529; background-color: #ffc107; border-color: #ffc107; display: inline-block; font-weight: 400; text-align: center; vertical-align: middle; padding: .375rem .75rem; font-size: 1rem; line-height: 1.5; border-radius: .25rem; cursor: pointer; text-decoration: none;">
                         <?php echo $data['button_text']; ?>
                     </a>
                 </div>
-                <?php endif; ?>
-            </div>
+            <?php endif; ?>
         </div>
-    </div>
-    <?php
-    return ob_get_clean();
+        <?php
+        return ob_get_clean();
 }
 ?>

@@ -150,7 +150,7 @@ $version = "100";
 			require_once('includes/utils/display_subscription_banner.php');
 			
 			// Call the utility function to display appropriate banner if needed
-			display_appropriate_banner($_SESSION['id'], $_SESSION['mail']);
+			display_appropriate_banner();
 		}
 		
 	} else {
