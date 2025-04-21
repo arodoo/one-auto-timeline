@@ -128,6 +128,7 @@ case "Mes-documents":include ("panel/Mes-documents/Mes-documents.php");break;
 
 //panel / Constats
 case "Constats":include ("panel/Constats/Constats.php");break;
+case "Constats-clients":include ("panel/Constats/constats-client.php");break;
 case "Constat-amiable-accident":include ("panel/Constats/constant-form/index-file-etape.php");break;
 case "Constats-pdf":include ("panel/Constats/constant-form/PDFGenerator/index.php");break;
 

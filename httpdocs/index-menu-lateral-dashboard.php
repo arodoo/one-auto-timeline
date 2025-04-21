@@ -80,21 +80,6 @@
 									<!-- <li><a class="dropdown-item nav-link nav_item" href="<?php echo "$http"; ?><?php echo "$nomsiteweb"; ?>/Carte-grise" title="<?php echo "Carte grise"; ?>"><?php echo "Carte grise"; ?></a></li> -->
 									<li><a class="dropdown-item nav-link nav_item" href="<?php echo "$http"; ?><?php echo "$nomsiteweb"; ?>/Constats" title="<?php echo "Constats"; ?>"><?php echo "Constats"; ?></a></li>
 									<li><a class="dropdown-item nav-link nav_item" href="<?php echo "$http"; ?><?php echo "$nomsiteweb"; ?>/Mes-annonces-client" title="<?php echo "Mes annonces client"; ?>"><?php echo "Mes annonces client"; ?></a></li>
-									
-									<?php 
-									// Check if user has client constats (for insurance agencies)
-									if (!empty($mail_oo)) {
-										if (!function_exists('get_pending_agency_constats')) {
-											require_once('includes/utils/constat_invitation_utils.php');
-										}
-										$clientConstats = get_pending_agency_constats($mail_oo);
-										if (!empty($clientConstats)): 
-									?>
-										<li><a class="dropdown-item nav-link nav_item" href="/panel/Constats/constats-client.php" title="Constats clients">Constats clients</a></li>
-									<?php 
-										endif;
-									}
-									?>
 							</ul>
 						</li>
 
@@ -111,6 +96,31 @@
 						<?php
 						}
 						?>
+
+						<!-- Constats -->
+						<li>
+							<a class="has-arrow ai-icon" href="javascript:void()" aria-expanded="false">
+								<i class="fa fa-car-crash"></i>
+								<span class="nav-text">Constats</span>
+							</a>
+							<ul aria-expanded="false">
+								<li><a href="/Constats">Mes constats</a></li>
+								<?php 
+								// Only show "Constats clients" if user has pending constats
+								if (!empty($mail_oo)) {
+									if (!function_exists('get_pending_agency_constats')) {
+										require_once('includes/utils/constat_invitation_utils.php');
+									}
+									$clientConstats = get_pending_agency_constats($mail_oo);
+									if (!empty($clientConstats)): 
+								?>
+									<li><a href="/Constats-clients">Constats clients</a></li>
+								<?php 
+									endif;
+								}
+								?>
+							</ul>
+						</li>
 
 						<?php
 						////////COMPTE CLIENT

@@ -88,6 +88,7 @@ RewriteRule ^Carte-grise/([a-zA-Z-0-9]+)/([0-9]+)$  /index.php?page=Carte-grise&
 RewriteRule ^Constats$  /index.php?page=Constats [L]
 RewriteRule ^Constats/([a-zA-Z-0-9]+)$  /index.php?page=Constats&action=$1 [L]
 RewriteRule ^Constats/([a-zA-Z-0-9]+)/([0-9]+)$  /index.php?page=Constats&action=$1&idaction=$2 [L]
+RewriteRule ^Constats-clients$  /index.php?page=Constats-clients [L]
 
 RewriteRule ^Constats-pdf/([a-zA-Z-0-9]+)$  /index.php?page=Constats-pdf&token=$1 [L]
 
