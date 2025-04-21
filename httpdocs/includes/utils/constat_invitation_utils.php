@@ -29,24 +29,46 @@ function is_user_registered($email) {
  * @param int $user_id User ID to check
  * @return bool True if user has active subscription
  */
-function is_user_subscribed($user_id) {
+function is_user_subscribed($user_id)
+{
     global $bdd;
-    
+
     try {
-        $stmt = $bdd->prepare("SELECT subscription_status, subscription_expiry 
+        error_log("SUBSCRIPTION CHECK: Checking subscription for user ID: $user_id");
+
+        $stmt = $bdd->prepare("SELECT abonnement, subscription_end_date, cancel_scheduled 
                               FROM membres 
                               WHERE id = ?");
         $stmt->execute([$user_id]);
-        
+
         if ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            // Check if subscription is active and not expired
-            return $row['subscription_status'] === 'active' && 
-                  ($row['subscription_expiry'] === null || strtotime($row['subscription_expiry']) > time());
+            // Log the actual values found
+            error_log("SUBSCRIPTION CHECK: Found abonnement: " . ($row['abonnement'] ?? 'null') .
+                ", end_date: " . ($row['subscription_end_date'] ?? 'null') .
+                ", cancel_scheduled: " . ($row['cancel_scheduled'] ?? 'null'));
+
+            // Check if subscription is active (abonnement = 'oui')
+            $is_active = $row['abonnement'] === 'oui';
+
+            // Check if not canceled
+            $not_canceled = $row['cancel_scheduled'] !== 'oui';
+
+            // Check if not expired
+            $not_expired = empty($row['subscription_end_date']) ||
+                strtotime($row['subscription_end_date']) > time();
+
+            error_log("SUBSCRIPTION CHECK: Is active? " . ($is_active ? 'Yes' : 'No') .
+                ", Not canceled? " . ($not_canceled ? 'Yes' : 'No') .
+                ", Not expired? " . ($not_expired ? 'Yes' : 'No'));
+
+            return $is_active && $not_canceled && $not_expired;
+        } else {
+            error_log("SUBSCRIPTION CHECK: No subscription record found for user ID: $user_id");
         }
     } catch (PDOException $e) {
-        error_log("Error checking subscription status: " . $e->getMessage());
+        error_log("SUBSCRIPTION CHECK ERROR: " . $e->getMessage());
     }
-    
+
     return false;
 }
 

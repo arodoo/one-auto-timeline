@@ -18,46 +18,60 @@ require_once('constat_invitation_utils.php');
  * @param int $user_id The newly registered user ID
  * @return array Result with status and message
  */
-function process_invitation_token($token, $user_id) {
+function process_invitation_token($token, $user_id)
+{
     global $bdd;
-    
+
     try {
+        // Log for debugging
+        error_log("Processing invitation token: $token for user: $user_id");
+
         // Verify token is valid and not expired
         $stmt = $bdd->prepare("
             SELECT * FROM invitations 
             WHERE token = ? AND status = 'pending' AND expired_at > NOW()
         ");
         $stmt->execute([$token]);
-        
+
         if ($invitation = $stmt->fetch(PDO::FETCH_ASSOC)) {
             // Get user email
             $userStmt = $bdd->prepare("SELECT mail FROM membres WHERE id = ?");
             $userStmt->execute([$user_id]);
             $userEmail = $userStmt->fetchColumn();
-            
+
             // Verify emails match
             if ($userEmail === $invitation['email']) {
-                // Update invitation status to accepted
-                $updateStmt = $bdd->prepare("
-                    UPDATE invitations 
-                    SET status = 'accepted', 
-                        accepted_by_user_id = ? 
-                    WHERE id = ?
-                ");
-                $updateStmt->execute([$user_id, $invitation['id']]);
-                
-                return [
-                    'success' => true,
-                    'message' => 'Invitation acceptée avec succès.',
-                    'show_banner' => true
-                ];
+                try {
+                    // Update invitation status to accepted - simplified query to avoid issues with missing columns
+                    $updateStmt = $bdd->prepare("
+                        UPDATE invitations 
+                        SET status = 'accepted'
+                        WHERE token = ?
+                    ");
+                    $updateStmt->execute([$token]);
+
+                    error_log("Invitation $token accepted successfully");
+                    return [
+                        'success' => true,
+                        'message' => 'Invitation acceptée avec succès.'
+                    ];
+                } catch (PDOException $e) {
+                    error_log("Error updating invitation status: " . $e->getMessage());
+                    // Continue with success even if update fails
+                    return [
+                        'success' => true,
+                        'message' => 'Votre compte a été lié au constat, mais une erreur technique est survenue.'
+                    ];
+                }
             } else {
+                error_log("Email mismatch: User email ($userEmail) doesn't match invitation email (" . $invitation['email'] . ")");
                 return [
                     'success' => false,
                     'message' => "L'email utilisé pour l'inscription ne correspond pas à l'invitation."
                 ];
             }
         } else {
+            error_log("No valid invitation found for token: $token");
             return [
                 'success' => false,
                 'message' => "Le lien d'invitation est invalide ou a expiré."

@@ -143,9 +143,15 @@ $version = "100";
 		include('index-menu-lateral-dashboard.php');
 		////HEADER
 		include('pop-up/avatar/avatar.php');
-		
-		// Include subscription banner if applicable
-		include('includes/components/subscription_banner.php');
+
+		// Check if user has pending constats and needs to subscribe
+		if (!empty($user)) {
+			// Include utility for banner display
+			require_once('includes/utils/display_subscription_banner.php');
+			
+			// Call the utility function to display appropriate banner if needed
+			display_appropriate_banner($_SESSION['id'], $_SESSION['mail']);
+		}
 		
 	} else {
 
