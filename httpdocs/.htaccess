@@ -1,0 +1,269 @@
+RewriteEngine On
+#Options +FollowSymlinks
+ServerSignature Off
+
+<IfModule mod_headers.c>
+Header always set X-Content-Type-Options "nosniff"
+Header always set X-FRAME-OPTIONS "SAMEORIGIN"
+Header always set X-XSS-Protection "1; mode=block"
+Header edit Set-Cookie ^(.*)$ $1;HttpOnly;Secure
+Header set Set-Cookie HttpOnly;Secure
+</IfModule>
+
+AddType audio/ogg .ogg 
+AddType audio/ogg .oga 
+AddType audio/wav .wav 
+AddType audio/mpeg .mp3 
+AddType audio/mp4 .mp4 
+AddType audio/mp4 .mpa
+
+AddType font/ttf .ttf
+AddType font/eot .eot
+AddType font/otf .otf
+AddType font/woff .woff
+AddType font/woff2 .woff2
+
+AddType application/x-font-woff2 woff2
+
+# Fix for vendor directory MIME types
+<IfModule mod_expires.c>
+    # Disable X-Content-Type-Options for vendor directory
+    Header unset X-Content-Type-Options
+    
+    # Ensure files are served with proper MIME types
+    AddType text/css .css
+    AddType application/javascript .js
+	ExpiresByType image/svg+xml			"access plus 31536000 seconds"
+	AddType image/x-icon .ico
+	ExpiresByType image/ico 			"access plus 31536000 seconds"
+	ExpiresByType image/icon 			"access plus 31536000 seconds"
+	ExpiresByType image/x-icon 			"access plus 31536000 seconds"
+	ExpiresByType text/css 				"access plus 31536000 seconds"
+	ExpiresByType text/javascript 		"access plus 31536000 seconds"
+	ExpiresByType text/html 			"access plus 7200 seconds"
+	ExpiresByType application/xhtml+xml 	"access plus 31536000 seconds"
+	ExpiresByType application/javascript 	"access plus 31536000 seconds"
+	ExpiresByType application/x-javascript 	"access plus 31536000 seconds"
+	ExpiresByType application/x-shockwave-flash "access plus 31536000 seconds"
+</IfModule>
+
+Redirect 301 index.html /
+Redirect 301 index.php /
+
+#404
+ErrorDocument 404 /page-introuvable-404.html
+RewriteRule ^page-introuvable-404\.html$  /?page=page-introuvable-404 [L]
+
+RewriteRule ^1T359g4h1Jkk45t8lNJk2Klk4Hxs$ /?a=admin [L]
+RewriteRule ^Identification$ /?a=login [L]
+RewriteRule ^Inscription$ /?a=inscription [L]
+RewriteRule ^Mot-de-passe$ /?a=Mot-de-passe [L]
+RewriteRule ^Compte-debloque/([a-z-A-Z0-9]+)$ /?a=Compte-debloque&idaction=$1 [L]
+RewriteRule ^mot-de-passe-oublie$ /index.php?page=mot-de-passe-oublie [L]
+RewriteRule ^mot-de-passe-oublie/([a-zA-Z-0-9]+)/(.+)$  /index.php?page=mot-de-passe-oublie&idverif=$1&mail=$2 [L]
+
+#génériques
+RewriteRule ^sitemap\.xml$  /sitemap.php [L]
+
+#################### PAGES ####################
+
+RewriteRule ^Profil-automobile$  /index.php?page=Profil-automobile [L]
+RewriteRule ^Profil-automobile/([a-zA-Z-0-9]+)$  /index.php?page=Profil-automobile&action=$1 [L]
+RewriteRule ^Profil-automobile/([a-zA-Z-0-9]+)/([0-9]+)$  /index.php?page=Profil-automobile&action=$1&idaction=$2 [L]
+
+
+RewriteRule ^Mes-devis/([a-zA-Z0-9-]+)/([0-9]+)$  /index.php?page=Mes-devis&action=$1&idaction=$2 [L]
+RewriteRule ^Mes-devis/([0-9]+)$  /index.php?page=Mes-devis&idaction=$1 [L]
+RewriteRule ^Mes-devis/([a-zA-Z0-9-]+)$  /index.php?page=Mes-devis&action=$1 [L]
+RewriteRule ^Mes-devis$  /index.php?page=Mes-devis [L]
+
+RewriteRule ^Devis$  /index.php?page=Devis [L]
+RewriteRule ^Devis/([a-zA-Z-0-9]+)$  /index.php?page=Devis&action=$1 [L]
+RewriteRule ^Devis/([a-zA-Z-0-9]+)/([0-9]+)$  /index.php?page=Devis&action=$1&idaction=$2 [L]
+
+RewriteRule ^Carte-grise$  /index.php?page=Carte-grise [L]
+RewriteRule ^Carte-grise/([a-zA-Z-0-9]+)$  /index.php?page=Carte-grise&action=$1 [L]
+RewriteRule ^Carte-grise/([a-zA-Z-0-9]+)/([0-9]+)$  /index.php?page=Carte-grise&action=$1&idaction=$2 [L]
+
+RewriteRule ^Constats$  /index.php?page=Constats [L]
+RewriteRule ^Constats/([a-zA-Z-0-9]+)$  /index.php?page=Constats&action=$1 [L]
+RewriteRule ^Constats/([a-zA-Z-0-9]+)/([0-9]+)$  /index.php?page=Constats&action=$1&idaction=$2 [L]
+
+RewriteRule ^Constats-pdf/([a-zA-Z-0-9]+)$  /index.php?page=Constats-pdf&token=$1 [L]
+
+RewriteRule ^Constat-amiable-accident$  /index.php?page=Constat-amiable-accident [L]
+RewriteRule ^Constat-amiable-accident/pdf/([a-zA-Z0-9]+)$ /index.php?page=Constats-pdf&id=$1 [L]
+
+# Add this new rule for constat jumelage URLs
+RewriteRule ^Constat-amiable-accident/jumelage/([a-zA-Z0-9]+)$ /index.php?page=Constat-amiable-accident&share_token=$1 [L]
+
+RewriteRule ^Contact$  /?page=Contact [L]
+
+RewriteRule ^Gestion-de-votre-compte\.html$  /?page=Compte-modifications [L]
+RewriteRule ^Inscription-confirmation-([a-zA-Z-0-9]+)\.html$ /?page=inscription-confirmation&action=confirmation&nbrid=$1 [L]
+RewriteRule ^Confirmation-mail-([a-zA-Z-0-9]+)\.html$ /?page=Confirmation-mail&action=mail&nbrid=$1 [L]
+
+RewriteRule ^Abonnement-lettre-information\.html$ /?page=Abonnement-lettre-information [L]
+RewriteRule ^Desabonnement-lettre-information-([a-zA-Z-0-9]+)\.html$ /?page=Desabonnement-lettre-information&action=delete&crypt=$1 [L]
+
+RewriteRule ^Notifications$  /index.php?page=Notifications [L]
+RewriteRule ^Notifications/([a-zA-Z-0-9]+)$  /index.php?page=Notifications&action=$1 [L]
+RewriteRule ^Notifications/([a-zA-Z-0-9]+)/([0-9]+)$  /index.php?page=Notifications&action=$1&idaction=$2 [L]
+
+RewriteRule ^Mot-de-passe-perdu-([a-zA-Z-0-9]+)/(.+)\.html$ /?mot-de-passe-perdu&action_password=modif&idverif=$1&mail=$2 [L]
+
+RewriteRule ^supprimer-mon-compte\.html$  /?action=supprimer-compte [L]
+
+#Url full
+#RewriteRule ^Plateforme$  /?page=Plateforme [L]
+RewriteRule ^Plateforme/([a-zA-Z-0-9]+)$  /?page=Plateforme&categorie=$1 [L]
+RewriteRule ^Plateforme/([a-zA-Z-0-9]+)/([a-zA-Z-0-9]+)$  /?page=Plateforme&name=$1&idactionn=$2 [L]
+RewriteRule ^Plateforme/([a-zA-Z-0-9]+)/([a-zA-Z-0-9]+)/([a-zA-Z-0-9]+)/([a-zA-Z-0-9]+)$  /?page=Plateforme&name=$1&categorie=$2&idactionn=$3&idaction=$4 [L]
+RewriteRule ^Plateforme/ville/([a-zA-Z-0-9]+)/([a-zA-Z-0-9]+)$  /?page=Plateforme&ville=ville&ville_slug=$1&id_ville=$2 [L]
+RewriteRule ^Plateforme2/([a-zA-Z-0-9]+)$  /?page=Plateforme2&categorie=$1 [L]
+RewriteRule ^Plateforme2/([a-zA-Z-0-9]+)/([a-zA-Z-0-9]+)$  /?page=Plateforme2&name=$1&idactionn=$2 [L]
+RewriteRule ^Plateforme2/([a-zA-Z-0-9]+)/([a-zA-Z-0-9]+)/([a-zA-Z-0-9]+)/([a-zA-Z-0-9]+)$  /?page=Plateforme2&name=$1&categorie=$2&idactionn=$3&idaction=$4 [L]
+RewriteRule ^Plateforme2/ville/([a-zA-Z-0-9]+)/([a-zA-Z-0-9]+)$  /?page=Plateforme2&ville=ville&ville_slug=$1&id_ville=$2 [L]
+
+############PLATEFORME
+
+##Profil
+RewriteRule ^Fiche/([a-zA-Z-0-9]+)/([a-zA-Z-0-9]+)$  /?page=Fiche&name=$1&idaction=$2 [L]
+
+##Annonces
+
+RewriteRule ^Annonces$  /?page=Annonces [L]
+RewriteRule ^Annonces/([a-zA-Z-0-9]+)/([a-zA-Z-0-9]+)$  /?page=Annonces&nom=$1&idaction=$2 [L]
+RewriteRule ^Page-annonce/([a-zA-Z-0-9]+)/([0-9]+)$  /?page=Page-annonce&nom=$1&idaction=$2 [L]
+
+RewriteRule ^Mes-annonces$  /index.php?page=Mes-annonces [L]
+RewriteRule ^Mes-annonces/([a-zA-Z-0-9]+)$  /index.php?page=Mes-annonces&action=$1 [L]
+RewriteRule ^Mes-annonces/([a-zA-Z-0-9]+)/([0-9]+)$  /index.php?page=Mes-annonces&action=$1&idaction=$2 [L]
+
+RewriteRule ^Mes-annonces-ct$  /index.php?page=Mes-annonces-ct [L]
+RewriteRule ^Mes-annonces-ct/([a-zA-Z-0-9]+)$  /index.php?page=Mes-annonces-ct&action=$1 [L]
+RewriteRule ^Mes-annonces-ct/([a-zA-Z-0-9]+)/([0-9]+)$  /index.php?page=Mes-annonces-ct&action=$1&idaction=$2 [L]
+
+##Services
+
+RewriteRule ^Services$  /?page=Services [L]
+RewriteRule ^Services/([a-zA-Z-0-9]+)/([a-zA-Z-0-9]+)$  /?page=Services&nom=$1&idaction=$2 [L]
+RewriteRule ^Page-service/([a-zA-Z-0-9]+)/([0-9]+)$  /?page=Page-service&nom=$1&idaction=$2 [L]
+
+RewriteRule ^Mes-services$  /index.php?page=Mes-services [L]
+RewriteRule ^Mes-services/([a-zA-Z-0-9]+)$  /index.php?page=Mes-services&action=$1 [L]
+RewriteRule ^Mes-services/([a-zA-Z-0-9]+)/([0-9]+)$  /index.php?page=Mes-services&action=$1&idaction=$2 [L]
+
+##Marketplaces
+
+RewriteRule ^Marketplace$  /?page=Marketplace [L]
+RewriteRule ^Marketplace/([a-zA-Z-0-9]+)/([a-zA-Z-0-9]+)$  /?page=Marketplace&nom=$1&idaction=$2 [L]
+RewriteRule ^Page-marketplace/([a-zA-Z-0-9]+)/([0-9]+)$  /?page=Page-marketplace&nom=$1&idaction=$2 [L]
+RewriteRule ^Page-marketplace/([a-zA-Z-0-9]+)/([a-zA-Z-0-9]+)/([a-zA-Z-0-9]+)/([a-zA-Z-0-9]+)$  /?page=Page-marketplace&nom=$1&idaction=$2&articlenumber=$3&selectedid=$4 [L]
+
+
+##Centres-controles-techniques
+
+RewriteRule ^Centres-controles-techniques$  /?page=Centres-controles-techniques [L]
+RewriteRule ^Centres-controles-techniques/([a-zA-Z-0-9]+)/([a-zA-Z-0-9]+)$  /?page=Centres-controles-techniques&nom=$1&idaction=$2 [L]
+RewriteRule ^Page-centre-controle-technique/([a-zA-Z-0-9]+)/([0-9]+)$  /?page=Page-centre-controle-technique&nom=$1&idaction=$2 [L]
+
+#Vendeurs
+
+RewriteRule ^Mon-profil-vendeur$  /index.php?page=Mon-profil-vendeur [L]
+RewriteRule ^Mon-profil-vendeur/([a-zA-Z-0-9]+)$  /index.php?page=Mon-profil-vendeur&action=$1 [L]
+RewriteRule ^Mon-profil-vendeur/([a-zA-Z-0-9]+)/([0-9]+)$  /index.php?page=Mon-profil-vendeur&action=$1&idaction=$2 [L]
+
+# Add these two lines for Stripe return/refresh handling
+RewriteRule ^Mon-profil-vendeur/return$  /index.php?page=Mon-profil-vendeur-return [L]
+RewriteRule ^Mon-profil-vendeur/refresh$  /index.php?page=Mon-profil-vendeur&action=refresh [L]
+
+RewriteRule ^Mes-produits$  /index.php?page=Mes-produits [L]
+RewriteRule ^Mes-produits/([a-zA-Z-0-9]+)$  /index.php?page=Mes-produits&action=$1 [L]
+RewriteRule ^Mes-produits/([a-zA-Z-0-9]+)/([0-9]+)$  /index.php?page=Mes-produits&action=$1&idaction=$2 [L]
+RewriteRule ^Mes-produits/([a-zA-Z-0-9]+)/([a-zA-Z-0-9]+)/([a-zA-Z-0-9]+)$ /?page=Mes-produits&action=$1&articlenumber=$2&selectedid=$3 [L]
+
+RewriteRule ^Mes-ventes$  /index.php?page=Mes-ventes [L]
+RewriteRule ^Mes-ventes/([a-zA-Z-0-9]+)$  /index.php?page=Mes-ventes&action=$1 [L]
+RewriteRule ^Mes-ventes/([a-zA-Z-0-9]+)/([0-9]+)$  /index.php?page=Mes-ventes&action=$1&idaction=$2 [L]
+
+RewriteRule ^Mes-paiements$  /index.php?page=Mes-paiements [L]
+RewriteRule ^Mes-paiements/([a-zA-Z-0-9]+)$  /index.php?page=Mes-paiements&action=$1 [L]
+RewriteRule ^Mes-paiements/([a-zA-Z-0-9]+)/([0-9]+)$  /index.php?page=Mes-paiements&action=$1&idaction=$2 [L]
+
+#utilisateurs
+
+RewriteRule ^Mes-annonces-client$  /index.php?page=Mes-annonces-client [L]
+RewriteRule ^Mes-annonces-client/([a-zA-Z-0-9]+)$  /index.php?page=Mes-annonces-client&action=$1 [L]
+RewriteRule ^Mes-annonces-client/([a-zA-Z-0-9]+)/([0-9]+)$  /index.php?page=Mes-annonces-client&action=$1&idaction=$2 [L]
+
+RewriteRule ^Mes-produits-favoris$  /index.php?page=Mes-produits-favoris [L]
+RewriteRule ^Mes-produits-favoris/([a-zA-Z-0-9]+)$  /index.php?page=Mes-produits-favoris&action=$1 [L]
+RewriteRule ^Mes-produits-favoris/([a-zA-Z-0-9]+)/([0-9]+)$  /index.php?page=Mes-produits-favoris&action=$1&idaction=$2 [L]
+
+RewriteRule ^Mes-commandes$  /index.php?page=Mes-commandes [L]
+RewriteRule ^Mes-commandes/([a-zA-Z-0-9]+)$  /index.php?page=Mes-commandes&action=$1 [L]
+RewriteRule ^Mes-commandes/([a-zA-Z-0-9]+)/([0-9]+)$  /index.php?page=Mes-commandes&action=$1&idaction=$2 [L]
+
+RewriteRule ^Paiements$  /index.php?page=Paiements [L]
+RewriteRule ^Paiements/([a-zA-Z-0-9]+)$  /index.php?page=Paiements&action=$1 [L]
+RewriteRule ^Paiements/([a-zA-Z-0-9]+)/([0-9]+)$  /index.php?page=Paiements&action=$1&idaction=$2 [L]
+
+############PLATEFORME
+
+RewriteRule ^Liste-avatar$  /index.php?page=Liste-avatar [L]
+RewriteRule ^Liste-avatar/([a-zA-Z-0-9]+)$  /index.php?page=Liste-avatar&action=$1 [L]
+RewriteRule ^Liste-avatar/([a-zA-Z-0-9]+)/([0-9]+)$  /index.php?page=Liste-avatar&action=$1&idaction=$2 [L]
+
+RewriteRule ^Profil-professionnel$  /index.php?page=Profil-professionnel [L]
+RewriteRule ^Profil-professionnel/([a-zA-Z-0-9]+)$  /index.php?page=Profil-professionnel&action=$1 [L]
+RewriteRule ^Profil-professionnel/([a-zA-Z-0-9]+)/([0-9]+)$  /index.php?page=Profil-professionnel&action=$1&idaction=$2 [L]
+
+RewriteRule ^Blog$  /?page=Blog [L]
+RewriteRule ^Blog/([0-9]+)$  /?page=Blog&n=$1 [L]
+RewriteRule ^Blog/([a-zA-Z-0-9]+)/([0-9]+)$  /?page=Blog&fiche=$1&idaction=$2 [L]
+RewriteRule ^Blog/Categorie/([a-zA-Z-0-9]+)/([0-9]+)$  /?page=Blog&action=Categorie&name=$1&idaction=$2 [L]
+RewriteRule ^Blog/Categorie/([a-zA-Z-0-9]+)/([0-9]+)/([0-9]+)$  /?page=Blog&action=Categorie&name=$1&idaction=$2&n=$3 [L]
+
+RewriteRule ^Avis$ /?page=Avis [L]
+RewriteRule ^Avis/([a-zA-Z-0-9]+)$ /?page=Avis&action=$1 [L]
+RewriteRule ^Avis/valider/(.+)$  /?page=Avis&action=valider&idaction=$1 [L]
+RewriteRule ^Avis/desactiver/(.+)$  /?page=Avis&action=desactiver&idaction=$1 [L]
+
+RewriteRule ^Factures$ /?page=factures [L]
+RewriteRule ^Factures/([0-9]+)$  /?page=factures&n=$1 [L]
+
+RewriteRule ^facture/([a-zA-Z-0-9]+)/(.+)$  /panel/Facturations/facture-client-pdf.php?idaction=$1&action=$2 [L]
+RewriteRule ^factures-liste\.html$  /panel/Facturations/factures-client-liste-pdf.php [L]
+
+RewriteRule ^Messagerie\.html$ /?page=Messagerie [L]
+RewriteRule ^Messagerie/([0-9]+)$  /?page=Messagerie&n=$1 [L]
+RewriteRule ^Messagerie/([a-zA-Z-0-9]+)$  /?page=Messagerie&action=$1 [L]
+RewriteRule ^Message-contact-([a-zA-Z-0-9]+)-([a-zA-Z-0-9]+)\.html$  /?page=Message&action=contact&actionn=$1&idaction=$2 [L]
+RewriteRule ^Message-reponse-([a-zA-Z-0-9]+)-([0-9]+)\.html$  /?page=Message&action=reponse&actionn=$1&idaction=$2 [L]
+
+RewriteRule ^Photos$  /?page=modifier-profil-photo [L]
+RewriteRule ^Photos/([a-zA-Z-0-9]+)/([a-zA-Z-0-9]+)$  /?page=modifier-profil-photo&action=$1&actionn=$2 [L]
+RewriteRule ^Photos/([a-zA-Z-0-9]+)/([a-zA-Z-0-9]+)$  /?page=modifier-profil-photo&action=$1&upload_et_recadrage_ok=$2 [L]
+
+RewriteRule ^Paiement$  /?page=Panier [L]
+RewriteRule ^Paiement/Success$ /?page=Success [L]
+RewriteRule ^Paiement/Cancel$ /?page=Panier [L]
+RewriteRule ^Paiement/traitement-paiement/([0-9]+)/([0-9]+)$  /?page=Traitement-Paiement&numero_panier=$1&transactionId=$2 [L]
+RewriteRule ^Paiement/([a-zA-Z-0-9]+)/([0-9]+)$  /?page=Panier&type_paiement=$1&idaction=$2 [L]
+
+RewriteRule ^Avatar$  /?page=Avatar [L]
+RewriteRule ^Avatar/([a-zA-Z-0-9]+)$  /?page=Avatar&action=$1 [L]
+RewriteRule ^Avatar/([a-zA-Z-0-9]+)/([0-9]+)$  /?page=Avatar&action=$1&idaction=$2 [L]
+
+RewriteRule ^Mes-documents$  /?page=Mes-documents [L]
+RewriteRule ^Mes-documents/([a-zA-Z-0-9]+)$  /?page=Mes-documents&action=$1 [L]
+RewriteRule ^Mes-documents/([a-zA-Z-0-9]+)/([0-9]+)$  /?page=Mes-documents&action=$1&idaction=$2 [L]
+
+RewriteRule ^Abonnement$ /?page=Abonnement [L]
+
+RewriteRule ^Traitements-informations$ /?page=Traitements-informations [L]
+
+RewriteRule ^Traitements-gratuit$ /?page=Traitements-gratuit [L]
+
+RewriteRule ^([a-zA-Z-0-9]+)$  /?page=page-dynamique&namepage=$1 [L]
