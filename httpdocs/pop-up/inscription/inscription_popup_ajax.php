@@ -51,6 +51,22 @@ if (
 
 		$compte = creation_compte2($_POST, $mode_manuel = "");
 
+		 // After successful registration, check for invitation token
+		if (isset($_POST['invitation_token']) && !empty($_POST['invitation_token'])) {
+			require_once('../../includes/utils/process-invitation.php');
+			
+			$token = $_POST['invitation_token'];
+			$user_id = $compte[0]; // Assuming this contains the new user ID
+			
+			$result = process_invitation_token($token, $user_id);
+			
+			// If token processed successfully, add flag for subscription banner
+			if ($result['success'] && isset($result['show_banner'])) {
+				$_SESSION['show_subscription_banner'] = true;
+				$_SESSION['has_pending_constats'] = true;
+			}
+		}
+
 		//Si mode inscription avec envoi par mail avec un lien de confirmation
 		if ($mod_inscription == 0) {
 			$message_confirmation_inscription_mail = "<br /><br /> Le message que vous venez de recevoir contient un lien qui vous permettra de finaliser votre inscription.";

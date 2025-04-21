@@ -17,6 +17,7 @@ try {
     require_once('../../Configurations_bdd.php');
     require_once('../../Configurations.php');
     require_once('../../function/INCLUDE-FUNCTION-HAUT-CMS-CODI-ONE.php');
+    require_once('../../includes/utils/constat_invitation_utils.php');
 
     // Check if user is logged in
     if (empty($_SESSION['4M8e7M5b1R2e8s']) || empty($user)) {
@@ -147,6 +148,43 @@ try {
     $insurerName = $vehicleData["{$prefix}_insurance_name"] ?? 'Non renseigné';
     $policyNumber = $vehicleData["{$prefix}_insurance_contract"] ?? 'Non renseigné';
     $agencyName = $vehicleData["{$prefix}_agency_name"] ?? 'Non renseigné';
+
+    // Check if agency is registered, if not send an invitation
+    if (!is_user_registered($agencyEmail)) {
+        error_log("Agency email $agencyEmail is not registered. Sending invitation.");
+        
+        // Generate token and create invitation
+        $agencyRole = $isUserB ? 'b' : 'a';
+        $token = create_invitation($agencyEmail, $constatId, $agencyRole, $currentUserId);
+        
+        if ($token) {
+            // Send invitation email
+            $invitationSent = send_invitation_email($agencyEmail, $token, $constatId);
+            
+            if ($invitationSent) {
+                error_log("Invitation sent successfully to $agencyEmail");
+                // Return success response with invitation_sent flag
+                echo json_encode([
+                    'success' => true,
+                    'message' => "Une invitation a été envoyée à l'agence $agencyEmail pour créer un compte et accéder au constat.",
+                    'email' => $agencyEmail,
+                    'invitation_sent' => true,
+                    'role' => $isUserB ? 'B' : 'A'
+                ]);
+                ob_end_flush();
+                exit;
+            } else {
+                error_log("Failed to send invitation email to $agencyEmail");
+                throw new Exception("Impossible d'envoyer l'invitation à l'agence. Veuillez réessayer.");
+            }
+        } else {
+            error_log("Failed to create invitation for $agencyEmail");
+            throw new Exception("Erreur lors de la création de l'invitation pour l'agence.");
+        }
+    }
+    
+    // Continue with normal email sending for registered agencies
+    error_log("Agency email $agencyEmail is registered. Sending constat notification.");
     
     // Prepare email subject and content - removed "Déclaration #"
     $subject = "Constat d'accident - " . $constatId;
@@ -376,12 +414,24 @@ try {
     
     error_log("Email successfully sent to agency: $agencyEmail");
     
+    // Check if the user has a subscription
+    $agencyId = null;
+    $userStmt = $bdd->prepare("SELECT id FROM membres WHERE mail = ?");
+    $userStmt->execute([$agencyEmail]);
+    if ($userStmt->rowCount() > 0) {
+        $agencyId = $userStmt->fetch(PDO::FETCH_ASSOC)['id'];
+        $is_subscribed = is_user_subscribed($agencyId);
+    } else {
+        $is_subscribed = false;
+    }
+    
     // Success response
     echo json_encode([
         'success' => true,
         'message' => 'Email sent successfully to agency.',
         'email' => $agencyEmail,
-        'role' => $isUserB ? 'B' : 'A'
+        'role' => $isUserB ? 'B' : 'A',
+        'is_subscribed' => $is_subscribed
     ]);
     
 } catch (Exception $e) {

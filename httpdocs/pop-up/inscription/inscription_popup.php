@@ -24,6 +24,13 @@ unset($_SESSION['creation_compte_ok']);
 <script>
     $(document).ready(function () {
 
+        // Get token from URL parameter if present
+        const urlParams = new URLSearchParams(window.location.search);
+        const token = urlParams.get('token');
+        if (token) {
+            document.getElementById('invitation_token').value = token;
+        }
+
         //AJAX SOUMISSION DU FORMULAIRE
         $("#inscription_submit").click(function (event) {
             $.post({
@@ -151,6 +158,9 @@ unset($_SESSION['creation_compte_ok']);
 
                     <input type="hidden" name="lat" id="lat" />
                     <input type="hidden" name="lng" id="lng" />
+                    
+                    <!-- Hidden input for invitation token -->
+                    <input type="hidden" name="invitation_token" id="invitation_token" value="<?php echo isset($_GET['token']) ? htmlspecialchars($_GET['token']) : ''; ?>" />
 
                     <?php
                     ///////////////////////////////////////////////SI MODULE TYPE DE COMPTE ACTIVE

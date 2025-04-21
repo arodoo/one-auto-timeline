@@ -94,8 +94,11 @@ RewriteRule ^Constats-pdf/([a-zA-Z-0-9]+)$  /index.php?page=Constats-pdf&token=$
 RewriteRule ^Constat-amiable-accident$  /index.php?page=Constat-amiable-accident [L]
 RewriteRule ^Constat-amiable-accident/pdf/([a-zA-Z0-9]+)$ /index.php?page=Constats-pdf&id=$1 [L]
 
-# Add this new rule for constat jumelage URLs
+#  constat jumelage URLs
 RewriteRule ^Constat-amiable-accident/jumelage/([a-zA-Z0-9]+)$ /index.php?page=Constat-amiable-accident&share_token=$1 [L]
+
+#  invitation token URLs
+RewriteRule ^Constat-amiable-accident/invitation/([a-zA-Z0-9]+)$ /includes/utils/process-invitation.php?token=$1 [L]
 
 RewriteRule ^Contact$  /?page=Contact [L]
 

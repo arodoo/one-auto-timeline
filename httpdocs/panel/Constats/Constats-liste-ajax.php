@@ -211,9 +211,21 @@ if (!empty($_SESSION['4M8e7M5b1R2e8s']) && !empty($user)) {
           dataType: 'json',
           success: function (response) {
             console.log("Server response:", response);
+            
             if (response.success) {
-              // Show success message
-              alert('Email envoyé avec succès à l\'agence!');
+              if (response.invitation_sent) {
+                // Show invitation message
+                alert('Une invitation a été envoyée à l\'agence ' + response.email + ' pour créer un compte et accéder à votre constat.');
+              } else {
+                // Agency is already registered
+                if (response.is_subscribed === false) {
+                  // Agency is registered but not subscribed
+                  alert('Email envoyé avec succès à l\'agence ' + response.email + '.\n\nNous avons détecté que cette agence n\'a pas d\'abonnement actif. Elle devra s\'abonner pour pouvoir consulter ce constat.');
+                } else {
+                  // Normal success message
+                  alert('Email envoyé avec succès à l\'agence ' + response.email + '!');
+                }
+              }
             } else {
               // Show detailed error message
               alert('Erreur: ' + (response.message || 'Une erreur inconnue est survenue.'));

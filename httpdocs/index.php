@@ -143,6 +143,10 @@ $version = "100";
 		include('index-menu-lateral-dashboard.php');
 		////HEADER
 		include('pop-up/avatar/avatar.php');
+		
+		// Include subscription banner if applicable
+		include('includes/components/subscription_banner.php');
+		
 	} else {
 
 		?>
