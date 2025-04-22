@@ -131,13 +131,6 @@ include('../page-panel-header.php');
                                                            title="Visualiser le PDF">
                                                             <i class="fas fa-file-pdf"></i>
                                                         </a>
-                                                        <a href="#constat-details-<?php echo htmlspecialchars($constat['id']); ?>" 
-                                                           class="btn btn-info shadow btn-xs sharp constat-details-btn" 
-                                                           data-id="<?php echo htmlspecialchars($constat['id']); ?>"
-                                                           data-toggle="modal"
-                                                           title="Voir les détails">
-                                                            <i class="fas fa-eye"></i>
-                                                        </a>
                                                     </div>
                                                 </td>
                                             </tr>
