@@ -86,20 +86,6 @@ include('../page-panel-header.php');
         </div>
     </div>
 
-    <?php 
-    // Display subscription banner if not subscribed
-    if (!$is_subscribed && !empty($client_constats)) {
-        // Use the subscription banner component
-        require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/utils/display_subscription_banner.php');
-        $banner_data = [
-            'message' => 'Vous avez ' . count($client_constats) . ' constat(s) client(s) en attente. Pour les consulter, veuillez souscrire à un abonnement.',
-            'button_text' => 'S\'abonner maintenant',
-            'button_url' => '/Abonnement'
-        ];
-        echo render_subscription_banner($banner_data);
-    }
-    ?>
-
     <div class="row">
         <div class="col-xl-12">
             <div class="card">

@@ -17,7 +17,7 @@ try {
         $dataLoader = new Section3DataLoader($bdd, $id_oo, $isJumelageMode);
         $formData = $dataLoader->loadUserData();
         error_log("Section 3 data loading attempted. In jumelage mode: " . ($isJumelageMode ? "Yes" : "No"));
-        
+
         // Make the form data available to JavaScript
         echo '<script>';
         echo 'window.section3FormData = ' . json_encode($formData) . ';';
@@ -78,7 +78,7 @@ error_log("Section_3.php - isJumelageMode: " . ($isJumelageMode ? "true" : "fals
     </div>
 
     <?php if (!$isJumelageMode): ?>
-    <script src="/panel/Constats/constant-form/JS/Sectio3Jumelage.js"></script>
+        <script src="/panel/Constats/constant-form/JS/Sectio3Jumelage.js"></script>
     <?php endif; ?>
 
     <?php
@@ -227,7 +227,8 @@ error_log("Section_3.php - isJumelageMode: " . ($isJumelageMode ? "true" : "fals
     </div>
     <div class="row">
         <div class="col-md-4 mb-3">
-            <label for="sc3-input22" class="form-label">Email de l'agence <?php echo $isJumelageMode ? '<span class="text-danger fw-light">(Obligatoire)</span>' : ''; ?></label>
+            <label for="sc3-input22" class="form-label">Email de l'agence
+                <?php echo $isJumelageMode ? '<span class="text-danger fw-light">(Obligatoire)</span>' : ''; ?></label>
             <input type="text" class="form-control" id="sc3-input22" data-db-name="s3_agency_phone"
                 placeholder="Email de l'agence" data-maxlength="24">
         </div>

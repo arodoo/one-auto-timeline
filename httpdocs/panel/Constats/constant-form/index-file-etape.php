@@ -39,7 +39,7 @@ if (!empty($_SESSION['4M8e7M5b1R2e8s']) && !empty($user)) {
             // If this jumelage has already been completed
             if (isset($result['already_completed']) && $result['already_completed']) {
                 $hideMainContainer = true; // Set flag to hide main container
-                
+
                 // Show a message about the already completed jumelage
                 echo '<div class="alert alert-warning">
                     <i class="fas fa-exclamation-triangle"></i> 
@@ -69,16 +69,16 @@ if (!empty($_SESSION['4M8e7M5b1R2e8s']) && !empty($user)) {
     if ($isJumelageMode) {
         echo '<script>document.body.classList.add("jumelage-mode");</script>';
         echo '<script>window.isJumelageMode = true;</script>';
-        
+
         // Add this block to preload section3FormData for jumelage mode
         require_once 'Components/Section3DataLoader.php';
         $section3Loader = new Section3DataLoader($bdd, $id_oo, true); // Pass true for isJumelageMode
         $section3Data = $section3Loader->loadUserData();
         error_log("index-file-etape.php: Preloading section3FormData in jumelage mode for user ID: " . $id_oo);
-        
+
         echo '<script>window.section3FormData = ' . json_encode($section3Data) . ';</script>';
         echo '<script>console.log("Preloaded section3FormData:", window.section3FormData);</script>';
-        
+
         // Make jumelageConstatId available in JavaScript
         if (isset($_SESSION['jumelage_constat_id'])) {
             $jumelageConstatId = $_SESSION['jumelage_constat_id'];
@@ -121,92 +121,92 @@ if (!empty($_SESSION['4M8e7M5b1R2e8s']) && !empty($user)) {
     <?php endif; ?>
 
     <?php if (!$hideMainContainer): ?>
-    <div id="main-container" class="row">
-        <div class="col-lg-12">
-            <div class="card-body">
-                <div id="smartwizard" class="form-wizard order-create sw sw-theme-default sw-justified">
-                    <ul class="nav nav-wizard">
-                        <?php
-                        // Generate sections using a loop, excluding section 9
-                        for ($i = 1; $i <= $totalSections; $i++) {
-                            if ($i == 9)
-                                continue; // Skip section 9
+        <div id="main-container" class="row">
+            <div class="col-lg-12">
+                <div class="card-body">
+                    <div id="smartwizard" class="form-wizard order-create sw sw-theme-default sw-justified">
+                        <ul class="nav nav-wizard">
+                            <?php
+                            // Generate sections using a loop, excluding section 9
+                            for ($i = 1; $i <= $totalSections; $i++) {
+                                if ($i == 9)
+                                    continue; // Skip section 9
                     
-                            // In jumelage mode, only show sections 3, 4, and 7
-                            if ($isJumelageMode && !in_array($i, [3, 4, 7])) {
-                                continue;
-                            }
+                                // In jumelage mode, only show sections 3, 4, and 7
+                                if ($isJumelageMode && !in_array($i, [3, 4, 7])) {
+                                    continue;
+                                }
 
-                            $sectionPath = "/panel/Constats/constant-form/FormHandler/Section_{$i}.php";                            // Get display number from our mapping
-                            $sectionNumber = $displayNumbers[$i];
-                            
-                            // In jumelage mode, rename display numbers
-                            if ($isJumelageMode) {
-                                if ($i == 3)
-                                    $sectionNumber = 1;
-                                else if ($i == 4)
-                                    $sectionNumber = 2;
-                                else if ($i == 7)
-                                    $sectionNumber = 3;
+                                $sectionPath = "/panel/Constats/constant-form/FormHandler/Section_{$i}.php";                            // Get display number from our mapping
+                                $sectionNumber = $displayNumbers[$i];
+
+                                // In jumelage mode, rename display numbers
+                                if ($isJumelageMode) {
+                                    if ($i == 3)
+                                        $sectionNumber = 1;
+                                    else if ($i == 4)
+                                        $sectionNumber = 2;
+                                    else if ($i == 7)
+                                        $sectionNumber = 3;
+                                }
+                                ?>
+                                <li>
+                                    <a id="section-<?php echo $i; ?>"
+                                        class="nav-link <?php echo $profil_complet_oo == "oui" ? '' : 'inactive'; ?>"
+                                        href="javascript:void(0);"
+                                        onclick="loadSection('<?php echo $sectionPath; ?>', <?php echo $i; ?>)"
+                                        title="<?php echo $sectionNumber; ?>">
+                                        <span><?php echo $sectionNumber; ?></span>
+                                    </a>
+                                </li>
+                                <?php
                             }
                             ?>
-                            <li>
-                                <a id="section-<?php echo $i; ?>"
-                                    class="nav-link <?php echo $profil_complet_oo == "oui" ? '' : 'inactive'; ?>"
-                                    href="javascript:void(0);"
-                                    onclick="loadSection('<?php echo $sectionPath; ?>', <?php echo $i; ?>)"
-                                    title="<?php echo $sectionNumber; ?>">
-                                    <span><?php echo $sectionNumber; ?></span>
-                                </a>
-                            </li>
-                            <?php
-                        }
-                        ?>
-                    </ul>
+                        </ul>
 
-                    <div id="section-content" class="transition-section">
-                        <!-- Dynamic content will be loaded here -->
-                    </div>
-                    <div class="d-flex justify-content-between mt-3">
-                        <button class="btn btn-primary disabled" onclick="navigateSection('prev')"
-                            disabled>Précédent</button>
-                        <div class="d-flex flex-column align-items-center" style="">
-                            <?php if (!$isJumelageMode): ?>
-                                <button type="button" class="btn btn-sm d-flex align-items-center shadow-sm"
-                                    onclick="resetForm()" title="Réinitialiser le formulaire">
-                                    <i class="fas fa-undo-alt me-2"></i>
-                                    <span class="d-none d-sm-inline">Réinitialiser</span>
-                                </button>
-                            <?php endif; ?>
+                        <div id="section-content" class="transition-section">
+                            <!-- Dynamic content will be loaded here -->
                         </div>
-                        <button class="btn btn-primary" onclick="navigateSection('next')">Suivant</button>
+                        <div class="d-flex justify-content-between mt-3">
+                            <button class="btn btn-primary disabled" onclick="navigateSection('prev')"
+                                disabled>Précédent</button>
+                            <div class="d-flex flex-column align-items-center" style="">
+                                <?php if (!$isJumelageMode): ?>
+                                    <button type="button" class="btn btn-sm d-flex align-items-center shadow-sm"
+                                        onclick="resetForm()" title="Réinitialiser le formulaire">
+                                        <i class="fas fa-undo-alt me-2"></i>
+                                        <span class="d-none d-sm-inline">Réinitialiser</span>
+                                    </button>
+                                <?php endif; ?>
+                            </div>
+                            <button class="btn btn-primary" onclick="navigateSection('next')">Suivant</button>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Reset Confirmation Modal -->
-        <div class="modal fade" id="resetConfirmModal" tabindex="-1" aria-labelledby="resetConfirmModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="resetConfirmModalLabel">Confirmer la réinitialisation</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        Êtes-vous sûr de vouloir réinitialiser le formulaire ? Toutes les données saisies seront perdues.
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-                        <button type="button" class="btn btn-danger" id="confirmResetBtn">Réinitialiser</button>
+            <!-- Reset Confirmation Modal -->
+            <div class="modal fade" id="resetConfirmModal" tabindex="-1" aria-labelledby="resetConfirmModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="resetConfirmModalLabel">Confirmer la réinitialisation</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            Êtes-vous sûr de vouloir réinitialiser le formulaire ? Toutes les données saisies seront perdues.
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                            <button type="button" class="btn btn-danger" id="confirmResetBtn">Réinitialiser</button>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <!-- End Reset Confirmation Modal -->
+            <!-- End Reset Confirmation Modal -->
 
-    </div>
+        </div>
     <?php endif; ?>
 
     <script>

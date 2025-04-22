@@ -3,13 +3,18 @@
 if (!window.section3Handler) {
     class Section3DataHandler {
         constructor() {
+            console.log("Section3DataHandler constructor called");
+
             // Save original data immediately to prevent loss
             if (window.section3FormData) {
                 this.originalData = JSON.parse(JSON.stringify(window.section3FormData));
+                console.log("Backed up section3FormData at constructor:",
+                    Object.keys(this.originalData).length + " fields");
             } else {
                 this.originalData = null;
+                console.log("No section3FormData available at constructor time");
             }
-            
+
             // Initialize on DOM ready
             if (document.readyState === 'loading') {
                 document.addEventListener('DOMContentLoaded', () => this.init());
@@ -17,48 +22,61 @@ if (!window.section3Handler) {
                 this.init();
             }
         }
-        
+
         init() {
+            console.log("Section3DataHandler init called");
             // Restore data if needed
             this.ensureDataAvailable();
-            
+
             // Only proceed if we have data and are in jumelage mode
             if (window.section3FormData && window.isJumelageMode) {
+                console.log("Populating section 3 data - jumelage mode active");
                 this.populateFormData(window.section3FormData);
                 this.populateSpecialFields(window.section3FormData);
+            } else {
+                console.log("Skipping section3 data population:", {
+                    dataAvailable: !!window.section3FormData,
+                    isJumelageMode: window.isJumelageMode
+                });
             }
-            
+
             // Initialize vehicle controls
             this.initVehicleControls();
-            
+
             // Setup observer for delayed field loading
             this.initializeObserver();
         }
-        
+
         ensureDataAvailable() {
             if (!window.section3FormData && this.originalData) {
+                console.log("Restoring section3FormData from backup");
                 window.section3FormData = JSON.parse(JSON.stringify(this.originalData));
                 return true;
             }
             return !!window.section3FormData;
         }
-        
+
         populateFormData(data) {
+            console.log("Running populateFormData with: ", Object.keys(data).length + " fields");
+
             // Get all fields with data-db-name attributes starting with s3_
             const fields = document.querySelectorAll('[data-db-name^="s3_"]');
-            
+            console.log(`Found ${fields.length} fields to populate`);
+
             fields.forEach(input => {
                 const dbName = input.getAttribute('data-db-name');
                 if (dbName && data[dbName] !== undefined) {
+                    console.log(`Populating ${dbName} with ${data[dbName]}`);
+
                     if (input.type === 'checkbox') {
-                        input.checked = data[dbName] === '1' || 
-                                        data[dbName] === 'yes' || 
-                                        data[dbName] === true;
+                        input.checked = data[dbName] === '1' ||
+                            data[dbName] === 'yes' ||
+                            data[dbName] === true;
                     } else if (input.type === 'radio') {
                         input.checked = input.value === data[dbName];
                     } else {
                         // Set default "France" for country fields if empty
-                        if ((dbName === 's3_insured_country' || dbName === 's3_driver_country') && 
+                        if ((dbName === 's3_insured_country' || dbName === 's3_driver_country') &&
                             (!data[dbName] || data[dbName] === '')) {
                             input.value = 'France';
                             this.storeInLocalStorage(input.id, dbName, 'France');
@@ -67,24 +85,24 @@ if (!window.section3Handler) {
                             this.storeInLocalStorage(input.id, dbName, data[dbName]);
                         }
                     }
-                    
+
                     // Trigger change event
                     const event = new Event('change', { bubbles: true });
                     input.dispatchEvent(event);
                 }
             });
         }
-        
+
         storeInLocalStorage(inputId, dbName, value) {
             if (!inputId) return;
-            
+
             localStorage.setItem(inputId, JSON.stringify({
                 table: 'constats_vehicle_b',
                 dbName: dbName,
                 value: value
             }));
         }
-        
+
         populateSpecialFields(data) {
             // Insurance company name
             if (data.s3_insurance_name) {
@@ -94,7 +112,7 @@ if (!window.section3Handler) {
                     this.storeInLocalStorage(field.id, 's3_insurance_name', data.s3_insurance_name);
                 }
             }
-            
+
             // Insurance contract number
             if (data.s3_insurance_contract) {
                 const field = document.querySelector('input[name="policyNumberB"]');
@@ -103,7 +121,7 @@ if (!window.section3Handler) {
                     this.storeInLocalStorage(field.id, 's3_insurance_contract', data.s3_insurance_contract);
                 }
             }
-            
+
             // Green card number
             if (data.s3_insurance_green_card) {
                 const field = document.querySelector('input[name="greenCardNumberB"]');
@@ -112,7 +130,7 @@ if (!window.section3Handler) {
                     this.storeInLocalStorage(field.id, 's3_insurance_green_card', data.s3_insurance_green_card);
                 }
             }
-            
+
             // Insurance validity dates - convert timestamps to YYYY-MM-DD
             if (data.s3_insurance_valid_from) {
                 const field = document.querySelector('input[name="validFromB"]');
@@ -123,7 +141,7 @@ if (!window.section3Handler) {
                     this.storeInLocalStorage(field.id, 's3_insurance_valid_from', dateStr);
                 }
             }
-            
+
             if (data.s3_insurance_valid_to) {
                 const field = document.querySelector('input[name="validToB"]');
                 if (field) {
@@ -133,7 +151,7 @@ if (!window.section3Handler) {
                     this.storeInLocalStorage(field.id, 's3_insurance_valid_to', dateStr);
                 }
             }
-            
+
             // Agency information
             if (data.s3_agency_name) {
                 const field = document.querySelector('input[name="agencyNameB"]');
@@ -142,7 +160,7 @@ if (!window.section3Handler) {
                     this.storeInLocalStorage(field.id, 's3_agency_name', data.s3_agency_name);
                 }
             }
-            
+
             if (data.s3_insurance_agency) {
                 const field = document.querySelector('input[name="agencyOfficeB"]');
                 if (field) {
@@ -150,7 +168,7 @@ if (!window.section3Handler) {
                     this.storeInLocalStorage(field.id, 's3_insurance_agency', data.s3_insurance_agency);
                 }
             }
-            
+
             // Driver license fields
             if (data.s3_license_number) {
                 const field = document.querySelector('[data-db-name="s3_license_number"]');
@@ -159,7 +177,7 @@ if (!window.section3Handler) {
                     this.storeInLocalStorage(field.id, 's3_license_number', data.s3_license_number);
                 }
             }
-            
+
             if (data.s3_license_category) {
                 const field = document.querySelector('[data-db-name="s3_license_category"]');
                 if (field) {
@@ -167,7 +185,7 @@ if (!window.section3Handler) {
                     this.storeInLocalStorage(field.id, 's3_license_category', data.s3_license_category);
                 }
             }
-            
+
             // Handle dates that need timestamp conversion
             if (data.s3_license_valid_until) {
                 const field = document.querySelector('[data-db-name="s3_license_valid_until"]');
@@ -178,7 +196,7 @@ if (!window.section3Handler) {
                     this.storeInLocalStorage(field.id, 's3_license_valid_until', dateStr);
                 }
             }
-            
+
             if (data.s3_driver_birthdate) {
                 const field = document.querySelector('[data-db-name="s3_driver_birthdate"]');
                 if (field) {
@@ -188,7 +206,7 @@ if (!window.section3Handler) {
                     this.storeInLocalStorage(field.id, 's3_driver_birthdate', dateStr);
                 }
             }
-            
+
             // Driver country field
             if (data.s3_driver_country) {
                 const field = document.querySelector('[data-db-name="s3_driver_country"]');
@@ -197,18 +215,21 @@ if (!window.section3Handler) {
                     this.storeInLocalStorage(field.id, 's3_driver_country', data.s3_driver_country);
                 }
             }
+
+            console.log("Special fields populated for Section 3");
         }
-        
+
         initializeObserver() {
             // Set up observer for delayed DOM loading
             const observer = new MutationObserver((mutations) => {
                 // Check if any form fields have appeared
                 const firstField = document.querySelector('[data-db-name^="s3_"]');
-                
+
                 if (firstField && this.ensureDataAvailable() && window.isJumelageMode) {
+                    console.log("Form fields detected by MutationObserver");
                     this.populateFormData(window.section3FormData);
                     this.populateSpecialFields(window.section3FormData);
-                    
+
                     // Stop observing once we've populated fields
                     observer.disconnect();
                 }
@@ -216,8 +237,10 @@ if (!window.section3Handler) {
 
             // Start observing the document body for DOM changes
             observer.observe(document.body, { childList: true, subtree: true });
+
+            console.log("MutationObserver set up for Section 3");
         }
-        
+
         initVehicleControls() {
             const initControls = () => {
                 const elements = {
@@ -237,7 +260,7 @@ if (!window.section3Handler) {
 
             initControls();
         }
-        
+
         setupVehicleTypeToggle(elements) {
             const { motorizedRadio, trailerRadio, moteurSection, remorqueSection } = elements;
             const moteurInputs = moteurSection.querySelectorAll('input');
@@ -246,7 +269,7 @@ if (!window.section3Handler) {
             const toggleSections = (showMoteur) => {
                 moteurSection.style.opacity = showMoteur ? '1' : '0.5';
                 remorqueSection.style.opacity = showMoteur ? '0.5' : '1';
-                
+
                 this.toggleInputs(moteurInputs, !showMoteur);
                 this.toggleInputs(remorqueInputs, showMoteur);
             };
@@ -255,7 +278,7 @@ if (!window.section3Handler) {
             trailerRadio.addEventListener('change', () => toggleSections(false));
             toggleSections(true); // Default to motorized
         }
-        
+
         toggleInputs(inputs, disable) {
             inputs.forEach(input => {
                 input.disabled = disable;
@@ -268,13 +291,16 @@ if (!window.section3Handler) {
             });
         }
     }
-    
+
     // Create global instance to handle Section 3
+    console.log("Creating Section3DataHandler instance");
     window.section3Handler = new Section3DataHandler();
-    
+
     // For backward compatibility, implement the pollForFormFields function
-    window.pollForFormFields = function() {
+    // but have it use our handler
+    window.pollForFormFields = function () {
         if (window.section3Handler && window.section3Handler.ensureDataAvailable()) {
+            console.log("pollForFormFields called, using section3Handler");
             window.section3Handler.populateFormData(window.section3FormData);
             window.section3Handler.populateSpecialFields(window.section3FormData);
             return true;

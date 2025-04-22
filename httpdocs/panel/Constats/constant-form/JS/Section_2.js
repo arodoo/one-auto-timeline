@@ -7,7 +7,7 @@ if (!window.section2Handler) {
             } else {
                 this.init();
             }
-        }        init() {
+        } init() {
             if (window.section2FormData) {
                 this.populateFormData(window.section2FormData);
                 this.populateInsuranceFields(window.section2FormData);
@@ -15,7 +15,7 @@ if (!window.section2Handler) {
             }
             this.initializeObserver();
             this.initVehicleControls();
-        }        populateFormData(data) {
+        } populateFormData(data) {
             Object.entries(data).forEach(([dbName, value]) => {
                 const input = document.querySelector(`[data-db-name="${dbName}"]`);
                 if (input) {
@@ -37,7 +37,7 @@ if (!window.section2Handler) {
                 dbName: dbName,
                 value: value
             }));
-        }        initializeObserver() {
+        } initializeObserver() {
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
@@ -86,7 +86,7 @@ if (!window.section2Handler) {
             const toggleSections = (showMoteur) => {
                 moteurSection.style.opacity = showMoteur ? '1' : '0.5';
                 remorqueSection.style.opacity = showMoteur ? '0.5' : '1';
-                
+
                 this.toggleInputs(moteurInputs, !showMoteur);
                 this.toggleInputs(remorqueInputs, showMoteur);
             };
@@ -107,7 +107,7 @@ if (!window.section2Handler) {
                 }
             });
         }
-        
+
         populateInsuranceFields(data) {
             // Handle insurance company field
             if (data.s2_insurance_name) {
@@ -117,7 +117,7 @@ if (!window.section2Handler) {
                     this.storeInLocalStorage(insuranceCompanyField.id, 'insuranceCompanyA', data.s2_insurance_name);
                 }
             }
-            
+
             // Handle policy number field
             if (data.s2_insurance_contract) {
                 const policyField = document.querySelector('input[name="policyNumberA"]');
@@ -126,7 +126,7 @@ if (!window.section2Handler) {
                     this.storeInLocalStorage(policyField.id, 'policyNumberA', data.s2_insurance_contract);
                 }
             }
-            
+
             // Handle green card number field
             if (data.s2_insurance_green_card) {
                 const greenCardField = document.querySelector('input[name="greenCardNumberA"]');
@@ -135,7 +135,7 @@ if (!window.section2Handler) {
                     this.storeInLocalStorage(greenCardField.id, 'greenCardNumberA', data.s2_insurance_green_card);
                 }
             }
-            
+
             // Handle validity dates
             if (data.s2_insurance_valid_from) {
                 const validFromField = document.querySelector('[data-db-name="s2_insurance_valid_from"]');
@@ -147,7 +147,7 @@ if (!window.section2Handler) {
                     this.storeInLocalStorage(validFromField.id, 's2_insurance_valid_from', dateStr);
                 }
             }
-            
+
             if (data.s2_insurance_valid_to) {
                 const validToField = document.querySelector('[data-db-name="s2_insurance_valid_to"]');
                 if (validToField) {
@@ -158,7 +158,7 @@ if (!window.section2Handler) {
                     this.storeInLocalStorage(validToField.id, 's2_insurance_valid_to', dateStr);
                 }
             }
-              // Handle agency office information (Agence ou bureau ou courtier)
+            // Handle agency office information (Agence ou bureau ou courtier)
             if (data.s2_insurance_agency) {
                 const agencyOfficeField = document.querySelector('[data-db-name="s2_insurance_agency"]');
                 if (agencyOfficeField) {
@@ -166,7 +166,7 @@ if (!window.section2Handler) {
                     this.storeInLocalStorage(agencyOfficeField.id, 's2_insurance_agency', data.s2_insurance_agency);
                 }
             }
-              // Handle agency name information (Nom de l'agence)
+            // Handle agency name information (Nom de l'agence)
             if (data.s2_agency_name) {
                 const agencyNameField = document.querySelector('[data-db-name="s2_agency_name"]');
                 if (agencyNameField) {
@@ -175,7 +175,7 @@ if (!window.section2Handler) {
                 }
             }
         }
-        
+
         populateDriverLicenseFields(data) {
             // Handle driver license number
             if (data.s2_license_number) {
@@ -185,7 +185,7 @@ if (!window.section2Handler) {
                     this.storeInLocalStorage(licenseField.id, 's2_license_number', data.s2_license_number);
                 }
             }
-            
+
             // Handle driver license category
             if (data.s2_license_category) {
                 const categoryField = document.querySelector('[data-db-name="s2_license_category"]');
@@ -194,7 +194,7 @@ if (!window.section2Handler) {
                     this.storeInLocalStorage(categoryField.id, 's2_license_category', data.s2_license_category);
                 }
             }
-              // Handle driver license valid until date - convert from UNIX timestamp to YYYY-MM-DD
+            // Handle driver license valid until date - convert from UNIX timestamp to YYYY-MM-DD
             if (data.s2_license_valid_until) {
                 const validUntilField = document.querySelector('[data-db-name="s2_license_valid_until"]');
                 if (validUntilField) {
@@ -205,7 +205,7 @@ if (!window.section2Handler) {
                     this.storeInLocalStorage(validUntilField.id, 's2_license_valid_until', dateStr);
                 }
             }
-            
+
             // Handle driver birthdate (Date de naissance) from license data
             if (data.s2_driver_birthdate) {
                 const birthDateField = document.querySelector('[data-db-name="s2_driver_birthdate"]');
@@ -217,7 +217,7 @@ if (!window.section2Handler) {
                     this.storeInLocalStorage(birthDateField.id, 's2_driver_birthdate', dateStr);
                 }
             }
-            
+
             // Handle driver country (Pays) from license data
             if (data.s2_driver_country) {
                 const countryField = document.querySelector('[data-db-name="s2_driver_country"]');
@@ -228,7 +228,7 @@ if (!window.section2Handler) {
             }
         }
     }
-    
+
     // Store the instance globally
     window.section2Handler = new Section2DataHandler();
 }
