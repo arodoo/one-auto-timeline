@@ -28,31 +28,14 @@ function display_appropriate_banner($user_id = null, $user_email = null)
     }
 
     try {
-        // Directly check if user has constats and isn't subscribed
-        $pending_constats = get_pending_agency_constats($user_email);
-
-        error_log("BANNER CHECK: Found " . count($pending_constats) . " pending constats for email: $user_email");
-
-        // Check subscription status
-        $is_subscribed = is_user_subscribed($user_id);
-        error_log("BANNER CHECK: User subscription status: " . ($is_subscribed ? 'Subscribed' : 'Not subscribed'));
-
-        if (!empty($pending_constats) && !is_user_subscribed($user_id)) {
-            // User has constats but isn't subscribed - show warning banner
-            error_log("BANNER CHECK: Conditions met for showing banner");
-
-            $banner_data = [
-                'show' => true,
-                'message' => "Vous avez des constats d'accident disponibles. Abonnez-vous pour y accéder et gérer les déclarations de vos clients.",
-                'type' => 'warning',
-                'button_text' => "S'abonner",
-                'button_url' => "/Abonnement"
-            ];
-
-            // Display the banner
+        // Get the banner message data using the utility function
+        $banner_data = get_banner_message($user_id, $user_email);
+        
+        error_log("BANNER CHECK: Banner visibility: " . ($banner_data['show'] ? 'Visible' : 'Hidden'));
+        
+        // Display the banner if needed
+        if ($banner_data['show']) {
             echo render_subscription_banner($banner_data);
-        } else {
-            error_log("BANNER CHECK: Conditions NOT met for showing banner");
         }
     } catch (Exception $e) {
         // Log any errors that occur during the checks

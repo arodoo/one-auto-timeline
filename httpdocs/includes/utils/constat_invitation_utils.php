@@ -9,14 +9,15 @@
  * @param string $email Email to check
  * @return bool True if user is registered
  */
-function is_user_registered($email) {
+function is_user_registered($email)
+{
     global $bdd;
-    
+
     try {
         $stmt = $bdd->prepare("SELECT COUNT(*) FROM membres WHERE mail = ?");
         $stmt->execute([$email]);
-        
-        return (int)$stmt->fetchColumn() > 0;
+
+        return (int) $stmt->fetchColumn() > 0;
     } catch (PDOException $e) {
         error_log("Error checking if user is registered: " . $e->getMessage());
         return false;
@@ -78,10 +79,11 @@ function is_user_subscribed($user_id)
  * @param string $email Agency email
  * @return array List of pending constats
  */
-function get_pending_agency_constats($email) {
+function get_pending_agency_constats($email)
+{
     global $bdd;
     $constats = [];
-    
+
     try {
         // Check for constats where this email is in vehicle A agency phone field (which contains email)
         $stmt = $bdd->prepare("
@@ -95,7 +97,7 @@ function get_pending_agency_constats($email) {
         ");
         $stmt->execute([$email]);
         $constats = array_merge($constats, $stmt->fetchAll(PDO::FETCH_ASSOC));
-        
+
         // Also check for constats where email is in vehicle B agency phone field
         $stmt = $bdd->prepare("
             SELECT cm.*, cvb.s3_agency_phone as agency_email,
@@ -108,7 +110,7 @@ function get_pending_agency_constats($email) {
         ");
         $stmt->execute([$email]);
         $constats = array_merge($constats, $stmt->fetchAll(PDO::FETCH_ASSOC));
-        
+
         return $constats;
     } catch (PDOException $e) {
         error_log("Error getting pending agency constats: " . $e->getMessage());
@@ -125,22 +127,23 @@ function get_pending_agency_constats($email) {
  * @param int $inviterId ID of user who invited
  * @return string|bool Token if successful, false on failure
  */
-function create_invitation($email, $constatId, $role, $inviterId) {
+function create_invitation($email, $constatId, $role, $inviterId)
+{
     global $bdd;
-    
+
     try {
         // Generate a unique token
         $token = bin2hex(random_bytes(16));
-        
+
         // Set expiration date to 7 days from now
         $expiryDate = date('Y-m-d H:i:s', strtotime('+7 days'));
-        
+
         $stmt = $bdd->prepare("
             INSERT INTO invitations 
             (email, constat_id, token, status, created_at, expired_at) 
             VALUES (?, ?, ?, 'pending', NOW(), ?)
         ");
-        
+
         $stmt->execute([$email, $constatId, $token, $expiryDate]);
         return $token;
     } catch (PDOException $e) {
@@ -157,20 +160,21 @@ function create_invitation($email, $constatId, $role, $inviterId) {
  * @param int $constatId Constat ID
  * @return bool True if sent successfully
  */
-function send_invitation_email($email, $token, $constatId) {
+function send_invitation_email($email, $token, $constatId)
+{
     global $nomsiteweb, $emaildefault, $http;
-    
+
     // Use the correct URL format that matches the .htaccess routing rules
     // Changed from /register?token= to /Inscription?token=
     $invitationLink = $http . $nomsiteweb . "/Inscription?token=" . $token;
-    
+
     $subject = "Invitation à accéder à un constat d'accident";
-    
+
     // Use template from includes/templates/invitation_email.php
     ob_start();
     include(dirname(__DIR__) . '/templates/invitation_email.php');
     $message = ob_get_clean();
-    
+
     // Use mailsend function if available, otherwise use mail()
     if (function_exists('mailsend')) {
         return mailsend(
@@ -185,7 +189,7 @@ function send_invitation_email($email, $token, $constatId) {
         $headers = "MIME-Version: 1.0" . "\r\n";
         $headers .= "Content-type: text/html; charset=UTF-8" . "\r\n";
         $headers .= "From: $nomsiteweb <$emaildefault>" . "\r\n";
-        
+
         return mail($email, $subject, $message, $headers);
     }
 }
@@ -196,17 +200,18 @@ function send_invitation_email($email, $token, $constatId) {
  * @param string $email User email
  * @return bool True if has pending invitations
  */
-function has_pending_invitations($email) {
+function has_pending_invitations($email)
+{
     global $bdd;
-    
+
     try {
         $stmt = $bdd->prepare("
             SELECT COUNT(*) FROM invitations 
             WHERE email = ? AND status = 'pending' AND expired_at > NOW()
         ");
         $stmt->execute([$email]);
-        
-        return (int)$stmt->fetchColumn() > 0;
+
+        return (int) $stmt->fetchColumn() > 0;
     } catch (PDOException $e) {
         error_log("Error checking pending invitations: " . $e->getMessage());
         return false;
@@ -220,10 +225,11 @@ function has_pending_invitations($email) {
  * @param string $user_email User email
  * @return array Banner data including message and visibility flag
  */
-function get_banner_message($user_id, $user_email) {
+function get_banner_message($user_id, $user_email)
+{
     $hasConstats = count(get_pending_agency_constats($user_email)) > 0;
     $isSubscribed = is_user_subscribed($user_id);
-    
+
     $result = [
         'show' => false,
         'message' => '',
@@ -231,7 +237,7 @@ function get_banner_message($user_id, $user_email) {
         'button_text' => '',
         'button_url' => ''
     ];
-    
+
     if ($hasConstats && !$isSubscribed) {
         $result['show'] = true;
         $result['message'] = "Vous avez des constats d'accident disponibles. Abonnez-vous pour y accéder et gérer les déclarations de vos clients.";
@@ -239,7 +245,7 @@ function get_banner_message($user_id, $user_email) {
         $result['button_text'] = "S'abonner";
         $result['button_url'] = "/Abonnement";
     }
-    
+
     return $result;
 }
 
@@ -251,21 +257,39 @@ function get_banner_message($user_id, $user_email) {
  */
 function render_subscription_banner($data)
 {
+    // Generate a unique ID for the banner to use with JavaScript
+    $bannerId = 'subscription-banner-' . uniqid();
+
     ob_start();
     ?>
-        <div class="alert alert-<?php echo $data['type']; ?> subscription-banner" role="alert" style="margin-top: 20px; margin-bottom: 20px; padding: 15px; background-color: #fff3cd; color: #856404; border-color: #ffeeba; border: 1px solid transparent; border-radius: 0.25rem; display: flex; justify-content: space-between; align-items: center;">
-            <div style="flex: 1;">
-                <strong>Action requise :</strong> <?php echo $data['message']; ?>
-            </div>
-            <?php if (!empty($data['button_text']) && !empty($data['button_url'])): ?>
-                <div style="margin-left: 20px;">
-                    <a href="<?php echo $data['button_url']; ?>" class="btn btn-warning" style="color: #212529; background-color: #ffc107; border-color: #ffc107; display: inline-block; font-weight: 400; text-align: center; vertical-align: middle; padding: .375rem .75rem; font-size: 1rem; line-height: 1.5; border-radius: .25rem; cursor: pointer; text-decoration: none;">
-                        <?php echo $data['button_text']; ?>
-                    </a>
-                </div>
-            <?php endif; ?>
+    <div id="<?php echo $bannerId; ?>" class="alert subscription-banner" role="alert"
+        style="position: absolute; top: 70px; left: 0; right: 0; z-index: 1050; margin: 0 auto; max-width: 1200px; width: 90%; padding: 15px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); display: flex; justify-content: space-between; align-items: center; background-color: #dc3545; color: white;">
+        <div style="flex: 1;">
+            <strong><i class="fa fa-exclamation-circle"></i> Action requise :</strong> <?php echo $data['message']; ?>
         </div>
-        <?php
-        return ob_get_clean();
+        <?php if (!empty($data['button_text']) && !empty($data['button_url'])): ?>
+            <div style="margin: 0 20px;">
+                <a href="<?php echo $data['button_url']; ?>" class="btn"
+                    style="color: #dc3545; background-color: white; border-color: white; font-weight: 600; text-decoration: none;">
+                    <?php echo $data['button_text']; ?> <i class="fa fa-arrow-right"></i>
+                </a>
+            </div>
+        <?php endif; ?>
+        <button type="button" class="close" aria-label="Close"
+            onclick="document.getElementById('<?php echo $bannerId; ?>').style.display='none'; sessionStorage.setItem('bannerDismissed', 'true');"
+            style="background: none; border: none; font-size: 1.5rem; font-weight: 700; color: white; cursor: pointer; padding: 0 10px;">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <script>
+        // Only show the banner if it hasn't been dismissed in this session
+        document.addEventListener('DOMContentLoaded', function () {
+            if (sessionStorage.getItem('bannerDismissed') === 'true') {
+                document.getElementById('<?php echo $bannerId; ?>').style.display = 'none';
+            }
+        });
+    </script>
+    <?php
+    return ob_get_clean();
 }
 ?>
