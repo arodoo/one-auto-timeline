@@ -39,6 +39,63 @@ if (!empty($_SESSION['4M8e7M5b1R2e8s']) && !empty($user)) {
   $activer = "oui";
   $meta_description = "NA";
   $meta_keyword = "NA";
+  
+  // Initialize photo variables
+  $photo1 = null;
+  $photo2 = null;
+  
+  // Check if we already have photo records
+  $req_check_photos = $bdd->prepare("SELECT photo1, photo2 FROM membres_profil_professionnel_imgs WHERE id_membre = ?");
+  $req_check_photos->execute(array($id_oo));
+  $existing_photos = $req_check_photos->fetch();
+
+  // Process photo uploads if necessary
+  $upload_dir = "../../images/profil-professionnel/$id_oo/";
+  
+  // Create directory if it doesn't exist
+  if (!file_exists($upload_dir)) {
+    mkdir($upload_dir, 0755, true);
+  }
+  
+  // Process photo1 if uploaded
+  if (!empty($_FILES['photo1']['name'])) {
+    $file_ext = pathinfo($_FILES['photo1']['name'], PATHINFO_EXTENSION);
+    $photo1 = "photo1_" . time() . "." . $file_ext;
+    $target_file = $upload_dir . $photo1;
+    
+    if (!move_uploaded_file($_FILES['photo1']['tmp_name'], $target_file)) {
+      $result = array(
+        "Texte_rapport" => "Erreur lors de l'upload de la photo 1",
+        "retour_validation" => "erreur",
+        "retour_lien" => "",
+      );
+      echo json_encode($result);
+      exit;
+    }
+  } else if ($existing_photos && !empty($existing_photos['photo1'])) {
+    // Keep existing photo if no new one uploaded
+    $photo1 = $existing_photos['photo1'];
+  }
+
+  // Process photo2 if uploaded
+  if (!empty($_FILES['photo2']['name'])) {
+    $file_ext = pathinfo($_FILES['photo2']['name'], PATHINFO_EXTENSION);
+    $photo2 = "photo2_" . time() . "." . $file_ext;
+    $target_file = $upload_dir . $photo2;
+    
+    if (!move_uploaded_file($_FILES['photo2']['tmp_name'], $target_file)) {
+      $result = array(
+        "Texte_rapport" => "Erreur lors de l'upload de la photo 2",
+        "retour_validation" => "erreur",
+        "retour_lien" => "",
+      );
+      echo json_encode($result);
+      exit;
+    }
+  } else if ($existing_photos && !empty($existing_photos['photo2'])) {
+    // Keep existing photo if no new one uploaded
+    $photo2 = $existing_photos['photo2'];
+  }
 
   // Function to generate a slug from a string
   function generateSlug($string)
@@ -99,6 +156,38 @@ if (!empty($_SESSION['4M8e7M5b1R2e8s']) && !empty($user)) {
         $activer,
         $id_oo
       ));
+      
+      // Handle photos table update
+      $req_check_photos_exist = $bdd->prepare("SELECT COUNT(*) FROM membres_profil_professionnel_imgs WHERE id_membre = ?");
+      $req_check_photos_exist->execute(array($id_oo));
+      $photos_exist = $req_check_photos_exist->fetchColumn();
+
+      if ($photos_exist) {
+        // Update existing photos
+        $req_update_photos = $bdd->prepare("UPDATE membres_profil_professionnel_imgs SET 
+          photo1 = ?, 
+          photo2 = ?
+          WHERE id_membre = ?");
+        $req_update_photos->execute(array(
+          $photo1,
+          $photo2,
+          $id_oo
+        ));
+      } else if ($photo1 || $photo2) {
+        // Insert new photo records
+        $req_insert_photos = $bdd->prepare("INSERT INTO membres_profil_professionnel_imgs (
+          id_membre,
+          photo1,
+          photo2,
+          date_ajout
+          ) VALUES (?, ?, ?, NOW())");
+        $req_insert_photos->execute(array(
+          $id_oo,
+          $photo1,
+          $photo2
+        ));
+      }
+      
       $result = array("Texte_rapport" => "Profil modifié !", "retour_validation" => "ok", "retour_lien" => "");
     } else {
       // Insérer un nouveau profil
@@ -124,6 +213,22 @@ if (!empty($_SESSION['4M8e7M5b1R2e8s']) && !empty($user)) {
         $activer,
         $url_profil
       ));
+      
+      // Add photos if available
+      if ($photo1 || $photo2) {
+        $req_insert_photos = $bdd->prepare("INSERT INTO membres_profil_professionnel_imgs (
+          id_membre,
+          photo1,
+          photo2,
+          date_ajout
+          ) VALUES (?, ?, ?, NOW())");
+        $req_insert_photos->execute(array(
+          $id_oo,
+          $photo1,
+          $photo2
+        ));
+      }
+      
       $result = array("Texte_rapport" => "Profil créé !", "retour_validation" => "ok", "retour_lien" => "");
     }
   }
