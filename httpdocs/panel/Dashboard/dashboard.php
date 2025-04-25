@@ -38,6 +38,7 @@ if (!empty($_SESSION['4M8e7M5b1R2e8s']) && !empty($user)) {
     </div>
 
     <script src="/panel/Dashboard/dashboard.js"></script>
+    <script src="/panel/Dashboard/js/carousel-handler.js"></script>
     <?php
 } else {
     header("location: /");

@@ -19,66 +19,84 @@ if (!empty($_SESSION['4M8e7M5b1R2e8s']) && !empty($user)) {
             'items' => []
         ];
         
-        // Determine which table to query based on type
+        // Determine which table to query based on type - UPDATED with correct table names and column names
         switch ($type) {
             case 'mechanics':
-                $sql = "SELECT id, titre, description, date_publication, url_image 
-                        FROM annonces 
-                        WHERE statut = 'active' AND categorie IN ('mecanique', 'carrosserie')
-                        ORDER BY date_publication DESC LIMIT 4";
+                $sql = "SELECT id, nom, description, date, id_membre 
+                        FROM membres_annonces 
+                        WHERE statut = 'activé' AND id_categorie IN (SELECT id FROM configurations_categories WHERE nom_categorie IN ('mecanique', 'carrosserie'))
+                        ORDER BY date DESC LIMIT 4";
                 $stmt = $bdd->prepare($sql);
                 $stmt->execute();
                 $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 
                 foreach ($items as $item) {
+                    // Get image from related images table
+                    $imgSql = "SELECT nom_image FROM membres_annonces_images WHERE id_annonce_service = ? AND id_membre = ? LIMIT 1";
+                    $imgStmt = $bdd->prepare($imgSql);
+                    $imgStmt->execute([$item['id'], $item['id_membre']]);
+                    $image = $imgStmt->fetchColumn();
+                    
                     $response['items'][] = [
                         'id' => $item['id'],
-                        'title' => $item['titre'],
+                        'title' => $item['nom'],
                         'description' => $item['description'],
-                        'image' => $item['url_image'],
-                        'date' => $item['date_publication'],
+                        'image' => $image ? "/images/membres/" . $user . "/" . $image : "",
+                        'date' => $item['date'],
                         'url' => "/Annonce/" . $item['id']
                     ];
                 }
                 break;
                 
             case 'services':
-                $sql = "SELECT id, titre, description, date_publication, url_image 
-                        FROM services_annonces 
-                        WHERE statut = 'active'
-                        ORDER BY date_publication DESC LIMIT 4";
+                $sql = "SELECT id, nom, description, date, id_membre 
+                        FROM membres_services 
+                        WHERE statut = 'activé'
+                        ORDER BY date DESC LIMIT 4";
                 $stmt = $bdd->prepare($sql);
                 $stmt->execute();
                 $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 
                 foreach ($items as $item) {
+                    // Get image from related images table
+                    $imgSql = "SELECT nom_image FROM membres_services_images WHERE id_annonce_service = ? AND id_membre = ? LIMIT 1";
+                    $imgStmt = $bdd->prepare($imgSql);
+                    $imgStmt->execute([$item['id'], $item['id_membre']]);
+                    $image = $imgStmt->fetchColumn();
+                    
                     $response['items'][] = [
                         'id' => $item['id'],
-                        'title' => $item['titre'],
+                        'title' => $item['nom'],
                         'description' => $item['description'],
-                        'image' => $item['url_image'],
-                        'date' => $item['date_publication'],
+                        'image' => $image ? "/images/membres/" . $user . "/" . $image : "",
+                        'date' => $item['date'],
                         'url' => "/Service/" . $item['id']
                     ];
                 }
                 break;
                 
             case 'control':
-                $sql = "SELECT id, titre, description, date_publication, url_image 
-                        FROM controle_technique_annonces 
-                        WHERE statut = 'active'
-                        ORDER BY date_publication DESC LIMIT 4";
+                $sql = "SELECT id, nom, description, date, id_membre 
+                        FROM membres_annonces_ct 
+                        WHERE statut = 'activé'
+                        ORDER BY date DESC LIMIT 4";
                 $stmt = $bdd->prepare($sql);
                 $stmt->execute();
                 $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 
                 foreach ($items as $item) {
+                    // Get image from related images table
+                    $imgSql = "SELECT nom_image FROM membres_annonces_ct_images WHERE id_annonce_service = ? AND id_membre = ? LIMIT 1";
+                    $imgStmt = $bdd->prepare($imgSql);
+                    $imgStmt->execute([$item['id'], $item['id_membre']]);
+                    $image = $imgStmt->fetchColumn();
+                    
                     $response['items'][] = [
                         'id' => $item['id'],
-                        'title' => $item['titre'],
+                        'title' => $item['nom'],
                         'description' => $item['description'],
-                        'image' => $item['url_image'],
-                        'date' => $item['date_publication'],
+                        'image' => $image ? "/images/membres/" . $user . "/" . $image : "",
+                        'date' => $item['date'],
                         'url' => "/Centre-controle-technique/" . $item['id']
                     ];
                 }
