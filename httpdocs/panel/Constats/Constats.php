@@ -34,11 +34,11 @@ if (!empty($_SESSION['4M8e7M5b1R2e8s']) && !empty($user)) {
           url: '/panel/Constats/Constats-action-ajouter-modifier-ajax.php',
           type: 'POST',
           <?php if ($_GET['action'] == "modifier") { ?>
-                    data: new FormData($("#formulaire-modifier")[0]),
+                        data: new FormData($("#formulaire-modifier")[0]),
           <?php } else { ?>
-                    data: new FormData($("#formulaire-ajouter")[0]),
+                        data: new FormData($("#formulaire-ajouter")[0]),
           <?php } ?>
-              processData: false,
+                processData: false,
           contentType: false,
           dataType: "json",
           success: function (res) {
@@ -88,8 +88,8 @@ if (!empty($_SESSION['4M8e7M5b1R2e8s']) && !empty($user)) {
           success: function (res) {
             if (res.retour_validation == "ok") {
               popup_alert(res.Texte_rapport, "green filledlight", "#009900", "uk-icon-check");
-                // Reload the page to reflect changes
-                location.reload();
+              // Reload the page to reflect changes
+              location.reload();
             } else {
               popup_alert(res.Texte_rapport, "#CC0000 filledlight", "#CC0000", "uk-icon-times");
             }
@@ -347,7 +347,8 @@ if (!empty($_SESSION['4M8e7M5b1R2e8s']) && !empty($user)) {
               <tr>
                 <td style="text-align: left; width: 190px;">Visualiser le constat</td>
                 <td style="text-align: left;">
-                  <a href="" class="btn btn-danger" target="blank_"> <?php echo "Visualiser le constat"; ?></a>
+                  <a href="/panel/Constats/constant-form/PDFGenerator/index.php?legacy_id=<?php echo $idoneinfos; ?>"
+                    class="btn btn-danger" target="_blank"> <?php echo "Visualiser le constat"; ?></a>
                 </td>
               </tr>
 
@@ -391,38 +392,39 @@ if (!empty($_SESSION['4M8e7M5b1R2e8s']) && !empty($user)) {
     <br /><br />
 
     <?php
-    }elseif($action == "Images"){
+    } elseif ($action == "Images") {
 
       ?>
 
-      <h1>Images</h1>
+    <h1>Images</h1>
 
-        <div>
-          <form id="formulaire-images" enctype="multipart/form-data" style="display: flex; flex-direction: column; align-items: flex-start;">
-            <label for="imageUpload">Ajouter une image :</label>
-            <input type="hidden" name="idaction" value="<?php echo $idaction; ?>">
-            <input type="file" id="image" name="image" accept="image/*" style="margin-bottom: 10px;">
-            <button onclick="return false;" id="image-bouton" class="btn btn-primary">Enregistrer</button>
-          </form>
-        </div>
+    <div>
+      <form id="formulaire-images" enctype="multipart/form-data"
+        style="display: flex; flex-direction: column; align-items: flex-start;">
+        <label for="imageUpload">Ajouter une image :</label>
+        <input type="hidden" name="idaction" value="<?php echo $idaction; ?>">
+        <input type="file" id="image" name="image" accept="image/*" style="margin-bottom: 10px;">
+        <button onclick="return false;" id="image-bouton" class="btn btn-primary">Enregistrer</button>
+      </form>
+    </div>
 
-        <div class="container mt-4">
-          <h3></h3>
-          <div class="row">
-          <?php
-          $req_images = $bdd->prepare("SELECT * FROM constats_images WHERE id_constat = ?");
-          $req_images->execute(array($idaction));
+    <div class="container mt-4">
+      <h3></h3>
+      <div class="row">
+        <?php
+        $req_images = $bdd->prepare("SELECT * FROM constats_images WHERE id_constat = ?");
+        $req_images->execute(array($idaction));
 
-          while ($image = $req_images->fetch()) {
-            echo "<div class='col-md-6 mb-3'><img src='/images/constats/{$image['id_constat']}/{$image['img']}' alt='Image' class='img-fluid'></div>";
-          }
+        while ($image = $req_images->fetch()) {
+          echo "<div class='col-md-6 mb-3'><img src='/images/constats/{$image['id_constat']}/{$image['img']}' alt='Image' class='img-fluid'></div>";
+        }
 
-          $req_images->closeCursor();
-          ?>
-          </div>
-        </div>
+        $req_images->closeCursor();
+        ?>
+      </div>
+    </div>
 
-      <?php
+    <?php
 
     }
     ////////////////////////////FORMULAIRE AJOUTER / MODIFIER

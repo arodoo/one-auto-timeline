@@ -211,7 +211,7 @@ if (!empty($_SESSION['4M8e7M5b1R2e8s']) && !empty($user)) {
           dataType: 'json',
           success: function (response) {
             console.log("Server response:", response);
-            
+
             if (response.success) {
               if (response.invitation_sent) {
                 // Show invitation message
@@ -307,8 +307,8 @@ if (!empty($_SESSION['4M8e7M5b1R2e8s']) && !empty($user)) {
             <?php echo $isJumelage === "yes" ? "oui" : "non"; ?>
           </td>
           <td style='text-align: center;'>
-            <a href='/Constat-amiable-accident/pdf/<?php echo $ligne['unique_id']; ?>' class='btn btn-info btn-sm'
-              target='blank_' title="Visualiser le constat">
+            <a href='/panel/Constats/constant-form/PDFGenerator/index.php?id=<?php echo $ligne['unique_id']; ?>'
+              class='btn btn-info btn-sm' target='_blank' title="Visualiser le constat">
               <i class="fa fa-eye"></i>
             </a>
             <button class='btn btn-info btn-sm btn-send-to-agency' data-id='<?php echo $ligne['id']; ?>'
@@ -356,7 +356,8 @@ if (!empty($_SESSION['4M8e7M5b1R2e8s']) && !empty($user)) {
             <?php echo $isJumelage === "yes" ? "oui" : "non"; ?>
           </td>
           <td style='text-align: center;'>
-            <a href='' class='btn btn-info btn-sm' target='blank_' title="Visualiser le constat">
+            <a href='/panel/Constats/constant-form/PDFGenerator/index.php?legacy_id=<?php echo $idoneinfos; ?>'
+              class='btn btn-info btn-sm' target='_blank' title="Visualiser le constat">
               <i class="fa fa-eye"></i>
             </a>
             <button class='btn btn-info btn-sm btn-send-to-agency' data-id='<?php echo $idoneinfos; ?>'
