@@ -189,7 +189,7 @@ $version = "100";
 									<div class="card-body">
 										<?php
 										if ($statut_compte_oo == 1) {
-											include('panel/Profil-automobile/Profil-automobile.php');
+											include('panel/Dashboard/dashboard.php');
 										} elseif ($statut_compte_oo == 2 || $statut_compte_oo == 3 || $statut_compte_oo == 6) {
 											include('panel/Devis/Devis.php');
 										} elseif ($statut_compte_oo == 5) {
