@@ -83,6 +83,10 @@
 		</p>
 	</div>
 
+<?php
+// Hide "Mon compte" section for statut_compte_oo of 3, 4, 5, or 6
+if ($statut_compte_oo != 3 && $statut_compte_oo != 4 && $statut_compte_oo != 5 && $statut_compte_oo != 6) {
+?>
 	<hr />
 	<h2 class="style_color">Mon compte</h2>
 	<hr />
@@ -183,6 +187,9 @@
 	</div>
 
 	<div style='clear: both;'></div>
+<?php
+}
+?>
 
 	<hr />
 	<h2 class="style_color"><?php echo "Mes coordonnées"; ?></h2>
