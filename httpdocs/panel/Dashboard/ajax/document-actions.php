@@ -14,10 +14,22 @@ if (!empty($_SESSION['4M8e7M5b1R2e8s']) && !empty($user)) {
     $action = isset($_POST['action']) ? $_POST['action'] : '';
     
     try {
+        // Define table name to match original implementation
+        $images_dossier = "membres_profil_auto_documents";
+        $nom_table = "membres_profil_auto_documents";
+        
         // Add document action
         if ($action === 'addDocument') {
             $documentType = isset($_POST['documentType']) ? $_POST['documentType'] : '';
-            $documentName = isset($_POST['documentName']) ? $_POST['documentName'] : '';
+            
+            // Check if category is selected
+            if (empty($documentType)) {
+                echo json_encode([
+                    'status' => 'error',
+                    'message' => 'Vous devez choisir une catégorie.'
+                ]);
+                exit;
+            }
             
             // Check if file was uploaded
             if (!isset($_FILES['documentFile']) || $_FILES['documentFile']['error'] !== UPLOAD_ERR_OK) {
@@ -29,56 +41,71 @@ if (!empty($_SESSION['4M8e7M5b1R2e8s']) && !empty($user)) {
             }
             
             // Check file type
-            $allowedTypes = ['application/pdf'];
-            if (!in_array($_FILES['documentFile']['type'], $allowedTypes)) {
+            $fileType = mime_content_type($_FILES['documentFile']['tmp_name']);
+            $allowedTypes = ['image/png', 'image/jpeg', 'image/gif'];
+            
+            if (!in_array($fileType, $allowedTypes)) {
                 echo json_encode([
                     'status' => 'error',
-                    'message' => 'Seuls les fichiers PDF sont acceptés.'
+                    'message' => 'Seules les images sont acceptées (JPG, PNG, GIF).'
                 ]);
                 exit;
             }
             
-            // Generate unique file name
-            $fileName = uniqid('doc_') . '.pdf';
-            $uploadPath = '../../../documents/membres/' . $id_oo . '/';
+            // Generate unique file name with timestamp
+            $date_image = date('d-m-Y');
+            $nom_image = $date_image . '_' . time() . '_' . basename($_FILES['documentFile']['name']);
+            $uploadDir = $_SERVER['DOCUMENT_ROOT'] . "/images/membres/$user/";
             
             // Create directory if it doesn't exist
-            if (!file_exists($uploadPath)) {
-                mkdir($uploadPath, 0755, true);
+            if (!file_exists($uploadDir)) {
+                mkdir($uploadDir, 0755, true);
             }
             
+            $uploadFile = $uploadDir . $nom_image;
+            
+            // Get image dimensions and determine orientation
+            list($width, $height) = getimagesize($_FILES['documentFile']['tmp_name']);
+            $type_orientation = ($width > $height) ? 'paysage' : 'portrait';
+            
             // Move uploaded file
-            if (!move_uploaded_file($_FILES['documentFile']['tmp_name'], $uploadPath . $fileName)) {
+            if (move_uploaded_file($_FILES['documentFile']['tmp_name'], $uploadFile)) {
+                // Save document to database using original table structure
+                $sql = "INSERT INTO $nom_table 
+                        (id_membre, 
+                        pseudo, 
+                        id_categorie, 
+                        nom, 
+                        lien, 
+                        date) 
+                        VALUES (?, ?, ?, ?, ?, ?)";
+                $stmt = $bdd->prepare($sql);
+                $stmt->execute([
+                    $id_oo,
+                    $user,
+                    $documentType,
+                    $nom_image,
+                    "/images/membres/$user/$nom_image",
+                    time()
+                ]);
+                
+                echo json_encode([
+                    'status' => 'success',
+                    'message' => 'Document ajouté avec succès.'
+                ]);
+            } else {
                 echo json_encode([
                     'status' => 'error',
                     'message' => "Erreur lors de l'enregistrement du fichier."
                 ]);
-                exit;
             }
-            
-            // Save document to database
-            $sql = "INSERT INTO membres_documents (id_membre, type, nom, fichier, date_ajout) 
-                    VALUES (:id_membre, :type, :nom, :fichier, NOW())";
-            $stmt = $bdd->prepare($sql);
-            $stmt->execute([
-                ':id_membre' => $id_oo,
-                ':type' => $documentType,
-                ':nom' => $documentName,
-                ':fichier' => 'membres/' . $id_oo . '/' . $fileName
-            ]);
-            
-            echo json_encode([
-                'status' => 'success',
-                'message' => 'Document ajouté avec succès.'
-            ]);
-            
         } 
         // Delete document action
         else if ($action === 'deleteDocument') {
             $documentId = isset($_POST['document_id']) ? (int)$_POST['document_id'] : 0;
             
             // Get document file path
-            $sql = "SELECT fichier FROM membres_documents WHERE id = :id AND id_membre = :id_membre";
+            $sql = "SELECT lien FROM $nom_table WHERE id = :id AND id_membre = :id_membre";
             $stmt = $bdd->prepare($sql);
             $stmt->execute([
                 ':id' => $documentId,
@@ -87,14 +114,14 @@ if (!empty($_SESSION['4M8e7M5b1R2e8s']) && !empty($user)) {
             $document = $stmt->fetch(PDO::FETCH_ASSOC);
             
             if ($document) {
-                // Delete file
-                $filePath = '../../../documents/' . $document['fichier'];
+                // Delete file from server
+                $filePath = $_SERVER['DOCUMENT_ROOT'] . $document['lien'];
                 if (file_exists($filePath)) {
                     unlink($filePath);
                 }
                 
                 // Delete from database
-                $sql = "DELETE FROM membres_documents WHERE id = :id AND id_membre = :id_membre";
+                $sql = "DELETE FROM $nom_table WHERE id = :id AND id_membre = :id_membre";
                 $stmt = $bdd->prepare($sql);
                 $stmt->execute([
                     ':id' => $documentId,
