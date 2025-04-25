@@ -20,12 +20,12 @@ $(document).ready(function() {
                 if (response.status === 'success' && response.items && response.items.length > 0) {
                     // Add items to carousel
                     for (const item of response.items) {
-                        const imageUrl = item.image || '/images/avatars/mechanic.png';
+                        const imageUrl = item.image || '/images/no-avatar.png';
                         
                         const carouselItem = `
                             <div class="item">
                                 <div class="card mb-0">
-                                    <img src="${imageUrl}" class="card-img-top" alt="${item.title}">
+                                    <img src="${imageUrl}" class="card-img-top" alt="${item.title}" style="height: 180px; object-fit: cover;">
                                     <div class="card-body">
                                         <h5 class="card-title">${item.title}</h5>
                                         <p class="card-text">${item.description.substring(0, 80)}${item.description.length > 80 ? '...' : ''}</p>

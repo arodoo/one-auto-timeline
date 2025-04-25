@@ -19,13 +19,14 @@ if (!empty($_SESSION['4M8e7M5b1R2e8s']) && !empty($user)) {
             'items' => []
         ];
         
-        // Determine which table to query based on type - UPDATED with correct table names and column names
+        // Determine which table to query based on type
         switch ($type) {
             case 'mechanics':
-                $sql = "SELECT id, nom, description, date, id_membre 
-                        FROM membres_annonces 
-                        WHERE statut = 'activé' AND id_categorie IN (SELECT id FROM configurations_categories WHERE nom_categorie IN ('mecanique', 'carrosserie'))
-                        ORDER BY date DESC LIMIT 4";
+                // Use a more inclusive query for mechanics announcements
+                $sql = "SELECT ma.id, ma.nom, ma.description, ma.date, ma.id_membre 
+                        FROM membres_annonces ma
+                        WHERE ma.statut = 'activé' 
+                        ORDER BY ma.date DESC LIMIT 4";
                 $stmt = $bdd->prepare($sql);
                 $stmt->execute();
                 $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -37,13 +38,20 @@ if (!empty($_SESSION['4M8e7M5b1R2e8s']) && !empty($user)) {
                     $imgStmt->execute([$item['id'], $item['id_membre']]);
                     $image = $imgStmt->fetchColumn();
                     
+                    // Use a default image if none found
+                    $imagePath = '/images/no-avatar.png';
+                    if ($image && !empty($image)) {
+                        // If image path doesn't start with slash, add it
+                        $imagePath = (substr($image, 0, 1) !== '/') ? '/images/membres/' . $item['id_membre'] . '/' . $image : $image;
+                    }
+                    
                     $response['items'][] = [
                         'id' => $item['id'],
                         'title' => $item['nom'],
                         'description' => $item['description'],
-                        'image' => $image ? "/images/membres/" . $user . "/" . $image : "",
+                        'image' => $imagePath,
                         'date' => $item['date'],
-                        'url' => "/Annonce/" . $item['id']
+                        'url' => "/Page-annonce?id=" . $item['id']
                     ];
                 }
                 break;
@@ -64,13 +72,20 @@ if (!empty($_SESSION['4M8e7M5b1R2e8s']) && !empty($user)) {
                     $imgStmt->execute([$item['id'], $item['id_membre']]);
                     $image = $imgStmt->fetchColumn();
                     
+                    // Use a default image if none found
+                    $imagePath = '/images/no-avatar.png';
+                    if ($image && !empty($image)) {
+                        // If image path doesn't start with slash, add it
+                        $imagePath = (substr($image, 0, 1) !== '/') ? '/images/membres/' . $item['id_membre'] . '/' . $image : $image;
+                    }
+                    
                     $response['items'][] = [
                         'id' => $item['id'],
                         'title' => $item['nom'],
                         'description' => $item['description'],
-                        'image' => $image ? "/images/membres/" . $user . "/" . $image : "",
+                        'image' => $imagePath,
                         'date' => $item['date'],
-                        'url' => "/Service/" . $item['id']
+                        'url' => "/Page-service?id=" . $item['id']
                     ];
                 }
                 break;
@@ -91,13 +106,20 @@ if (!empty($_SESSION['4M8e7M5b1R2e8s']) && !empty($user)) {
                     $imgStmt->execute([$item['id'], $item['id_membre']]);
                     $image = $imgStmt->fetchColumn();
                     
+                    // Use a default image if none found
+                    $imagePath = '/images/no-avatar.png';
+                    if ($image && !empty($image)) {
+                        // If image path doesn't start with slash, add it
+                        $imagePath = (substr($image, 0, 1) !== '/') ? '/images/membres/' . $item['id_membre'] . '/' . $image : $image;
+                    }
+                    
                     $response['items'][] = [
                         'id' => $item['id'],
                         'title' => $item['nom'],
                         'description' => $item['description'],
-                        'image' => $image ? "/images/membres/" . $user . "/" . $image : "",
+                        'image' => $imagePath,
                         'date' => $item['date'],
-                        'url' => "/Centre-controle-technique/" . $item['id']
+                        'url' => "/Page-controle?id=" . $item['id']
                     ];
                 }
                 break;
