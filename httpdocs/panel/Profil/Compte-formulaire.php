@@ -21,10 +21,10 @@
 <!--<script src="/js/dist/clipboard.min.js"></script>-->
 
 <script>
-	$(document).ready(function() {
+	$(document).ready(function () {
 
 		//AJAX
-		$(document).on("change", "#remember-me", function() {
+		$(document).on("change", "#remember-me", function () {
 			facturation_autre();
 		});
 
@@ -52,7 +52,7 @@
 		$inscription_ok = "";
 	}
 	/////////Variable * => ok si inscription
-
+	
 	?>
 
 	<div style='clear: both; margin-bottom: 15px;'></div>
@@ -83,10 +83,6 @@
 		</p>
 	</div>
 
-<?php
-// Hide "Mon compte" section for statut_compte_oo of 3, 4, 5, or 6
-if ($statut_compte_oo != 3 && $statut_compte_oo != 4 && $statut_compte_oo != 5 && $statut_compte_oo != 6) {
-?>
 	<hr />
 	<h2 class="style_color">Mon compte</h2>
 	<hr />
@@ -122,14 +118,14 @@ if ($statut_compte_oo != 3 && $statut_compte_oo != 4 && $statut_compte_oo != 5 &
 		<label class="control-label col-sm-2">Abonné à la newsletter</label>
 		<div class="col-sm-5">
 			<input type="checkbox" id='newslettre' name='newslettre' <?php if ($newslettre_oo == "1") {
-																			echo "checked";
-																		} ?> />
+				echo "checked";
+			} ?> />
 		</div>
 	</div>
 
-	<?php
+<!-- 	<?php
 	if ($ligne_bouclem['statut_compte'] == 1) {
-	?>
+		?>
 
 		<div class="row style_color">
 			<label class="control-label col-sm-2"><?php echo "Nom du commercial"; ?> </label>
@@ -143,9 +139,9 @@ if ($statut_compte_oo != 3 && $statut_compte_oo != 4 && $statut_compte_oo != 5 &
 
 		<div style='clear: both; margin-bottom: 15px;'></div>
 
-	<?php
+		<?php
 	}
-	?>
+	?> -->
 
 	<div class="row style_color">
 		<label class="control-label col-sm-2"><?php echo "Adresse mail $inscription_ok"; ?> *</label>
@@ -187,9 +183,6 @@ if ($statut_compte_oo != 3 && $statut_compte_oo != 4 && $statut_compte_oo != 5 &
 	</div>
 
 	<div style='clear: both;'></div>
-<?php
-}
-?>
 
 	<hr />
 	<h2 class="style_color"><?php echo "Mes coordonnées"; ?></h2>
@@ -201,11 +194,11 @@ if ($statut_compte_oo != 3 && $statut_compte_oo != 4 && $statut_compte_oo != 5 &
 			<select id="FH" name="FH" class="form-control" style='margin-bottom: 15px; <?php echo "$coloorpr"; ?>'>
 				<option value="">Sélection</option>
 				<option <?php if ($civilites_oo == "Madame") {
-							echo "selected";
-						} ?> value="Madame">Madame</option>
+					echo "selected";
+				} ?> value="Madame">Madame</option>
 				<option <?php if ($civilites_oo == "Monsieur") {
-							echo "selected";
-						} ?> value="Monsieur">Monsieur</option>
+					echo "selected";
+				} ?> value="Monsieur">Monsieur</option>
 			</select>
 		</div>
 	</div>
@@ -262,8 +255,8 @@ if ($statut_compte_oo != 3 && $statut_compte_oo != 4 && $statut_compte_oo != 5 &
 				<label>Téléphone fixe</label>
 				<input type="text" id='Telephone' name='Telephone' class="form-control"
 					placeholder="<?php echo 'Téléphone'; ?>" value="<?php echo htmlspecialchars($Telephone); ?>"
-					style='<?php echo "$coloorpccc1telfixe"; ?>'
-					maxlength="10" pattern="\d{10}" inputmode="numeric" required />
+					style='<?php echo "$coloorpccc1telfixe"; ?>' maxlength="10" pattern="\d{10}" inputmode="numeric"
+					required />
 			</div>
 
 
@@ -272,8 +265,8 @@ if ($statut_compte_oo != 3 && $statut_compte_oo != 4 && $statut_compte_oo != 5 &
 				<input type="text" id='Telephone_portable' name='Telephone_portable' class="form-control"
 					placeholder="<?php echo 'Portable'; ?>"
 					value="<?php echo htmlspecialchars(!empty($Telephone_portable) ? $Telephone_portable : $Telephone); ?>"
-					style='<?php echo "$coloorpccc1portable"; ?>'
-					maxlength="10" pattern="\d{10}" inputmode="numeric" required />
+					style='<?php echo "$coloorpccc1portable"; ?>' maxlength="10" pattern="\d{10}" inputmode="numeric"
+					required />
 			</div>
 
 		</div>
@@ -282,55 +275,92 @@ if ($statut_compte_oo != 3 && $statut_compte_oo != 4 && $statut_compte_oo != 5 &
 
 	<div style='clear: both; margin-bottom: 15px;'></div>
 
+	<?php
+	if ($statut_compte_oo == 2 || $statut_compte_oo == 3 || $statut_compte_oo == 4 || $statut_compte_oo == 5 || $statut_compte_oo == 6) {
+	?>
+
+	<div class="background-white">
+		<hr />
+		<h2 class="style_color"><?php echo "Informations"; ?></h2>
+		<hr />
+
+		<div class="row style_color">
+			<div class="col-sm-6" style='margin-bottom: 15px;'>
+				<label>Nom société</label>
+				<input type="text" id='Nom_societe' name='Nom_societe' class="form-control"
+					placeholder="<?php echo "Nom société"; ?>*" value="<?php echo "$Nom_societe"; ?>"
+					style='<?php echo "$coloorpccc1telfixe"; ?>' />
+			</div>
+
+
+			<div class="col-sm-6" style='margin-bottom: 15px;'>
+				<label>Siret</label>
+				<input type="text" id='Numero_identification' name='Numero_identification' class="form-control"
+					placeholder="<?php echo "Siret"; ?>" value="<?php echo "$Numero_identification"; ?>"
+					style='<?php echo "$coloorpccc1portable"; ?>' />
+			</div>
+		</div>
+
+	</div>
+
+	<div style='clear: both; margin-bottom: 15px;'></div>
+	<?php
+	}
+	?>
+
+	<?php 
+	if ($statut_compte_oo == 1) { 
+	?>
+
 	<div class="background-white">
 		<hr />
 		<h2 class="style_color"><?php echo "Informations d'assurance"; ?></h2>
 		<hr />
 
 		<script>
-		$(document).ready(function() {
-			// Convert date inputs to timestamps before form submission
-			$("#modification_post").click(function() {
-				// Get date values
-				var fromDate = $("#valid_from_date").val();
-				var toDate = $("#valid_to_date").val();
-				
-				// Convert to timestamps if dates are provided
-				if(fromDate) {
-					var timestamp = Math.floor(new Date(fromDate).getTime() / 1000);
-					$("#valid_from").val(timestamp);
-					console.log("From date converted: " + fromDate + " -> " + timestamp);
+			$(document).ready(function () {
+				// Convert date inputs to timestamps before form submission
+				$("#modification_post").click(function () {
+					// Get date values
+					var fromDate = $("#valid_from_date").val();
+					var toDate = $("#valid_to_date").val();
+
+					// Convert to timestamps if dates are provided
+					if (fromDate) {
+						var timestamp = Math.floor(new Date(fromDate).getTime() / 1000);
+						$("#valid_from").val(timestamp);
+						console.log("From date converted: " + fromDate + " -> " + timestamp);
+					}
+
+					if (toDate) {
+						var timestamp = Math.floor(new Date(toDate).getTime() / 1000);
+						$("#valid_to").val(timestamp);
+						console.log("To date converted: " + toDate + " -> " + timestamp);
+					}
+				});
+
+				// Initialize date fields from timestamps when page loads
+				var fromTimestamp = $("#valid_from").val();
+				var toTimestamp = $("#valid_to").val();
+
+				if (fromTimestamp && fromTimestamp > 0) {
+					var date = new Date(fromTimestamp * 1000);
+					var dateString = date.getFullYear() + '-' +
+						String(date.getMonth() + 1).padStart(2, '0') + '-' +
+						String(date.getDate()).padStart(2, '0');
+					$("#valid_from_date").val(dateString);
+					console.log("Initialized from date: " + fromTimestamp + " -> " + dateString);
 				}
-				
-				if(toDate) {
-					var timestamp = Math.floor(new Date(toDate).getTime() / 1000);
-					$("#valid_to").val(timestamp);
-					console.log("To date converted: " + toDate + " -> " + timestamp);
+
+				if (toTimestamp && toTimestamp > 0) {
+					var date = new Date(toTimestamp * 1000);
+					var dateString = date.getFullYear() + '-' +
+						String(date.getMonth() + 1).padStart(2, '0') + '-' +
+						String(date.getDate()).padStart(2, '0');
+					$("#valid_to_date").val(dateString);
+					console.log("Initialized to date: " + toTimestamp + " -> " + dateString);
 				}
 			});
-			
-			// Initialize date fields from timestamps when page loads
-			var fromTimestamp = $("#valid_from").val();
-			var toTimestamp = $("#valid_to").val();
-			
-			if(fromTimestamp && fromTimestamp > 0) {
-				var date = new Date(fromTimestamp * 1000);
-				var dateString = date.getFullYear() + '-' + 
-								String(date.getMonth() + 1).padStart(2, '0') + '-' + 
-								String(date.getDate()).padStart(2, '0');
-				$("#valid_from_date").val(dateString);
-				console.log("Initialized from date: " + fromTimestamp + " -> " + dateString);
-			}
-			
-			if(toTimestamp && toTimestamp > 0) {
-				var date = new Date(toTimestamp * 1000);
-				var dateString = date.getFullYear() + '-' + 
-								String(date.getMonth() + 1).padStart(2, '0') + '-' + 
-								String(date.getDate()).padStart(2, '0');
-				$("#valid_to_date").val(dateString);
-				console.log("Initialized to date: " + toTimestamp + " -> " + dateString);
-			}
-		});
 		</script>
 
 		<div class="row">
@@ -362,7 +392,7 @@ if ($statut_compte_oo != 3 && $statut_compte_oo != 4 && $statut_compte_oo != 5 &
 					value="<?php echo isset($insurance_data) ? htmlspecialchars($insurance_data['agency_office']) : ''; ?>" />
 			</div>
 		</div>
-		
+
 		<div class="row">
 			<div class="col-sm-6 style_color" style='margin-bottom: 15px;'>
 				<label>Nom de l'agence</label>
@@ -371,277 +401,246 @@ if ($statut_compte_oo != 3 && $statut_compte_oo != 4 && $statut_compte_oo != 5 &
 					value="<?php echo isset($insurance_data) ? htmlspecialchars($insurance_data['agency_name']) : ''; ?>" />
 			</div>
 
-		<div class="row">
-			<div class="col-sm-6 style_color" style='margin-bottom: 15px;'>
-				<label>Adresse de l'agence</label>
-				<input type="text" id='agency_address' name='agency_address' class="form-control"
-					placeholder="Adresse de l'agence"
-					value="<?php echo isset($insurance_data) ? htmlspecialchars($insurance_data['agency_address']) : ''; ?>" />
+			<div class="row">
+				<div class="col-sm-6 style_color" style='margin-bottom: 15px;'>
+					<label>Adresse de l'agence</label>
+					<input type="text" id='agency_address' name='agency_address' class="form-control"
+						placeholder="Adresse de l'agence"
+						value="<?php echo isset($insurance_data) ? htmlspecialchars($insurance_data['agency_address']) : ''; ?>" />
+				</div>
+				<div class="col-sm-6 style_color" style='margin-bottom: 15px;'>
+					<label>Pays de l'agence</label>
+					<input type="text" id='agency_country' name='agency_country' class="form-control"
+						placeholder="Pays de l'agence"
+						value="<?php echo isset($insurance_data) ? htmlspecialchars($insurance_data['agency_country']) : ''; ?>" />
+				</div>
 			</div>
-			<div class="col-sm-6 style_color" style='margin-bottom: 15px;'>
-				<label>Pays de l'agence</label>
-				<input type="text" id='agency_country' name='agency_country' class="form-control"
-					placeholder="Pays de l'agence"
-					value="<?php echo isset($insurance_data) ? htmlspecialchars($insurance_data['agency_country']) : ''; ?>" />
-			</div>
-		</div>
 
-		<div class="row">
-			<div class="col-sm-6 style_color" style='margin-bottom: 15px;'>
-				<label>Email de l'agence</label>
-				<input type="text" id='agency_email' name='agency_email' class="form-control"
-					placeholder="Email de l'agence"
-					value="<?php echo isset($insurance_data) ? htmlspecialchars($insurance_data['agency_email']) : ''; ?>" />
-			</div>
-			<div class="col-sm-6 style_color" style='margin-bottom: 15px;'>
-				<label>Validité</label>
-				<div class="row">
-					<div class="col-sm-6">
-						<label>Du</label>
-						<input type="date" id='valid_from_date' name='valid_from_date' class="form-control"
-							value="<?php echo isset($insurance_data) && !empty($insurance_data['valid_from']) ? date('Y-m-d', $insurance_data['valid_from']) : ''; ?>" />
-						<input type="hidden" id='valid_from' name='valid_from' 
-							value="<?php echo isset($insurance_data) ? htmlspecialchars($insurance_data['valid_from']) : ''; ?>" />
-					</div>
-					<div class="col-sm-6">
-						<label>Au</label>
-						<input type="date" id='valid_to_date' name='valid_to_date' class="form-control"
-							value="<?php echo isset($insurance_data) && !empty($insurance_data['valid_to']) ? date('Y-m-d', $insurance_data['valid_to']) : ''; ?>" />
-						<input type="hidden" id='valid_to' name='valid_to'
-							value="<?php echo isset($insurance_data) ? htmlspecialchars($insurance_data['valid_to']) : ''; ?>" />
+			<div class="row">
+				<div class="col-sm-6 style_color" style='margin-bottom: 15px;'>
+					<label>Email de l'agence</label>
+					<input type="text" id='agency_email' name='agency_email' class="form-control"
+						placeholder="Email de l'agence"
+						value="<?php echo isset($insurance_data) ? htmlspecialchars($insurance_data['agency_email']) : ''; ?>" />
+				</div>
+				<div class="col-sm-6 style_color" style='margin-bottom: 15px;'>
+					<label>Validité</label>
+					<div class="row">
+						<div class="col-sm-6">
+							<label>Du</label>
+							<input type="date" id='valid_from_date' name='valid_from_date' class="form-control"
+								value="<?php echo isset($insurance_data) && !empty($insurance_data['valid_from']) ? date('Y-m-d', $insurance_data['valid_from']) : ''; ?>" />
+							<input type="hidden" id='valid_from' name='valid_from'
+								value="<?php echo isset($insurance_data) ? htmlspecialchars($insurance_data['valid_from']) : ''; ?>" />
+						</div>
+						<div class="col-sm-6">
+							<label>Au</label>
+							<input type="date" id='valid_to_date' name='valid_to_date' class="form-control"
+								value="<?php echo isset($insurance_data) && !empty($insurance_data['valid_to']) ? date('Y-m-d', $insurance_data['valid_to']) : ''; ?>" />
+							<input type="hidden" id='valid_to' name='valid_to'
+								value="<?php echo isset($insurance_data) ? htmlspecialchars($insurance_data['valid_to']) : ''; ?>" />
+						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-	</div>
-
-	<div style='clear: both; margin-bottom: 15px;'></div>
-
-	<div class="background-white">
-		<hr />
-		<h2 class="style_color">Informations du permis de conduire</h2>
-		<hr />
-		
-		<!-- JavaScript for Driver License Date Conversion -->
-		<script>
-		$(document).ready(function() {
-			// License valid until date change handler - convert to Unix timestamp
-			$("#license_valid_until_date").change(function() {
-				if ($(this).val()) {
-					var timestamp = Math.floor(new Date($(this).val()).getTime() / 1000);
-					$("#license_valid_until").val(timestamp);
-					console.log("License valid until date converted to timestamp: " + timestamp);
-				} else {
-					$("#license_valid_until").val('');
-				}
-			});
-
-			// License issue date change handler - convert to Unix timestamp
-			$("#license_issue_date_display").change(function() {
-				if ($(this).val()) {
-					var timestamp = Math.floor(new Date($(this).val()).getTime() / 1000);
-					$("#license_issue_date").val(timestamp);
-					console.log("License issue date converted to timestamp: " + timestamp);
-				} else {
-					$("#license_issue_date").val('');
-				}
-			});
-
-			// Initialize date fields from timestamps on page load
-			function initializeLicenseDates() {
-				var validUntilTimestamp = $("#license_valid_until").val();
-				var issueDateTimestamp = $("#license_issue_date").val();
-				
-				if(validUntilTimestamp && validUntilTimestamp > 0) {
-					var date = new Date(validUntilTimestamp * 1000);
-					var dateString = date.toISOString().split('T')[0];
-					$("#license_valid_until_date").val(dateString);
-				}
-				
-				if(issueDateTimestamp && issueDateTimestamp > 0) {
-					var date = new Date(issueDateTimestamp * 1000);
-					var dateString = date.toISOString().split('T')[0];
-					$("#license_issue_date_display").val(dateString);
-				}
-			}
-			
-			// Initialize dates when page loads
-			initializeLicenseDates();
-		});
-		</script>
-
-		<div class="row">
-			<div class="col-sm-6 style_color" style='margin-bottom: 15px;'>
-				<label>Numéro de permis</label>
-				<input type="text" id='license_number' name='license_number' class="form-control"
-					placeholder="Numéro de permis"
-					value="<?php echo isset($driver_license_data['license_number']) ? htmlspecialchars($driver_license_data['license_number']) : ''; ?>" />
-			</div>
-			<div class="col-sm-6 style_color" style='margin-bottom: 15px;'>
-				<label>Catégorie</label>
-				<input type="text" id='license_category' name='license_category' class="form-control"
-					placeholder="Catégorie (A, B, etc.)"
-					value="<?php echo isset($driver_license_data['license_category']) ? htmlspecialchars($driver_license_data['license_category']) : ''; ?>" />
-			</div>
-		</div>
-
-		<div class="row">
-			<div class="col-sm-6 style_color" style='margin-bottom: 15px;'>
-				<label>Valide jusqu'au</label>
-				<input type="date" id='license_valid_until_date' name='license_valid_until_date' class="form-control"
-					value="<?php echo isset($driver_license_data['license_valid_until']) && !empty($driver_license_data['license_valid_until']) ? 
-					date('Y-m-d', $driver_license_data['license_valid_until']) : ''; ?>" />
-				<!-- Hidden field to store Unix timestamp -->
-				<input type="hidden" id='license_valid_until' name='license_valid_until'
-					value="<?php echo isset($driver_license_data['license_valid_until']) ? $driver_license_data['license_valid_until'] : ''; ?>" />
-			</div>
-			<div class="col-sm-6 style_color" style='margin-bottom: 15px;'>
-				<label>Date de délivrance</label>
-				<input type="date" id='license_issue_date_display' name='license_issue_date_display' class="form-control"
-					value="<?php echo isset($driver_license_data['license_issue_date']) && !empty($driver_license_data['license_issue_date']) ? 
-					date('Y-m-d', $driver_license_data['license_issue_date']) : ''; ?>" />
-				<!-- Hidden field to store Unix timestamp -->
-				<input type="hidden" id='license_issue_date' name='license_issue_date'
-					value="<?php echo isset($driver_license_data['license_issue_date']) ? $driver_license_data['license_issue_date'] : ''; ?>" />
-			</div>
-		</div>
-
-		<div class="row">
-			<div class="col-sm-6 style_color" style='margin-bottom: 15px;'>
-				<label>Lieu de délivrance</label>
-				<input type="text" id='license_issue_place' name='license_issue_place' class="form-control"
-					placeholder="Lieu de délivrance"
-					value="<?php echo isset($driver_license_data['license_issue_place']) ? htmlspecialchars($driver_license_data['license_issue_place']) : ''; ?>" />
-			</div>
-			<div class="col-sm-6 style_color" style='margin-bottom: 15px;'>
-				<label>Pays de délivrance</label>
-				<input type="text" id='license_country' name='license_country' class="form-control"
-					placeholder="Pays de délivrance"
-					value="<?php echo isset($driver_license_data['license_country']) ? htmlspecialchars($driver_license_data['license_country']) : ''; ?>" />
-			</div>
-		</div>
-
-		<div class="row">
-			<div class="col-sm-6 style_color" style='margin-bottom: 15px;'>
-				<label>Restrictions</label>
-				<input type="text" id='license_restrictions' name='license_restrictions' class="form-control"
-					placeholder="Restrictions éventuelles"
-					value="<?php echo isset($driver_license_data['license_restrictions']) ? htmlspecialchars($driver_license_data['license_restrictions']) : ''; ?>" />
-			</div>
-			<div class="col-sm-6 style_color" style='margin-bottom: 15px;'>
-				<label>Autorité de délivrance</label>
-				<input type="text" id='license_authority' name='license_authority' class="form-control"
-					placeholder="Autorité ayant délivré le permis"
-					value="<?php echo isset($driver_license_data['license_authority']) ? htmlspecialchars($driver_license_data['license_authority']) : ''; ?>" />
-			</div>
-		</div>
-	</div>
-
-	<div style='clear: both; margin-bottom: 15px;'></div>
-
-	<?php
-	if ($statut_compte_oo == 2 || $statut_compte_oo == 3 || $statut_compte_oo == 4 || $statut_compte_oo == 5 || $statut_compte_oo == 6) {
-	?>
 
 		<div style='clear: both; margin-bottom: 15px;'></div>
 
 		<div class="background-white">
 			<hr />
-			<h2 class="style_color"><?php echo "Informations"; ?></h2>
+			<h2 class="style_color">Informations du permis de conduire</h2>
 			<hr />
 
-			<div class="row style_color">
-				<div class="col-sm-6" style='margin-bottom: 15px;'>
-					<label>Nom société</label>
-					<input type="text" id='Nom_societe' name='Nom_societe' class="form-control"
-						placeholder="<?php echo "Nom société"; ?>*" value="<?php echo "$Nom_societe"; ?>"
-						style='<?php echo "$coloorpccc1telfixe"; ?>' />
+			<!-- JavaScript for Driver License Date Conversion -->
+			<script>
+				$(document).ready(function () {
+					// License valid until date change handler - convert to Unix timestamp
+					$("#license_valid_until_date").change(function () {
+						if ($(this).val()) {
+							var timestamp = Math.floor(new Date($(this).val()).getTime() / 1000);
+							$("#license_valid_until").val(timestamp);
+							console.log("License valid until date converted to timestamp: " + timestamp);
+						} else {
+							$("#license_valid_until").val('');
+						}
+					});
+
+					// License issue date change handler - convert to Unix timestamp
+					$("#license_issue_date_display").change(function () {
+						if ($(this).val()) {
+							var timestamp = Math.floor(new Date($(this).val()).getTime() / 1000);
+							$("#license_issue_date").val(timestamp);
+							console.log("License issue date converted to timestamp: " + timestamp);
+						} else {
+							$("#license_issue_date").val('');
+						}
+					});
+
+					// Initialize date fields from timestamps on page load
+					function initializeLicenseDates() {
+						var validUntilTimestamp = $("#license_valid_until").val();
+						var issueDateTimestamp = $("#license_issue_date").val();
+
+						if (validUntilTimestamp && validUntilTimestamp > 0) {
+							var date = new Date(validUntilTimestamp * 1000);
+							var dateString = date.toISOString().split('T')[0];
+							$("#license_valid_until_date").val(dateString);
+						}
+
+						if (issueDateTimestamp && issueDateTimestamp > 0) {
+							var date = new Date(issueDateTimestamp * 1000);
+							var dateString = date.toISOString().split('T')[0];
+							$("#license_issue_date_display").val(dateString);
+						}
+					}
+
+					// Initialize dates when page loads
+					initializeLicenseDates();
+				});
+			</script>
+
+			<div class="row">
+				<div class="col-sm-6 style_color" style='margin-bottom: 15px;'>
+					<label>Numéro de permis</label>
+					<input type="text" id='license_number' name='license_number' class="form-control"
+						placeholder="Numéro de permis"
+						value="<?php echo isset($driver_license_data['license_number']) ? htmlspecialchars($driver_license_data['license_number']) : ''; ?>" />
 				</div>
-
-
-				<div class="col-sm-6" style='margin-bottom: 15px;'>
-					<label>Siret</label>
-					<input type="text" id='Numero_identification' name='Numero_identification' class="form-control"
-						placeholder="<?php echo "Siret"; ?>" value="<?php echo "$Numero_identification"; ?>"
-						style='<?php echo "$coloorpccc1portable"; ?>' />
+				<div class="col-sm-6 style_color" style='margin-bottom: 15px;'>
+					<label>Catégorie</label>
+					<input type="text" id='license_category' name='license_category' class="form-control"
+						placeholder="Catégorie (A, B, etc.)"
+						value="<?php echo isset($driver_license_data['license_category']) ? htmlspecialchars($driver_license_data['license_category']) : ''; ?>" />
 				</div>
 			</div>
 
+			<div class="row">
+				<div class="col-sm-6 style_color" style='margin-bottom: 15px;'>
+					<label>Valide jusqu'au</label>
+					<input type="date" id='license_valid_until_date' name='license_valid_until_date'
+						class="form-control" value="<?php echo isset($driver_license_data['license_valid_until']) && !empty($driver_license_data['license_valid_until']) ?
+							date('Y-m-d', $driver_license_data['license_valid_until']) : ''; ?>" />
+					<!-- Hidden field to store Unix timestamp -->
+					<input type="hidden" id='license_valid_until' name='license_valid_until'
+						value="<?php echo isset($driver_license_data['license_valid_until']) ? $driver_license_data['license_valid_until'] : ''; ?>" />
+				</div>
+				<div class="col-sm-6 style_color" style='margin-bottom: 15px;'>
+					<label>Date de délivrance</label>
+					<input type="date" id='license_issue_date_display' name='license_issue_date_display'
+						class="form-control" value="<?php echo isset($driver_license_data['license_issue_date']) && !empty($driver_license_data['license_issue_date']) ?
+							date('Y-m-d', $driver_license_data['license_issue_date']) : ''; ?>" />
+					<!-- Hidden field to store Unix timestamp -->
+					<input type="hidden" id='license_issue_date' name='license_issue_date'
+						value="<?php echo isset($driver_license_data['license_issue_date']) ? $driver_license_data['license_issue_date'] : ''; ?>" />
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-sm-6 style_color" style='margin-bottom: 15px;'>
+					<label>Lieu de délivrance</label>
+					<input type="text" id='license_issue_place' name='license_issue_place' class="form-control"
+						placeholder="Lieu de délivrance"
+						value="<?php echo isset($driver_license_data['license_issue_place']) ? htmlspecialchars($driver_license_data['license_issue_place']) : ''; ?>" />
+				</div>
+				<div class="col-sm-6 style_color" style='margin-bottom: 15px;'>
+					<label>Pays de délivrance</label>
+					<input type="text" id='license_country' name='license_country' class="form-control"
+						placeholder="Pays de délivrance"
+						value="<?php echo isset($driver_license_data['license_country']) ? htmlspecialchars($driver_license_data['license_country']) : ''; ?>" />
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-sm-6 style_color" style='margin-bottom: 15px;'>
+					<label>Restrictions</label>
+					<input type="text" id='license_restrictions' name='license_restrictions' class="form-control"
+						placeholder="Restrictions éventuelles"
+						value="<?php echo isset($driver_license_data['license_restrictions']) ? htmlspecialchars($driver_license_data['license_restrictions']) : ''; ?>" />
+				</div>
+				<div class="col-sm-6 style_color" style='margin-bottom: 15px;'>
+					<label>Autorité de délivrance</label>
+					<input type="text" id='license_authority' name='license_authority' class="form-control"
+						placeholder="Autorité ayant délivré le permis"
+						value="<?php echo isset($driver_license_data['license_authority']) ? htmlspecialchars($driver_license_data['license_authority']) : ''; ?>" />
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div style='clear: both; margin-bottom: 15px;'></div>
+	<?php 
+	} 
+	?>
+
+		<?php
+		if ($modif != "oui") {
+			?>
+			<div class="row style_color">
+				<label class="control-label col-sm-6"></label>
+				<div class="col-sm-10">
+					<div class="checkbox">
+						<label> <input id='cbb' name='cbb' type="checkbox" checked="checked"
+								value='1' /><?php echo "Je m'inscris à la newsletter"; ?></label>
+					</div>
+				</div>
+			</div>
+			<?php
+		}
+
+		//////////////////////////////////////SI LES CONDITIONS GENERALES EXISTES
+		if (!empty($lien_conditions_generales_compte)) {
+			?>
+			<div style="clear: both;"></div>
+			<div class="row">
+				<div class="col-sm-12" style="margin-bottom: 15px;">
+					<?php echo "$lien_conditions_generales_compte"; ?></a>
+				</div>
+			</div>
+			<?php
+		}
+		?>
+
+		<div class="row">
+			<div class="col-sm-12">
+				<b style="font-weight : normal;">"Les données collectées par la plateforme sont nécessaires pour
+					compléter
+					votre profil. Vous disposez d'un droit d'accès, de rectification, d'opposition, de limitation du
+					traitement, de suppression, de portabilité.
+					Pour plus d'informations consultez notre <a class="style_color" href="/Traitements-de-mes-donnees"
+						target="_blank">politique de confidentialité</a>"</b>
+			</div>
 		</div>
 
-		<div style='clear: both; margin-bottom: 15px;'></div>
 
-	<?php
-	}
-	?>
-
-	<?php
-	if ($modif != "oui") {
-	?>
 		<div class="row style_color">
 			<label class="control-label col-sm-6"></label>
 			<div class="col-sm-10">
-				<div class="checkbox">
-					<label> <input id='cbb' name='cbb' type="checkbox" checked="checked"
-							value='1' /><?php echo "Je m'inscris à la newsletter"; ?></label>
-				</div>
+				<small><?php echo "P.S : Tous les champs précédés d'une étoile (*) doivent être obligatoirement remplis."; ?></small>
 			</div>
 		</div>
-	<?php
-	}
 
-	//////////////////////////////////////SI LES CONDITIONS GENERALES EXISTES
-	if (!empty($lien_conditions_generales_compte)) {
-	?>
 		<div style="clear: both;"></div>
-		<div class="row">
-			<div class="col-sm-12" style="margin-bottom: 15px;">
-				<?php echo "$lien_conditions_generales_compte"; ?></a>
+
+		<div class="row" style="margin-top: 15px;">
+			<div class="col-sm-12" style="text-align: center;">
+				<?php
+				if ($modif != "oui") {
+					?>
+					<button type='button' id='creation_post' class='btn btn-default btn-white w-space btn-couleur'
+						style='text-align: center; display: inline-block;' onclick="return false;">ENREGISTRER</button>
+					<?php
+				} else {
+					?>
+					<button type='button' id='modification_post' class='btn btn-default btn-white w-space btn-couleur'
+						style='text-align: center; display: inline-block;' onclick="return false;">ENREGISTRER</button>
+					<?php
+				}
+				?>
 			</div>
 		</div>
-	<?php
-	}
-	?>
 
-	<div class="row">
-		<div class="col-sm-12">
-			<b style="font-weight : normal;">"Les données collectées par la plateforme sont nécessaires pour compléter
-				votre profil. Vous disposez d'un droit d'accès, de rectification, d'opposition, de limitation du
-				traitement, de suppression, de portabilité.
-				Pour plus d'informations consultez notre <a class="style_color" href="/Traitements-de-mes-donnees"
-					target="_blank">politique de confidentialité</a>"</b>
-		</div>
 	</div>
 
 
-	<div class="row style_color">
-		<label class="control-label col-sm-6"></label>
-		<div class="col-sm-10">
-			<small><?php echo "P.S : Tous les champs précédés d'une étoile (*) doivent être obligatoirement remplis."; ?></small>
-		</div>
-	</div>
-
-	<div style="clear: both;"></div>
-
-	<div class="row" style="margin-top: 15px;">
-		<div class="col-sm-12" style="text-align: center;">
-			<?php
-			if ($modif != "oui") {
-			?>
-				<button type='button' id='creation_post' class='btn btn-default btn-white w-space btn-couleur'
-					style='text-align: center; display: inline-block;' onclick="return false;">ENREGISTRER</button>
-			<?php
-			} else {
-			?>
-				<button type='button' id='modification_post' class='btn btn-default btn-white w-space btn-couleur'
-					style='text-align: center; display: inline-block;' onclick="return false;">ENREGISTRER</button>
-			<?php
-			}
-			?>
-		</div>
-	</div>
-
-</div>
-
-
-<div style='clear: both; margin-bottom: 20px;'></div>
+	<div style='clear: both; margin-bottom: 20px;'></div>

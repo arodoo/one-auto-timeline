@@ -77,7 +77,6 @@ if (!empty($_SESSION['4M8e7M5b1R2e8s']) && !empty($user)) {
 	departement=?, 
 	ville=?,
 	nom_professionnel=?,
-	nom_commercial=?,
 	longitude=?,
 	latitude=?
 	WHERE pseudo=?");
@@ -97,7 +96,7 @@ if (!empty($_SESSION['4M8e7M5b1R2e8s']) && !empty($user)) {
 				htmlspecialchars($departement),
 				htmlspecialchars($Ville),
 				htmlspecialchars($Nom_societe),
-				htmlspecialchars($nom_commercial),
+/* 				htmlspecialchars($nom_commercial), */
 				$coordonnees['longitude'],
 				$coordonnees['latitude'],
 				$user
@@ -162,7 +161,7 @@ if (!empty($_SESSION['4M8e7M5b1R2e8s']) && !empty($user)) {
 					$req_check->execute(array($id_oo));
 					$exists = $req_check->fetch();
 					$req_check->closeCursor();
-					
+
 					if ($exists) {
 						// Update existing record
 						$sql_update = $bdd->prepare("UPDATE membres_insurance SET 
@@ -235,7 +234,7 @@ if (!empty($_SESSION['4M8e7M5b1R2e8s']) && !empty($user)) {
 					$req_check->execute(array($id_oo));
 					$exists = $req_check->fetch();
 					$req_check->closeCursor();
-					
+
 					if ($exists) {
 						// Update existing record
 						$sql_update = $bdd->prepare("UPDATE membres_driver_license SET 
@@ -287,7 +286,7 @@ if (!empty($_SESSION['4M8e7M5b1R2e8s']) && !empty($user)) {
 						));
 						$sql_insert->closeCursor();
 					}
-					
+
 					error_log("Driver license data saved successfully for user ID: " . $id_oo);
 				} catch (Exception $e) {
 					error_log("Error saving driver license data: " . $e->getMessage());

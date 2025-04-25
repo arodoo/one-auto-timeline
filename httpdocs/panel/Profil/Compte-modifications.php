@@ -34,7 +34,7 @@ if (!empty($_SESSION['4M8e7M5b1R2e8s']) && !empty($user)) {
 	} catch (Exception $e) {
 		error_log("Error loading insurance data: " . $e->getMessage());
 	}
-	
+
 	// Load driver license data for this user
 	$driver_license_data = [];
 	try {
@@ -48,58 +48,58 @@ if (!empty($_SESSION['4M8e7M5b1R2e8s']) && !empty($user)) {
 		error_log("Error loading driver license data: " . $e->getMessage());
 	}
 
-?>
+	?>
 
 	<script>
-		$(document).ready(function() {
-            // Insurance date handling code
-            // Handle conversion between date inputs and Unix timestamps
-            function initializeInsuranceDates() {
-                // Initialize date fields from timestamps when page loads
-                var fromTimestamp = $("#valid_from").val();
-                var toTimestamp = $("#valid_to").val();
-                
-                if(fromTimestamp && fromTimestamp > 0) {
-                    var date = new Date(fromTimestamp * 1000);
-                    var dateString = date.getFullYear() + '-' + 
-                                    String(date.getMonth() + 1).padStart(2, '0') + '-' + 
-                                    String(date.getDate()).padStart(2, '0');
-                    $("#valid_from_date").val(dateString);
-                    console.log("Initialized from date: " + fromTimestamp + " -> " + dateString);
-                }
-                
-                if(toTimestamp && toTimestamp > 0) {
-                    var date = new Date(toTimestamp * 1000);
-                    var dateString = date.getFullYear() + '-' + 
-                                    String(date.getMonth() + 1).padStart(2, '0') + '-' + 
-                                    String(date.getDate()).padStart(2, '0');
-                    $("#valid_to_date").val(dateString);
-                    console.log("Initialized to date: " + toTimestamp + " -> " + dateString);
-                }
-            }
-            
-            // Call initialization function
-            initializeInsuranceDates();
+		$(document).ready(function () {
+			// Insurance date handling code
+			// Handle conversion between date inputs and Unix timestamps
+			function initializeInsuranceDates() {
+				// Initialize date fields from timestamps when page loads
+				var fromTimestamp = $("#valid_from").val();
+				var toTimestamp = $("#valid_to").val();
+
+				if (fromTimestamp && fromTimestamp > 0) {
+					var date = new Date(fromTimestamp * 1000);
+					var dateString = date.getFullYear() + '-' +
+						String(date.getMonth() + 1).padStart(2, '0') + '-' +
+						String(date.getDate()).padStart(2, '0');
+					$("#valid_from_date").val(dateString);
+					console.log("Initialized from date: " + fromTimestamp + " -> " + dateString);
+				}
+
+				if (toTimestamp && toTimestamp > 0) {
+					var date = new Date(toTimestamp * 1000);
+					var dateString = date.getFullYear() + '-' +
+						String(date.getMonth() + 1).padStart(2, '0') + '-' +
+						String(date.getDate()).padStart(2, '0');
+					$("#valid_to_date").val(dateString);
+					console.log("Initialized to date: " + toTimestamp + " -> " + dateString);
+				}
+			}
+
+			// Call initialization function
+			initializeInsuranceDates();
 
 			// AJAX SOUMISSION DU FORMULAIRE - MODIFIER 
-			$(document).on("click", "#modification_post", function() {
+			$(document).on("click", "#modification_post", function () {
 				// Convert date inputs to timestamps before form submission
-                var fromDate = $("#valid_from_date").val();
-                var toDate = $("#valid_to_date").val();
-                
-                // Convert to timestamps if dates are provided
-                if(fromDate) {
-                    var timestamp = Math.floor(new Date(fromDate).getTime() / 1000);
-                    $("#valid_from").val(timestamp);
-                    console.log("From date converted: " + fromDate + " -> " + timestamp);
-                }
-                
-                if(toDate) {
-                    var timestamp = Math.floor(new Date(toDate).getTime() / 1000);
-                    $("#valid_to").val(timestamp);
-                    console.log("To date converted: " + toDate + " -> " + timestamp);
-                }
-                
+				var fromDate = $("#valid_from_date").val();
+				var toDate = $("#valid_to_date").val();
+
+				// Convert to timestamps if dates are provided
+				if (fromDate) {
+					var timestamp = Math.floor(new Date(fromDate).getTime() / 1000);
+					$("#valid_from").val(timestamp);
+					console.log("From date converted: " + fromDate + " -> " + timestamp);
+				}
+
+				if (toDate) {
+					var timestamp = Math.floor(new Date(toDate).getTime() / 1000);
+					$("#valid_to").val(timestamp);
+					console.log("To date converted: " + toDate + " -> " + timestamp);
+				}
+
 				var form = $("#formulaire_inscription")[0];
 				var formData = new FormData(form);
 
@@ -117,10 +117,10 @@ if (!empty($_SESSION['4M8e7M5b1R2e8s']) && !empty($user)) {
 					contentType: false,
 					dataType: "json",
 
-					success: function(res) {
+					success: function (res) {
 						if (res.retour_validation == "ok") {
 							popup_alert(res.Texte_rapport, "green filledlight", "#009900", "uk-icon-check");
-							setTimeout(function() {
+							setTimeout(function () {
 								<?php if ($statut_compte_oo == 1 && $platine != "oui" && $premium != "oui") { ?>
 									$(location).attr("href", "/Formules");
 								<?php } elseif ($statut_compte_oo == 1) { ?>
@@ -139,14 +139,14 @@ if (!empty($_SESSION['4M8e7M5b1R2e8s']) && !empty($user)) {
 
 
 			//AFFICHE INFORMATIONS MOT DE PASSE
-			$(document).on("click", "#password", function() {
+			$(document).on("click", "#password", function () {
 				$('#rappot_mot_de_passe_nouveau').css("display", "");
 			});
 
 		});
 	</script>
 
-<?php
+	<?php
 	///////////////////////////////SELECT
 	$req_select = $bdd->prepare("SELECT * FROM membres WHERE pseudo=?");
 	$req_select->execute(array($user));
@@ -179,7 +179,7 @@ if (!empty($_SESSION['4M8e7M5b1R2e8s']) && !empty($user)) {
 	$pays_naissance = $ligne_select['pays_naissance'];
 	$datenaissance = $ligne_select['datenaissance'];
 
-	$nom_commercial = $ligne_select['nom_commercial'];
+/* 	$nom_commercial = $ligne_select['nom_commercial']; */
 
 	///////////////////////////////SELECT
 	$req_select = $bdd->prepare("SELECT * FROM membres_professionnel WHERE pseudo=?");

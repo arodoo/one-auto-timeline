@@ -1,0 +1,24 @@
+
+        SELECT 
+            i.id AS image_id,
+            i.nom_image AS image_name,
+            s.id AS service_id,
+            s.title AS service_title,
+            s.description AS service_description,
+            s.specialite AS service_specialite,
+            s.pseudo
+        FROM 
+            membres_services_images i
+        INNER JOIN 
+            membres_services s
+        ON 
+            i.id_annonce_service = s.id
+        WHERE 
+            s.statut = 'activé'
+     AND (s.title LIKE :mots_cles OR s.description LIKE :mots_cles) AND s.id_categorie = :id_categorie AND s.id_departement = :id_departement GROUP BY s.id ORDER BY s.id DESC LIMIT :limit OFFSET :offset
+Array
+(
+    [:mots_cles] => %Hybride%
+    [:id_categorie] => 
+    [:id_departement] => 
+)
