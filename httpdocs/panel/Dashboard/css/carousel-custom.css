@@ -35,3 +35,18 @@
   background-color: #fff !important;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
+
+/* Style for the "Voir détails" button - center it horizontally while keeping its size */
+.card-footer.text-center {
+  text-align: center;
+}
+
+/* Style for the "Voir toutes les annonces" button - full width with padding */
+.btn-view-all {
+  display: block;
+  width: 100%;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  margin-top: 0.5rem;
+  text-align: center;
+}

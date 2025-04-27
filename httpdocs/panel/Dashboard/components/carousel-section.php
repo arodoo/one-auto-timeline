@@ -15,7 +15,7 @@
                 </div>
             </div>
             <div class="card-footer">
-                <a href="/Annonces" class="btn btn-link">Voir toutes les annonces</a>
+                <a href="/Annonces" class="btn btn-link btn-view-all">Voir toutes les annonces</a>
             </div>
         </div>
     </div>
@@ -36,7 +36,7 @@
                 </div>
             </div>
             <div class="card-footer">
-                <a href="/Services" class="btn btn-link">Voir tous les services</a>
+                <a href="/Services" class="btn btn-link btn-view-all">Voir tous les services</a>
             </div>
         </div>
     </div>
@@ -57,7 +57,7 @@
                 </div>
             </div>
             <div class="card-footer">
-                <a href="/Centres-controles-techniques" class="btn btn-link">Voir tous les centres</a>
+                <a href="/Centres-controles-techniques" class="btn btn-link btn-view-all">Voir tous les centres</a>
             </div>
         </div>
     </div>

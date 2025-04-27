@@ -52,7 +52,7 @@ $(document).ready(function() {
                                             <h5 class="card-title">${title}</h5>
                                             <p class="card-text">${description.substring(0, 80)}${description.length > 80 ? '...' : ''}</p>
                                         </div>
-                                        <div class="card-footer">
+                                        <div class="card-footer text-center">
                                             <a href="${detailUrl}" class="btn btn-sm btn-primary">Voir détails</a>
                                         </div>
                                     </div>
