@@ -1,0 +1,37 @@
+/* Custom styles for Owl Carousel navigation */
+.owl-nav {
+  position: absolute;
+  width: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  left: 0;
+  margin-top: 0;
+  pointer-events: none; /* Allow clicking through the nav container */
+}
+
+.owl-prev, .owl-next {
+  position: absolute;
+  pointer-events: auto; /* Make buttons clickable */
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.8) !important;
+  border-radius: 50% !important;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.owl-prev {
+  left: -20px;
+}
+
+.owl-next {
+  right: -20px;
+}
+
+.owl-prev:hover, .owl-next:hover {
+  background-color: #fff !important;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
