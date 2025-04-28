@@ -49,9 +49,10 @@
 						<?php
 							//////////////////////////////////SI ADMIN
 							if($admin_oo > 0 ){
-								echo "<li class='dropdown-item' ><a class='test' href='/administration/index-admin.php' ><span class='uk-icon-cogs'></span> Admin</a><li>";
+								echo "<li><a class='test' href='/administration/index-admin.php'><span class='uk-icon-cogs'></span> Admin</a></li>";
 							}									
-							?>
+						?>
+						<?php /* 
 								<li><a href="<?php echo "$http"; ?><?php echo "$nomsiteweb"; ?>/Gestion-de-votre-compte.html" title="<?php echo "Mes informations"; ?>"><?php echo "Mes informations"; ?> </a></li>
 								<li><a href="<?php echo "$http"; ?><?php echo "$nomsiteweb"; ?>/<?php echo "Avatar"; ?>" title="<?php echo "Logo"; ?>"><?php echo "Logo"; ?></a></li>
 								<?php
@@ -62,6 +63,7 @@
 								}
 								?>
 								<li><a href="<?php echo "$http"; ?><?php echo "$nomsiteweb"; ?>/Messagerie.html" title="<?php echo "Messagerie"; ?>"><?php echo "Messagerie"; ?> <span class="badge badge-primary" ><?php echo $total_message_non_lu; ?></span></a></li>
+						*/ ?>
 								<li><a id='Deconnexion' class='Deconnexion' href='#'>Déconnexion</a></li>
 							</ul>
 						</li>
