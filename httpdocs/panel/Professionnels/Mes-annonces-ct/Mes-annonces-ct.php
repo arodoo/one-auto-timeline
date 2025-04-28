@@ -15,7 +15,7 @@ ob_start();
  *                                                     *
  * Copyright ... Tous droits réservés auteur (Fabien B)*
   \*****************************************************/
-
+var_dump(  $user);
 if (!empty($_SESSION['4M8e7M5b1R2e8s']) && !empty($user)) {
 
 
@@ -267,7 +267,11 @@ if (!empty($_SESSION['4M8e7M5b1R2e8s']) && !empty($user)) {
                   if ($action == 'modifier') {
                     foreach ($images as $image) {
                       if ($image['numero'] == $i) {
-                        echo '<a href="/images/membres/' . $user . '/' . $image['nom_image'] . '" target="_blank">' . $image['nom_image'] . '</a>';
+                        if (!empty($user)) {
+                          echo '<a href="/images/membres/' . $user . '/' . $image['nom_image'] . '" target="_blank">' . $image['nom_image'] . '</a>';
+                        } else {
+                          echo '<span>' . $image['nom_image'] . ' (Chemin d\'accès non disponible)</span>';
+                        }
                       }
                     }
                   }
@@ -277,7 +281,6 @@ if (!empty($_SESSION['4M8e7M5b1R2e8s']) && !empty($user)) {
             </div>
           </form>
         </div>
-        <?php ob_end_flush(); ?>
 
         <form id='formulaire-modifier' method="post" enctype="multipart/form-data">
           <input id="action" type="hidden" name="action" value="modifier-action">
@@ -320,7 +323,11 @@ if (!empty($_SESSION['4M8e7M5b1R2e8s']) && !empty($user)) {
                     if ($action == 'modifier') {
                       foreach ($images as $image) {
                         if ($image['numero'] == $i) {
-                          echo '<a href="/images/membres/' . $user . '/' . $image['nom_image'] . '" target="_blank">' . $image['nom_image'] . '</a>';
+                          if (!empty($user)) {
+                            echo '<a href="/images/membres/' . $user . '/' . $image['nom_image'] . '" target="_blank">' . $image['nom_image'] . '</a>';
+                          } else {
+                            echo '<span>' . $image['nom_image'] . ' (Chemin d\'accès non disponible)</span>';
+                          }
                         }
                       }
                     }
@@ -330,7 +337,6 @@ if (!empty($_SESSION['4M8e7M5b1R2e8s']) && !empty($user)) {
               </div>
             </form>
           </div>
-          <?php ob_end_flush(); ?>
 
           <form id='formulaire-ajouter' method="post" enctype="multipart/form-data">
             <input id="action" type="hidden" name="action" value="ajouter-action">
@@ -459,5 +465,4 @@ if (!empty($_SESSION['4M8e7M5b1R2e8s']) && !empty($user)) {
   } else {
     header('location: /');
   }
-  ob_end_flush();
 ?>
