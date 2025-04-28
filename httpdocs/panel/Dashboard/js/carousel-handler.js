@@ -31,17 +31,39 @@ $(document).ready(function() {
                             const title = item.title || 'Sans titre';
                             const description = item.description || 'Aucune description disponible';
                             
-                            // Fix URL format to match https://mon-espace-auto.com/Fiche/{user-type}/{user-id}
+                            // Create URL-friendly slug from title
+                            const titleSlug = createSlug(title);
+                            
+                            // Create URL based on item type
                             let detailUrl = '#';
-                            if (item.id && item.type_account) {
-                                // Format the user type for URL (lowercase, replace spaces with hyphens)
-                                const formattedType = formatUserTypeForUrl(item.type_account);
-                                detailUrl = `https://mon-espace-auto.com/Fiche/${formattedType}/${item.id}`;
-                            } else if (item.id_membre) {
-                                // If we have a member ID but not type, fetch from default URL with ID
-                                detailUrl = `https://mon-espace-auto.com/Fiche/utilisateur/${item.id_membre}`;
+                            if (type === 'mechanics') {
+                                detailUrl = `/Page-annonce/${titleSlug}/${item.id}`;
+                            } else if (type === 'services') {
+                                detailUrl = `/Page-service/${titleSlug}/${item.id}`;
+                            } else if (type === 'control') {
+                                detailUrl = `/Page-centre-controle-technique/${titleSlug}/${item.id}`;
                             } else if (item.url) {
-                                detailUrl = item.url;
+                                // If it's already a complete URL, make sure it's properly formatted
+                                if (item.url.startsWith('http')) {
+                                    detailUrl = item.url;
+                                } else {
+                                    // Extract the ID from the URL if it's in query parameter format
+                                    const match = item.url.match(/[\?&]id=(\d+)/);
+                                    if (match && match[1]) {
+                                        const id = match[1];
+                                        if (type === 'mechanics' || item.url.includes('annonce')) {
+                                            detailUrl = `/Page-annonce/${titleSlug}/${id}`;
+                                        } else if (type === 'services' || item.url.includes('service')) {
+                                            detailUrl = `/Page-service/${titleSlug}/${id}`;
+                                        } else if (type === 'control' || item.url.includes('controle')) {
+                                            detailUrl = `/Page-centre-controle-technique/${titleSlug}/${id}`;
+                                        } else {
+                                            detailUrl = `/${item.url.replace(/^\//, '')}`;
+                                        }
+                                    } else {
+                                        detailUrl = `/${item.url.replace(/^\//, '')}`;
+                                    }
+                                }
                             }
                             
                             const carouselItem = `
@@ -53,7 +75,7 @@ $(document).ready(function() {
                                             <p class="card-text">${description.substring(0, 80)}${description.length > 80 ? '...' : ''}</p>
                                         </div>
                                         <div class="card-footer text-center">
-                                            <a href="${detailUrl}" class="btn btn-sm btn-primary">Voir détails</a>
+                                            <a href="${detailUrl}" target="_blank" class="btn btn-sm btn-primary">Voir détails</a>
                                         </div>
                                     </div>
                                 </div>
@@ -94,6 +116,16 @@ $(document).ready(function() {
                 console.error('Error loading carousel data:', error);
             }
         });
+    }
+    
+    // Helper function to create URL slugs - matches the PHP implementation
+    function createSlug(string) {
+        if (!string) return '';
+        return string.toLowerCase()
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '')  // Remove accents
+            .replace(/[^a-z0-9]+/g, '-')      // Replace non-alphanumeric with hyphens
+            .replace(/^-+|-+$/g, '');         // Remove leading/trailing hyphens
     }
     
     // Helper function to format user type for URL
