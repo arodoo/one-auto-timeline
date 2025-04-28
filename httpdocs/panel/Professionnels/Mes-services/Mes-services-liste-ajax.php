@@ -9,6 +9,11 @@ require_once('../../../Configurations_modules.php');
 $dir_fonction= "../../../";
 require_once('../../../function/INCLUDE-FUNCTION-HAUT-CMS-CODI-ONE.php');
 
+// Create a URL-friendly slug from the service name
+function createSlug($string) {
+    return strtolower(preg_replace('/[^A-Za-z0-9-]+/', '-', $string));
+}
+
 $lasturl = $_SERVER['HTTP_REFERER'];
 
   /*****************************************************\
@@ -144,9 +149,10 @@ $req_select->execute(array($ligne_boucle['id_categorie']));
 $ligne_select = $req_select->fetch();
 $req_select->closeCursor();
 
+$title_slug = createSlug($ligne_boucle['nom']);
 ?>
 <tr class='odd'>
-<td class='dtr-control' style='text-align: center;'><a href="/<?php echo $ligne_boucle['lien']; ?>" target="blank_" ><?php echo $ligne_boucle['nom']; ?></a></td>
+<td class='dtr-control' style='text-align: center;'><a href="/Page-service/<?php echo $title_slug; ?>/<?php echo $idoneinfos; ?>" target="_blank"><?php echo $ligne_boucle['nom']; ?></a></td>
 <td style='text-align: center;'><?php echo $ligne_select['nom_categorie']; ?></td>
 <td style='text-align: center;'><?php if (!empty($ligne_boucle['date'])) { echo date('d-m-Y', $ligne_boucle['date']); } else { echo "--"; } ?></td>
 <td style='text-align: center;'>

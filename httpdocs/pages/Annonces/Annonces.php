@@ -112,7 +112,7 @@ function lettre_sans_accent($chaine)
 										<div class="new-arrival-product">
 											<div class="new-arrivals-img-contnent">
 												<a href="/Page-annonce/${cleanTitle}/${annonce.annonce_id}" title="${annonce.annonce_title}">
-													<img class="img-fluid" src="/images/membres/${annonce.pseudo}/${annonce.image_name}" alt="${annonce.annonce_title}">
+													<img class="img-fluid" src="/images/membres/${annonce.pseudo}/${annonce.image_name}" alt="${annonce.annonce_title}" onerror="this.onerror=null; this.src='/images/no-avatar.png';">
 												</a>
 											</div>
 											<div class="new-arrival-content text-center mt-3">
@@ -257,7 +257,7 @@ function lettre_sans_accent($chaine)
 							<a href="/Page-annonce/<?= htmlspecialchars($cleanTitle) ?>/<?= htmlspecialchars($annonce['annonce_id']) ?>"
 								title="<?= htmlspecialchars($annonce['annonce_title']) ?>">
 								<img class="img-fluid" src="/images/membres/<?= htmlspecialchars($annonce['pseudo']) ?>/<?= htmlspecialchars($annonce['image_name']) ?>"
-									alt="<?= htmlspecialchars($annonce['annonce_title']) ?>">
+									alt="<?= htmlspecialchars($annonce['annonce_title']) ?>" onerror="this.onerror=null; this.src='/images/no-avatar.png';">
 							</a>
 						</div>
 						<div class="new-arrival-content text-center mt-3">
