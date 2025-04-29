@@ -113,6 +113,10 @@ case "modifier-profil-photo":include("panel/Avatar/Avatar-profil-photo.php");bre
 
 //panel / Profil-automobile
 case "Profil-automobile":include ("panel/Profil-automobile/Profil-automobile.php");break;
+case "Mes-vehicules":include ("panel/Profil-automobile/mes-vehicules.php");break;
+case "Profil-automobile-ajouter":include ("panel/Profil-automobile/Profil-automobile.php");break;
+case "Profil-automobile-modifier":include ("panel/Profil-automobile/Profil-automobile.php");break;
+case "Vehicule-manuel":include ("panel/Profil-automobile/vehicule-manuel.php");break;
 
 //panel / Mes-devis
 case "Mes-devis":include ("panel/Mes-devis/Mes-devis.php");break;

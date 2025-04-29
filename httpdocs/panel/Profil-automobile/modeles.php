@@ -1,56 +1,59 @@
 <?php
 ob_start();
-////INCLUDES CONFIGURATIONS CMS CODI ONE
+// INCLUDES CONFIGURATIONS CMS CODI ONE
 require_once('../../Configurations_bdd.php');
 require_once('../../Configurations.php');
 require_once('../../Configurations_modules.php');
 
-////INCLUDE FUNCTION HAUT CMS CODI ONE
 $dir_fonction = "../../";
 require_once('../../function/INCLUDE-FUNCTION-HAUT-CMS-CODI-ONE.php');
 
-$lasturl = $_SERVER['HTTP_REFERER'];
-
-/*****************************************************\
-* Adresse e-mail => direction@codi-one.fr             *
-* La conception est assujettie à une autorisation     *
-* spéciale de codi-one.com. Si vous ne disposez pas de*
-* cette autorisation, vous êtes dans l'illégalité.    *
-* L'auteur de la conception est et restera            *
-* codi-one.fr                                         *
-* Codage, script & images (all contenu) sont réalisés * 
-* par codi-one.fr                                     *
-* La conception est à usage unique et privé.          *
-* La tierce personne qui utilise le script se porte   *
-* garante de disposer des autorisations nécessaires   *
-*                                                     *
-* Copyright ... Tous droits réservés auteur (Fabien B)*
-\*****************************************************/
-
-if (isset($_POST['marque'])) {
-
-    $marque = $_POST['marque'];
-
-    // Récupérer les valeurs de la base de données
-    $req_select = $bdd->prepare("SELECT * FROM membres_profil_auto WHERE id_membre = ?");
-    $req_select->execute(array($id_oo));
-    $ligne_select = $req_select->fetch();
-    $req_select->closeCursor();
-    $model = $ligne_select['model'];
-
-    // Requête pour obtenir les modèles liés à la marque
-    $sql = "SELECT modele FROM configurations_modeles WHERE rappel_marque = :marque";
-    $stmt = $bdd->prepare($sql);
-    $stmt->bindParam(':marque', $marque, PDO::PARAM_STR);
-    $stmt->execute();
-    $options = '<option value="">Sélectionnez un modèle</option>';
-    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-        $selected = ($row['modele'] == $model) ? 'selected' : '';
-        $options .= '<option value="' . htmlspecialchars($row['modele']) . '" ' . $selected . '>' . htmlspecialchars($row['modele']) . '</option>';
+if (!empty($_SESSION['4M8e7M5b1R2e8s']) && !empty($user)) {
+    global $id_oo;
+    
+    // Get the brand from POST request
+    $marque = isset($_POST['marque']) ? trim($_POST['marque']) : '';
+    
+    if (empty($marque)) {
+        echo json_encode([
+            'status' => 400,
+            'message' => 'Marque manquante'
+        ]);
+        exit;
     }
-
-    echo $options;
+    
+    try {
+        // Query to get models for the selected brand
+        $sql = "SELECT DISTINCT modele FROM configurations_modeles WHERE marque = :marque ORDER BY modele ASC";
+        $stmt = $bdd->prepare($sql);
+        $stmt->execute([':marque' => $marque]);
+        
+        $models = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $models[] = $row['modele'];
+        }
+        
+        if ($models) {
+            // Format the models as option tags for datalist
+            $options = '';
+            foreach ($models as $model) {
+                $options .= '<option value="' . htmlspecialchars($model) . '">' . htmlspecialchars($model) . '</option>';
+            }
+            echo $options;
+        } else {
+            echo '';
+        }
+    } catch (PDOException $e) {
+        echo json_encode([
+            'status' => 500,
+            'message' => 'Erreur lors de la récupération des modèles: ' . $e->getMessage()
+        ]);
+    }
+} else {
+    echo json_encode([
+        'status' => 401,
+        'message' => 'Non autorisé'
+    ]);
 }
-
 ob_end_flush();
 ?>
