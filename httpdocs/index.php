@@ -7,6 +7,9 @@ require_once('Configurations.php');
 ////INCLUDE FUNCTION HAUT CMS CODI ONE
 include('function/INCLUDE-FUNCTION-HAUT-CMS-CODI-ONE.php');
 
+// Include the consolidated profile completion utilities
+require_once('includes/utils/profile_completion.php');
+
 /* error_reporting(E_ALL);
 ini_set('display_errors', 1);
  */
@@ -146,11 +149,8 @@ $version = "100";
 
 		// Check if user has pending constats and needs to subscribe
 		if (!empty($user)) {
-			// Include utility for banner display
-			require_once('includes/utils/display_subscription_banner.php');
-			
-			// Call the utility function to display appropriate banner if needed
-			display_appropriate_banner();
+			 // Display notification banner if needed
+			display_profile_completion_banner();
 		}
 		
 	} else {
@@ -188,6 +188,19 @@ $version = "100";
 								<div class="card">
 									<div class="card-body">
 										<?php
+										// Display notification banner if needed
+										display_profile_completion_banner();
+										
+										 // Check if redirection is needed (using existing $statut_compte_oo variable)
+										$redirect_path = get_redirection_path($statut_compte_oo);
+										
+										if ($redirect_path && empty($_GET['bypass_redirect'])) {
+											// Perform redirection
+											header("Location: $redirect_path");
+											exit;
+										}
+										
+										// Display appropriate dashboard based on account type
 										if ($statut_compte_oo == 1) {
 											include('panel/Dashboard/dashboard.php');
 										} elseif ($statut_compte_oo == 2 || $statut_compte_oo == 3 || $statut_compte_oo == 6) {
@@ -219,6 +232,8 @@ $version = "100";
 								<div class="card">
 									<div class="card-body">
 										<?php
+										// Display notification banner if needed
+										display_profile_completion_banner();
 										include('pages.php');
 										?>
 									</div>

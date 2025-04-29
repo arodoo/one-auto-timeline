@@ -50,3 +50,10 @@
   margin-top: 0.5rem;
   text-align: center;
 }
+
+.carousel-pagination {
+  font-size: 14px;
+  font-weight: 500;
+  color: #666;
+  margin-bottom: 15px;
+}

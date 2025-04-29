@@ -70,9 +70,9 @@ $(document).ready(function() {
                                 <div class="item">
                                     <div class="card mb-0">
                                         <img src="${imageUrl}" class="card-img-top" alt="${title}" style="height: 180px; object-fit: cover;">
-                                        <div class="card-body">
+                                        <div class="card-body" style="height: 150px; overflow: hidden;">
                                             <h5 class="card-title">${title}</h5>
-                                            <p class="card-text">${description.substring(0, 80)}${description.length > 80 ? '...' : ''}</p>
+                                            <p class="card-text" style="height: 60px; overflow: hidden; margin-bottom: 10px;">${description.substring(0, 80)}${description.length > 80 ? '...' : ''}</p>
                                         </div>
                                         <div class="card-footer text-center">
                                             <a href="${detailUrl}" target="_blank" class="btn btn-sm btn-primary">Voir détails</a>
@@ -87,10 +87,18 @@ $(document).ready(function() {
                         // Initialize Owl Carousel after adding items
                         setTimeout(() => {
                             if (carousel.find('.item').length > 0) {
+                                const itemCount = carousel.find('.item').length;
+                                
+                                // Create pagination container
+                                const paginationId = `pagination-${type}`;
+                                if (!$(`#${paginationId}`).length) {
+                                    carousel.after(`<div id="${paginationId}" class="text-center mt-2 carousel-pagination">1/${itemCount}</div>`);
+                                }
+                                
                                 carousel.owlCarousel({
-                                    loop: true,
+                                    loop: itemCount > 1,
                                     margin: 15,
-                                    nav: true,
+                                    nav: itemCount > 1,
                                     dots: false,
                                     responsive: {
                                         0: { items: 1 },
@@ -98,6 +106,14 @@ $(document).ready(function() {
                                         992: { items: 1 }
                                     },
                                     navText: ['<i class="fas fa-chevron-left"></i>', '<i class="fas fa-chevron-right"></i>']
+                                });
+                                
+                                // Update pagination on slide change
+                                carousel.on('changed.owl.carousel', function(event) {
+                                    // Calculate the current index (1-based)
+                                    const currentItem = event.item.index - event.relatedTarget._clones.length / 2;
+                                    const actualIndex = ((currentItem % itemCount) + itemCount) % itemCount + 1;
+                                    $(`#${paginationId}`).text(`${actualIndex}/${itemCount}`);
                                 });
                             } else {
                                 carousel.html('<div class="alert alert-info">Aucune donnée disponible</div>');
