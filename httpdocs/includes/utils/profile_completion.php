@@ -96,8 +96,9 @@ function get_redirection_path($account_type) {
     // Current page detection
     $current_page = isset($_GET['page']) ? $_GET['page'] : '';
     
-    // 1. Already on profile page - clear the flag but don't redirect
-    if ($current_page == 'Profil') {
+    // 1. Already on profile pages - clear the flag but don't redirect
+    // Match both /Profil and /Gestion-de-votre-compte.html
+    if ($current_page == 'Profil' || $current_page == 'Gestion-de-votre-compte') {
         if (isset($_SESSION['profile_incomplete'])) {
             unset($_SESSION['profile_incomplete']);
         }
@@ -116,7 +117,8 @@ function get_redirection_path($account_type) {
     try {
         if (!is_profile_complete($account_type)) {
             $_SESSION['profile_incomplete'] = true;
-            return '/Profil';
+            // Update URL to match the banner link
+            return '/Gestion-de-votre-compte.html';
         }
     } catch (Exception $e) {
         // Error during profile check, don't redirect
@@ -145,7 +147,7 @@ function get_redirection_path($account_type) {
 
 /**
  * Display appropriate notification banner based on profile completion status
- * Now with links to appropriate pages
+ * Now with links to appropriate pages and consistent styling
  */
 function display_profile_completion_banner() {
     global $id_oo, $statut_compte_oo;
@@ -171,6 +173,7 @@ function display_profile_completion_banner() {
         return;
     }
     
+    // Use consistent styling for both banners - both using the same alert-warning class
     if ($profile_incomplete) {
         echo '<div class="alert alert-warning alert-dismissible fade show" role="alert">
                 <strong>Profil incomplet!</strong> Veuillez compléter 
@@ -179,7 +182,8 @@ function display_profile_completion_banner() {
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
               </div>';
     } elseif ($vehicles_missing) {
-        echo '<div class="alert alert-info alert-dismissible fade show" role="alert">
+        // Changed from alert-info to alert-warning for consistency
+        echo '<div class="alert alert-warning alert-dismissible fade show" role="alert">
                 <strong>Véhicules manquants!</strong> 
                 <a href="https://mon-espace-auto.com/Profil-automobile" class="alert-link">Ajoutez au moins un véhicule</a> 
                 à votre profil pour accéder à toutes les fonctionnalités.
