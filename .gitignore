@@ -2,5 +2,6 @@ Configurations_bdd.php
 Configurations.php
 Configurations_modules.php
 httpdocs/function/
+httpdocs/panel/Profil-automobile/Services/VehicleApiService.php
 
 *.sql

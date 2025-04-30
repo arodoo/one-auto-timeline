@@ -270,11 +270,9 @@ RewriteRule ^Traitements-informations$ /?page=Traitements-informations [L]
 
 RewriteRule ^Traitements-gratuit$ /?page=Traitements-gratuit [L]
 
-# Vehicle management URLs
-RewriteRule ^Mes-vehicules$ /index.php?page=Mes-vehicules [L]
-RewriteRule ^Profil-automobile-ajouter$ /index.php?page=Profil-automobile-ajouter [L]
-RewriteRule ^Profil-automobile-modifier/([0-9]+)$ /index.php?page=Profil-automobile-modifier&id=$1 [L]
-RewriteRule ^Vehicule-manuel$ /index.php?page=Vehicule-manuel [L]
-RewriteRule ^Vehicule-manuel/([0-9]+)$ /index.php?page=Vehicule-manuel&id=$1 [L]
 
+# Vehicle management URLs
+RewriteRule ^Profil-automobile(/.*)?$  /index.php?page=Profil-automobile&params=$1 [QSA,L]
+
+# 
 RewriteRule ^([a-zA-Z-0-9]+)$  /?page=page-dynamique&namepage=$1 [L]
