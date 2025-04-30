@@ -73,16 +73,24 @@ if (!$is_ajax_request) {
 
 <script>
 $(document).ready(function() {
+    // Only initialize DataTable if we're not inside the main tab view
+    // This prevents double initialization when loaded via AJAX in main.php
     if ($('#vehiclesTable').length) {
-        $('#vehiclesTable').DataTable({
-            "language": {
-                "url": "//cdn.datatables.net/plug-ins/1.10.24/i18n/French.json"
-            },
-            "responsive": true,
-            "columnDefs": [
-                { "orderable": false, "targets": -1 } // Disable sorting on last column (actions)
-            ]
-        });
+        // Check if we're in the main tab view by looking for parent tab containers
+        var inMainView = $('#vehicleTabsContent').length > 0;
+        
+        // Only initialize if NOT in main view (which handles its own initialization)
+        if (!inMainView && typeof $.fn.DataTable === 'function' && !$.fn.dataTable.isDataTable('#vehiclesTable')) {
+            $('#vehiclesTable').DataTable({
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/1.10.24/i18n/French.json"
+                },
+                "responsive": true,
+                "columnDefs": [
+                    { "orderable": false, "targets": -1 } // Disable sorting on last column (actions)
+                ]
+            });
+        }
     }
 });
 </script>
