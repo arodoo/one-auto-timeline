@@ -1,4 +1,11 @@
 <?php
+require_once($_SERVER['DOCUMENT_ROOT'] . '/Configurations_bdd.php');
+require_once($_SERVER['DOCUMENT_ROOT'] . '/Configurations.php');
+require_once($_SERVER['DOCUMENT_ROOT'] . '/Configurations_modules.php');
+
+$dir_fonction = "../../../"; // Adjust path according to the file location
+require_once($_SERVER['DOCUMENT_ROOT'] . '/function/INCLUDE-FUNCTION-HAUT-CMS-CODI-ONE.php');
+
 // For AJAX requests, we don't need the security check as it's already done in the controller
 $is_ajax_request = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && 
                   strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';

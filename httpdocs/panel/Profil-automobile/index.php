@@ -18,12 +18,12 @@ require_once($_SERVER['DOCUMENT_ROOT'] . '/function/INCLUDE-FUNCTION-HAUT-CMS-CO
 
 
 // Auto-load controllers and models
-spl_autoload_register(function($class) {
+spl_autoload_register(function ($class) {
     $paths = [
         __DIR__ . '/Controllers/',
         __DIR__ . '/Models/',
     ];
-    
+
     foreach ($paths as $path) {
         $file = $path . $class . '.php';
         if (file_exists($file)) {
@@ -40,8 +40,8 @@ if (empty($_SESSION['4M8e7M5b1R2e8s']) || empty($user)) {
 }
 
 // Check if this is an AJAX request
-$is_ajax_request = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && 
-                  strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
+$is_ajax_request = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) &&
+    strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
 
 // If this is not an AJAX request and no specific action is set, call index method
 if (!$is_ajax_request && empty($_GET['action'])) {
@@ -54,13 +54,13 @@ if (!$is_ajax_request && empty($_GET['action'])) {
 if (isset($_GET['params'])) {
     $params = trim($_GET['params'], '/');
     $segments = explode('/', $params);
-    
+
     if (!empty($segments[0])) {
         $_GET['action'] = $segments[0];
     }
-    
+
     if (isset($segments[1]) && is_numeric($segments[1])) {
-        $_GET['idaction'] = (int)$segments[1];
+        $_GET['idaction'] = (int) $segments[1];
     }
 }
 
@@ -69,10 +69,10 @@ $controller = new VehicleController($bdd);
 
 // Get action and ID from parameters
 $action = isset($_GET['action']) ? $_GET['action'] : 'list';
-$id = isset($_GET['idaction']) ? (int)$_GET['idaction'] : null;
+$id = isset($_GET['idaction']) ? (int) $_GET['idaction'] : null;
 
 // Route to appropriate controller method
-switch($action) {
+switch ($action) {
     case 'edit':
         $controller->edit($id);
         break;

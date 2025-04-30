@@ -1,13 +1,17 @@
 <?php
+require_once($_SERVER['DOCUMENT_ROOT'] . '/Configurations_bdd.php');
+require_once($_SERVER['DOCUMENT_ROOT'] . '/Configurations.php');
+require_once($_SERVER['DOCUMENT_ROOT'] . '/Configurations_modules.php');
+
+$dir_fonction = "../../../"; // Adjust path according to the file location
+require_once($_SERVER['DOCUMENT_ROOT'] . '/function/INCLUDE-FUNCTION-HAUT-CMS-CODI-ONE.php');
+
 // Security check
 if (empty($_SESSION['4M8e7M5b1R2e8s']) || empty($user)) {
     header("location: /");
     exit;
 }
 ?>
-<div style="border: 2px solid red; padding: 10px; margin: 10px; background: #fff;">
-  TEST CONTENT - If you see this, the view is loading
-</div>
 <div class="container-fluid" id="profil-automobile-container">
     <div class="content-section">
         <h2>Gestion de mes véhicules</h2>
@@ -161,17 +165,33 @@ function loadTabContent(tabId, action, id = null) {
     });
 }
 
-// Initialize DataTable
+// Initialize DataTable - safely check if already initialized
 function initializeDataTable() {
-    $('#vehiclesTable').DataTable({
-        "language": {
-            "url": "//cdn.datatables.net/plug-ins/1.10.24/i18n/French.json"
-        },
-        "responsive": true,
-        "columnDefs": [
-            { "orderable": false, "targets": -1 } // Disable sorting on last column (actions)
-        ]
-    });
+    // Check if DataTable function exists
+    if (typeof $.fn.DataTable !== 'function') {
+        console.error("DataTable function not available. Make sure jQuery and DataTables are loaded.");
+        return;
+    }
+    
+    // Check if table is already initialized
+    if ($.fn.dataTable.isDataTable('#vehiclesTable')) {
+        console.log("Table already initialized - destroying previous instance");
+        $('#vehiclesTable').DataTable().destroy();
+    }
+    
+    try {
+        $('#vehiclesTable').DataTable({
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/1.10.24/i18n/French.json"
+            },
+            "responsive": true,
+            "columnDefs": [
+                { "orderable": false, "targets": -1 } // Disable sorting on last column (actions)
+            ]
+        });
+    } catch (e) {
+        console.error("Error initializing DataTable:", e);
+    }
 }
 
 // Handle tab change
@@ -221,7 +241,26 @@ function activateTabFromAction(action) {
             break;
     }
     
-    $('#vehicleTabs a[href="#' + tabId + '"]').tab('show');
+    try {
+        // First check if Bootstrap tab function exists
+        if (typeof $.fn.tab === 'function') {
+            $('#vehicleTabs a[href="#' + tabId + '"]').tab('show');
+        } else {
+            // Fallback - manually update classes
+            $('.tab-pane').removeClass('active show');
+            $('#' + tabId).addClass('active show');
+            $('#vehicleTabs a').removeClass('active');
+            $('#vehicleTabs a[href="#' + tabId + '"]').addClass('active');
+            console.warn("Bootstrap tab function not available, using CSS fallback");
+        }
+    } catch (error) {
+        console.error("Error while activating tab:", error);
+        // Fallback to manual activation
+        $('.tab-pane').removeClass('active show');
+        $('#' + tabId).addClass('active show');
+        $('#vehicleTabs a').removeClass('active');
+        $('#vehicleTabs a[href="#' + tabId + '"]').addClass('active');
+    }
 }
 
 // Function to handle editing a vehicle

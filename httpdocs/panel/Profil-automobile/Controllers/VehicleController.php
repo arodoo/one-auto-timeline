@@ -35,18 +35,23 @@ class VehicleController {
                 // Default to list view for AJAX requests to index
                 $this->list();
             } else {
+                // IMPORTANT: For full page loads, include the necessary page structure
+                // This ensures DataTables and Bootstrap JS are properly loaded
+                include($_SERVER['DOCUMENT_ROOT'] . '/index-menu-horizontal-dashboard.php');
+                
                 // For full page loads, include the main template with tabs
-                // Verify the file exists before including
                 $mainView = __DIR__ . '/../Views/main.php';
                 if (file_exists($mainView)) {
                     include $mainView;
                 } else {
                     throw new Exception("View file not found: " . $mainView);
                 }
+                
+                // Include any needed footer elements
+                include($_SERVER['DOCUMENT_ROOT'] . '/index-footer2.php');
             }
             
             $content = ob_get_clean();
-            // CRITICAL FIX: Make sure we output the content!
             echo $content;
             
         } catch (Exception $e) {
