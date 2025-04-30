@@ -1,12 +1,13 @@
 <?php
-require_once('../../Configurations_bdd.php');
-require_once('../../Configurations.php');
-require_once('../../Configurations_modules.php');
+require_once($_SERVER['DOCUMENT_ROOT'] . '/Configurations_bdd.php');
+require_once($_SERVER['DOCUMENT_ROOT'] . '/Configurations.php');
+require_once($_SERVER['DOCUMENT_ROOT'] . '/Configurations_modules.php');
+
 
 $dir_fonction = "../../../";
-require_once('../../../function/INCLUDE-FUNCTION-HAUT-CMS-CODI-ONE.php');
+require_once($_SERVER['DOCUMENT_ROOT'] . '/function/INCLUDE-FUNCTION-HAUT-CMS-CODI-ONE.php');
 
-require_once __DIR__ . '/../Models/BrandModel.php';
+require_once($_SERVER['DOCUMENT_ROOT'] . '/panel/Profil-automobile/Models/BrandModel.php');
 
 // Security check
 if (empty($_SESSION['4M8e7M5b1R2e8s']) || empty($user)) {

@@ -67,11 +67,6 @@ RewriteRule ^sitemap\.xml$  /sitemap.php [L]
 
 #################### PAGES ####################
 
-RewriteRule ^Profil-automobile$  /index.php?page=Profil-automobile [L]
-RewriteRule ^Profil-automobile/([a-zA-Z-0-9]+)$  /index.php?page=Profil-automobile&action=$1 [L]
-RewriteRule ^Profil-automobile/([a-zA-Z-0-9]+)/([0-9]+)$  /index.php?page=Profil-automobile&action=$1&idaction=$2 [L]
-
-
 RewriteRule ^Mes-devis/([a-zA-Z0-9-]+)/([0-9]+)$  /index.php?page=Mes-devis&action=$1&idaction=$2 [L]
 RewriteRule ^Mes-devis/([0-9]+)$  /index.php?page=Mes-devis&idaction=$1 [L]
 RewriteRule ^Mes-devis/([a-zA-Z0-9-]+)$  /index.php?page=Mes-devis&action=$1 [L]

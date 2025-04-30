@@ -9,12 +9,13 @@ ini_set('display_errors', 1);
 // Debug marker to confirm module loading
 echo "<!-- DEBUG: Profil-automobile module is loading correctly -->";
 
-require_once('../../Configurations_bdd.php');
-require_once('../../Configurations.php');
-require_once('../../Configurations_modules.php');
+require_once($_SERVER['DOCUMENT_ROOT'] . '/Configurations_bdd.php');
+require_once($_SERVER['DOCUMENT_ROOT'] . '/Configurations.php');
+require_once($_SERVER['DOCUMENT_ROOT'] . '/Configurations_modules.php');
 
 $dir_fonction = "../../";
-require_once('../../function/INCLUDE-FUNCTION-HAUT-CMS-CODI-ONE.php');
+require_once($_SERVER['DOCUMENT_ROOT'] . '/function/INCLUDE-FUNCTION-HAUT-CMS-CODI-ONE.php');
+
 
 // Auto-load controllers and models
 spl_autoload_register(function($class) {
