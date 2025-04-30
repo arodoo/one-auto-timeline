@@ -18,16 +18,42 @@ class VehicleController {
         // Main entry point - renders the main template with tabs
         global $id_oo, $user;
         
-        // Check if this is an AJAX request
-        $is_ajax_request = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && 
-                          strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
-                          
-        if ($is_ajax_request) {
-            // Default to list view for AJAX requests to index
-            $this->list();
-        } else {
-            // For full page loads, include the main template with tabs
-            include __DIR__ . '/../Views/main.php';
+        try {
+            // Check if this is an AJAX request
+            $is_ajax_request = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && 
+                              strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
+                              
+            // For direct view access, set the vehicles variable for the list view
+            if (!$is_ajax_request) {
+                $vehicles = $this->vehicleModel->findAllByUserId($id_oo);
+            }
+            
+            // Start output buffering to capture all content
+            ob_start();
+            
+            if ($is_ajax_request) {
+                // Default to list view for AJAX requests to index
+                $this->list();
+            } else {
+                // For full page loads, include the main template with tabs
+                // Verify the file exists before including
+                $mainView = __DIR__ . '/../Views/main.php';
+                if (file_exists($mainView)) {
+                    include $mainView;
+                } else {
+                    throw new Exception("View file not found: " . $mainView);
+                }
+            }
+            
+            $content = ob_get_clean();
+            // CRITICAL FIX: Make sure we output the content!
+            echo $content;
+            
+        } catch (Exception $e) {
+            // Display error for debugging
+            echo '<div class="alert alert-danger">';
+            echo 'Controller Error: ' . htmlspecialchars($e->getMessage());
+            echo '</div>';
         }
     }
     
@@ -35,19 +61,44 @@ class VehicleController {
         // List all vehicles for the current user
         global $id_oo, $user;
         
-        // Get user vehicles for display
-        $vehicles = $this->vehicleModel->findAllByUserId($id_oo);
-        
-        // Check if this is an AJAX request
-        $is_ajax_request = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && 
-                          strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
-        
-        if ($is_ajax_request) {
-            // For AJAX, include only the list view
-            include __DIR__ . '/../Views/list.php';
-        } else {
-            // For full page load, include the main template with tabs
-            include __DIR__ . '/../Views/main.php';
+        try {
+            // Get user vehicles for display
+            $vehicles = $this->vehicleModel->findAllByUserId($id_oo);
+            
+            // Check if this is an AJAX request
+            $is_ajax_request = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && 
+                              strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
+            
+            // Start output buffering
+            ob_start();
+            
+            if ($is_ajax_request) {
+                // For AJAX, include only the list view
+                $listView = __DIR__ . '/../Views/list.php';
+                if (file_exists($listView)) {
+                    include $listView;
+                } else {
+                    throw new Exception("List view file not found: " . $listView);
+                }
+            } else {
+                // For full page load, include the main template with tabs
+                $activeTab = 'list'; // Set active tab for the main view
+                $mainView = __DIR__ . '/../Views/main.php';
+                if (file_exists($mainView)) {
+                    include $mainView;
+                } else {
+                    throw new Exception("Main view file not found: " . $mainView);
+                }
+            }
+            
+            $content = ob_get_clean();
+            echo $content;
+            
+        } catch (Exception $e) {
+            // Display error for debugging
+            echo '<div class="alert alert-danger">';
+            echo 'Controller Error: ' . htmlspecialchars($e->getMessage());
+            echo '</div>';
         }
     }
     
@@ -55,19 +106,44 @@ class VehicleController {
         // Add vehicle form (manual entry method)
         global $id_oo, $user;
         
-        $brands = $this->brandModel->getAllBrands();
-        $vehicle = null;
-        
-        // Check if this is an AJAX request
-        $is_ajax_request = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && 
-                          strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
-        
-        if ($is_ajax_request) {
-            // For AJAX, include only the form view
-            include __DIR__ . '/../Views/form.php';
-        } else {
-            // For full page load, include the main template with tabs
-            include __DIR__ . '/../Views/main.php';
+        try {
+            $brands = $this->brandModel->getAllBrands();
+            $vehicle = null;
+            
+            // Check if this is an AJAX request
+            $is_ajax_request = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && 
+                              strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
+            
+            // Start output buffering
+            ob_start();
+            
+            if ($is_ajax_request) {
+                // For AJAX, include only the form view
+                $formView = __DIR__ . '/../Views/form.php';
+                if (file_exists($formView)) {
+                    include $formView;
+                } else {
+                    throw new Exception("Form view file not found: " . $formView);
+                }
+            } else {
+                // For full page load, include the main template with tabs
+                $activeTab = 'add'; // Set active tab for the main view
+                $mainView = __DIR__ . '/../Views/main.php';
+                if (file_exists($mainView)) {
+                    include $mainView;
+                } else {
+                    throw new Exception("Main view file not found: " . $mainView);
+                }
+            }
+            
+            $content = ob_get_clean();
+            echo $content;
+            
+        } catch (Exception $e) {
+            // Display error for debugging
+            echo '<div class="alert alert-danger">';
+            echo 'Controller Error: ' . htmlspecialchars($e->getMessage());
+            echo '</div>';
         }
     }
     
@@ -75,16 +151,41 @@ class VehicleController {
         // API lookup form (API entry method)
         global $id_oo, $user;
         
-        // Check if this is an AJAX request
-        $is_ajax_request = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && 
-                          strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
-        
-        if ($is_ajax_request) {
-            // For AJAX, include only the API lookup form
-            include __DIR__ . '/../Views/lookup.php';
-        } else {
-            // For full page load, include the main template with tabs
-            include __DIR__ . '/../Views/main.php';
+        try {
+            // Check if this is an AJAX request
+            $is_ajax_request = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && 
+                              strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
+            
+            // Start output buffering
+            ob_start();
+            
+            if ($is_ajax_request) {
+                // For AJAX, include only the API lookup form
+                $lookupView = __DIR__ . '/../Views/lookup.php';
+                if (file_exists($lookupView)) {
+                    include $lookupView;
+                } else {
+                    throw new Exception("Lookup view file not found: " . $lookupView);
+                }
+            } else {
+                // For full page load, include the main template with tabs
+                $activeTab = 'api'; // Set active tab for the main view
+                $mainView = __DIR__ . '/../Views/main.php';
+                if (file_exists($mainView)) {
+                    include $mainView;
+                } else {
+                    throw new Exception("Main view file not found: " . $mainView);
+                }
+            }
+            
+            $content = ob_get_clean();
+            echo $content;
+            
+        } catch (Exception $e) {
+            // Display error for debugging
+            echo '<div class="alert alert-danger">';
+            echo 'Controller Error: ' . htmlspecialchars($e->getMessage());
+            echo '</div>';
         }
     }
     
@@ -109,30 +210,55 @@ class VehicleController {
         // Edit vehicle form
         global $id_oo, $user;
         
-        $vehicle = $this->vehicleModel->findById($id, $id_oo);
-        
-        // Check if this is an AJAX request
-        $is_ajax_request = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && 
-                          strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
-        
-        if (!$vehicle) {
-            if ($is_ajax_request) {
-                echo '<div class="alert alert-warning">Véhicule introuvable ou vous n\'avez pas accès à ce véhicule</div>';
-                return;
-            } else {
-                header("Location: /Profil-automobile?action=list");
-                exit;
+        try {
+            $vehicle = $this->vehicleModel->findById($id, $id_oo);
+            
+            // Check if this is an AJAX request
+            $is_ajax_request = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && 
+                              strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
+            
+            if (!$vehicle) {
+                if ($is_ajax_request) {
+                    echo '<div class="alert alert-warning">Véhicule introuvable ou vous n\'avez pas accès à ce véhicule</div>';
+                    return;
+                } else {
+                    header("Location: /Profil-automobile?action=list");
+                    exit;
+                }
             }
-        }
-        
-        $brands = $this->brandModel->getAllBrands();
-        
-        if ($is_ajax_request) {
-            // For AJAX, include only the form view
-            include __DIR__ . '/../Views/form.php';
-        } else {
-            // For full page load, include the main template with tabs
-            include __DIR__ . '/../Views/main.php';
+            
+            $brands = $this->brandModel->getAllBrands();
+            
+            // Start output buffering
+            ob_start();
+            
+            if ($is_ajax_request) {
+                // For AJAX, include only the form view
+                $formView = __DIR__ . '/../Views/form.php';
+                if (file_exists($formView)) {
+                    include $formView;
+                } else {
+                    throw new Exception("Form view file not found: " . $formView);
+                }
+            } else {
+                // For full page load, include the main template with tabs
+                $activeTab = 'edit'; // Set active tab for the main view
+                $mainView = __DIR__ . '/../Views/main.php';
+                if (file_exists($mainView)) {
+                    include $mainView;
+                } else {
+                    throw new Exception("Main view file not found: " . $mainView);
+                }
+            }
+            
+            $content = ob_get_clean();
+            echo $content;
+            
+        } catch (Exception $e) {
+            // Display error for debugging
+            echo '<div class="alert alert-danger">';
+            echo 'Controller Error: ' . htmlspecialchars($e->getMessage());
+            echo '</div>';
         }
     }
     

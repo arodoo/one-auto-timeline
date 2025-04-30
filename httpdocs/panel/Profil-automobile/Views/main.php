@@ -5,61 +5,84 @@ if (empty($_SESSION['4M8e7M5b1R2e8s']) || empty($user)) {
     exit;
 }
 ?>
-<div class="container mt-4">
-    <h2>Gestion de mes véhicules</h2>
-    
-    <!-- Nav tabs -->
-    <ul class="nav nav-tabs" id="vehicleTabs" role="tablist">
-        <li class="nav-item">
-            <a class="nav-link active" id="list-tab" data-toggle="tab" href="#list" role="tab" aria-controls="list" aria-selected="true">
-                <i class="fas fa-car"></i> Mes véhicules
-            </a>
-        </li>
-        <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-                <i class="fas fa-plus-circle"></i> Ajouter
-            </a>
-            <div class="dropdown-menu">
-                <a class="dropdown-item" id="api-tab-link" data-toggle="tab" href="#api">Par immatriculation</a>
-                <a class="dropdown-item" id="add-tab-link" data-toggle="tab" href="#add">Manuellement</a>
-            </div>
-        </li>
-        <li class="nav-item" id="edit-tab-item" style="display: none;">
-            <a class="nav-link" id="edit-tab" data-toggle="tab" href="#edit" role="tab" aria-controls="edit" aria-selected="false">
-                <i class="fas fa-edit"></i> Modifier
-            </a>
-        </li>
-    </ul>
-    
-    <!-- Tab content -->
-    <div class="tab-content mt-3" id="vehicleTabsContent">
-        <div class="tab-pane fade show active" id="list" role="tabpanel" aria-labelledby="list-tab">
-            <div id="list-content" class="content-container">
-                <!-- Vehicle list content will load here -->
-                <div class="text-center py-5">
-                    <div class="spinner-border" role="status">
-                        <span class="sr-only">Chargement en cours...</span>
+<div style="border: 2px solid red; padding: 10px; margin: 10px; background: #fff;">
+  TEST CONTENT - If you see this, the view is loading
+</div>
+<div class="container-fluid" id="profil-automobile-container">
+    <div class="content-section">
+        <h2>Gestion de mes véhicules</h2>
+        
+        <!-- Nav tabs -->
+        <ul class="nav nav-tabs" id="vehicleTabs" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link <?php echo (!isset($activeTab) || $activeTab == 'list') ? 'active' : ''; ?>" id="list-tab" data-toggle="tab" href="#list" role="tab" aria-controls="list" aria-selected="true">
+                    <i class="fas fa-car"></i> Mes véhicules
+                </a>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                    <i class="fas fa-plus-circle"></i> Ajouter
+                </a>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item" id="api-tab-link" data-toggle="tab" href="#api">Par immatriculation</a>
+                    <a class="dropdown-item" id="add-tab-link" data-toggle="tab" href="#add">Manuellement</a>
+                </div>
+            </li>
+            <li class="nav-item" id="edit-tab-item" style="<?php echo (isset($activeTab) && $activeTab == 'edit') ? '' : 'display: none;'; ?>">
+                <a class="nav-link <?php echo (isset($activeTab) && $activeTab == 'edit') ? 'active' : ''; ?>" id="edit-tab" data-toggle="tab" href="#edit" role="tab" aria-controls="edit" aria-selected="false">
+                    <i class="fas fa-edit"></i> Modifier
+                </a>
+            </li>
+        </ul>
+        
+        <!-- Tab content -->
+        <div class="tab-content mt-3" id="vehicleTabsContent">
+            <div class="tab-pane fade <?php echo (!isset($activeTab) || $activeTab == 'list') ? 'show active' : ''; ?>" id="list" role="tabpanel" aria-labelledby="list-tab">
+                <div id="list-content" class="content-container">
+                    <?php if (isset($vehicles) && !$is_ajax_request): ?>
+                        <?php include __DIR__ . '/list.php'; ?>
+                    <?php else: ?>
+                    <!-- Vehicle list content will load here -->
+                    <div class="text-center py-5">
+                        <div class="spinner-border" role="status">
+                            <span class="sr-only">Chargement en cours...</span>
+                        </div>
                     </div>
+                    <?php endif; ?>
                 </div>
             </div>
-        </div>
-        <div class="tab-pane fade" id="api" role="tabpanel" aria-labelledby="api-tab">
-            <div id="api-content" class="content-container">
-                <!-- API lookup form will load here -->
+            <div class="tab-pane fade <?php echo (isset($activeTab) && $activeTab == 'api') ? 'show active' : ''; ?>" id="api" role="tabpanel" aria-labelledby="api-tab">
+                <div id="api-content" class="content-container">
+                    <?php if (isset($activeTab) && $activeTab == 'api' && !$is_ajax_request): ?>
+                        <?php include __DIR__ . '/lookup.php'; ?>
+                    <?php endif; ?>
+                </div>
             </div>
-        </div>
-        <div class="tab-pane fade" id="add" role="tabpanel" aria-labelledby="add-tab">
-            <div id="add-content" class="content-container">
-                <!-- Add vehicle form will load here -->
+            <div class="tab-pane fade <?php echo (isset($activeTab) && $activeTab == 'add') ? 'show active' : ''; ?>" id="add" role="tabpanel" aria-labelledby="add-tab">
+                <div id="add-content" class="content-container">
+                    <?php if (isset($activeTab) && $activeTab == 'add' && !$is_ajax_request): ?>
+                        <?php include __DIR__ . '/form.php'; ?>
+                    <?php endif; ?>
+                </div>
             </div>
-        </div>
-        <div class="tab-pane fade" id="edit" role="tabpanel" aria-labelledby="edit-tab">
-            <div id="edit-content" class="content-container">
-                <!-- Edit vehicle form will load here -->
+            <div class="tab-pane fade <?php echo (isset($activeTab) && $activeTab == 'edit') ? 'show active' : ''; ?>" id="edit" role="tabpanel" aria-labelledby="edit-tab">
+                <div id="edit-content" class="content-container">
+                    <?php if (isset($activeTab) && $activeTab == 'edit' && !$is_ajax_request && isset($vehicle)): ?>
+                        <?php include __DIR__ . '/form.php'; ?>
+                    <?php endif; ?>
+                </div>
             </div>
         </div>
     </div>
 </div>
+
+<style>
+/* Add compatible styles */
+.content-container {
+    min-height: 300px;
+    padding: 15px;
+}
+</style>
 
 <!-- JavaScript for dynamic content loading -->
 <script>

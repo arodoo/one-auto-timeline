@@ -1,4 +1,14 @@
 <?php
+// Direct test output
+echo "<!-- DEBUG: Profil-automobile module index.php is executing -->";
+
+// Enable error reporting for debugging
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
+// Debug marker to confirm module loading
+echo "<!-- DEBUG: Profil-automobile module is loading correctly -->";
+
 require_once('../../Configurations_bdd.php');
 require_once('../../Configurations.php');
 require_once('../../Configurations_modules.php');
@@ -31,6 +41,13 @@ if (empty($_SESSION['4M8e7M5b1R2e8s']) || empty($user)) {
 // Check if this is an AJAX request
 $is_ajax_request = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && 
                   strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
+
+// If this is not an AJAX request and no specific action is set, call index method
+if (!$is_ajax_request && empty($_GET['action'])) {
+    $controller = new VehicleController($bdd);
+    $controller->index();
+    exit;
+}
 
 // Parse URL parameters from the centralized routing pattern
 if (isset($_GET['params'])) {

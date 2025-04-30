@@ -112,8 +112,8 @@ case "Avatar":include ("panel/Avatar/Avatar.php");break;
 case "modifier-profil-photo":include("panel/Avatar/Avatar-profil-photo.php");break;
 
 //panel / Profil-automobile
-
 case "Profil-automobile": include ("panel/Profil-automobile/index.php"); break;
+
 //panel / Mes-devis
 case "Mes-devis":include ("panel/Mes-devis/Mes-devis.php");break;
 
