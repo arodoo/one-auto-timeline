@@ -3,13 +3,18 @@
 global $path_cms_general;
 ?>
 <div class="card">
-    <div class="card-header">
+    <div class="card-header d-flex justify-content-between align-items-center">
         <h4>Liste de mes véhicules</h4>
+        <div>
+            <a href="<?php echo $path_cms_general; ?>vehicles/add" class="btn btn-success btn-sm">
+                <i class="fas fa-plus"></i> Ajouter
+            </a>
+        </div>
     </div>
     <div class="card-body">
         <?php if (empty($vehicles)): ?>
             <div class="alert alert-info">
-                Vous n'avez pas encore enregistré de véhicule. Utilisez le bouton ci-dessous pour ajouter votre premier véhicule.
+                <i class="fas fa-info-circle"></i> Vous n'avez pas encore enregistré de véhicule. Utilisez le bouton ci-dessous pour ajouter votre premier véhicule.
             </div>
         <?php else: ?>
             <div class="table-responsive">
@@ -35,7 +40,11 @@ global $path_cms_general;
                                 <td><?php echo htmlspecialchars($vehicle['energieNGC']); ?></td>
                                 <td><?php echo htmlspecialchars($vehicle['couleur']); ?></td>
                                 <td>
-                                    <a href="<?php echo $path_cms_general; ?>Profil-automobile?action=edit&id=<?php echo $vehicle['id']; ?>" 
+                                    <a href="<?php echo $path_cms_general; ?>vehicles/view/<?php echo $vehicle['id']; ?>" 
+                                       class="btn btn-sm btn-info">
+                                        <i class="fas fa-eye"></i> Voir
+                                    </a>
+                                    <a href="<?php echo $path_cms_general; ?>vehicles/edit/<?php echo $vehicle['id']; ?>" 
                                        class="btn btn-sm btn-primary">
                                         <i class="fas fa-edit"></i> Modifier
                                     </a>
@@ -53,12 +62,12 @@ global $path_cms_general;
         <?php endif; ?>
         
         <div class="mt-3">
-            <a href="<?php echo $path_cms_general; ?>Profil-automobile?action=api_search" class="btn btn-success">
-                <i class="fas fa-plus"></i> Ajouter un nouveau véhicule
+            <a href="<?php echo $path_cms_general; ?>vehicles/search" class="btn btn-primary">
+                <i class="fas fa-search"></i> Rechercher par immatriculation
             </a>
             
-            <a href="<?php echo $path_cms_general; ?>Profil-automobile?action=manual_form" class="btn btn-outline-secondary ml-2">
-                <i class="fas fa-pencil-alt"></i> Saisie manuelle des informations
+            <a href="<?php echo $path_cms_general; ?>vehicles/add" class="btn btn-outline-secondary ml-2">
+                <i class="fas fa-plus"></i> Saisie manuelle des informations
             </a>
         </div>
     </div>
@@ -76,8 +85,10 @@ global $path_cms_general;
                 </button>
             </div>
             <div class="modal-body">
-                Êtes-vous sûr de vouloir supprimer ce véhicule ? Cette action est irréversible.
-                <p><strong>Immatriculation:</strong> <span id="delete-vehicle-immat"></span></p>
+                <div class="alert alert-danger">
+                    <i class="fas fa-exclamation-triangle"></i> Attention, cette action est irréversible.
+                </div>
+                <p>Êtes-vous sûr de vouloir supprimer le véhicule avec l'immatriculation <strong><span id="delete-vehicle-immat"></span></strong> ?</p>
             </div>
             <div class="modal-footer">
                 <input type="hidden" id="delete-vehicle-id">

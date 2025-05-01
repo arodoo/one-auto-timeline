@@ -67,6 +67,14 @@ if ($isAjax) {
         case 'edit':
             $controller->edit($id);
             break;
+        case 'view':
+            // New action for viewing vehicle details
+            $controller->view($id);
+            break;
+        case 'delete':
+            // New action for deletion confirmation page
+            $controller->delete($id);
+            break;
         default:
             $controller->list();
             break;

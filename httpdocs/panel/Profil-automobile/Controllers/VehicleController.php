@@ -70,6 +70,38 @@ class VehicleController extends BaseController {
             'active_tab' => 'edit'
         ]);
     }
+
+    public function view($id = null) {
+        if (!$id) {
+            header("Location: /Profil-automobile?action=list");
+            return;
+        }
+        $vehicle = $this->vehicleModel->findByUserAndId($this->id_oo, $id);
+        if (!$vehicle) {
+            header("Location: /Profil-automobile?action=list");
+            return;
+        }
+        $this->renderWithLayout('vehicle/view', [
+            'vehicle' => $vehicle,
+            'active_tab' => 'view'
+        ]);
+    }
+
+    public function delete($id = null) {
+        if (!$id) {
+            header("Location: /Profil-automobile?action=list");
+            return;
+        }
+        $vehicle = $this->vehicleModel->findByUserAndId($this->id_oo, $id);
+        if (!$vehicle) {
+            header("Location: /Profil-automobile?action=list");
+            return;
+        }
+        $this->renderWithLayout('vehicle/delete_confirm', [
+            'vehicle' => $vehicle,
+            'active_tab' => 'list'
+        ]);
+    }
     
     private function getBrands() {
         $brands = [];

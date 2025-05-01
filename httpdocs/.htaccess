@@ -265,8 +265,19 @@ RewriteRule ^Traitements-informations$ /?page=Traitements-informations [L]
 
 RewriteRule ^Traitements-gratuit$ /?page=Traitements-gratuit [L]
 
+# Vehicle management URLs - VEHCRUD-2025 Enhancement Plan
+# Old catch-all rule commented out
+# RewriteRule ^Profil-automobile(/.*)?$  /index.php?page=Profil-automobile&params=$1 [QSA,L]
 
-# Vehicle management URLs
+# New SEO-friendly vehicle management URLs
+RewriteRule ^vehicles/?$  /index.php?page=Profil-automobile&action=list [QSA,L]
+RewriteRule ^vehicles/search/?$  /index.php?page=Profil-automobile&action=api_search [QSA,L]
+RewriteRule ^vehicles/add/?$  /index.php?page=Profil-automobile&action=manual_form [QSA,L]
+RewriteRule ^vehicles/edit/([0-9]+)/?$  /index.php?page=Profil-automobile&action=edit&id=$1 [QSA,L]
+RewriteRule ^vehicles/view/([0-9]+)/?$  /index.php?page=Profil-automobile&action=view&id=$1 [QSA,L]
+RewriteRule ^vehicles/delete/([0-9]+)/?$  /index.php?page=Profil-automobile&action=delete&id=$1 [QSA,L]
+
+# Fallback for any other Profil-automobile paths
 RewriteRule ^Profil-automobile(/.*)?$  /index.php?page=Profil-automobile&params=$1 [QSA,L]
 
 # 

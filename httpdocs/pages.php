@@ -111,12 +111,27 @@ case "Paiements":include ("panel/Utilisateurs/Paiements/Paiements.php");break;
 case "Avatar":include ("panel/Avatar/Avatar.php");break;
 case "modifier-profil-photo":include("panel/Avatar/Avatar-profil-photo.php");break;
 
-//panel / Profil-automobile
-case "Profil-automobile":include ("panel/Profil-automobile/Profil-automobile.php");break;
-case "Mes-vehicules":include ("panel/Profil-automobile/mes-vehicules.php");break;
-case "Profil-automobile-ajouter":include ("panel/Profil-automobile/Profil-automobile.php");break;
-case "Profil-automobile-modifier":include ("panel/Profil-automobile/Profil-automobile.php");break;
-case "Vehicule-manuel":include ("panel/Profil-automobile/vehicule-manuel.php");break;
+//panel / Profil-automobile - Vehicle Management System Enhancement Plan (VEHCRUD-2025)
+case "Profil-automobile":include ("panel/Profil-automobile/index.php");break;
+
+// Legacy routes - redirect to new SEO-friendly URLs
+case "Mes-vehicules":
+    header("Location: /vehicles");
+    exit;
+    break;
+case "Profil-automobile-ajouter":
+    header("Location: /vehicles/add");
+    exit;
+    break;
+case "Profil-automobile-modifier":
+    // Redirect to vehicles list since we need an ID for edit
+    header("Location: /vehicles");
+    exit;
+    break;
+case "Vehicule-manuel":
+    header("Location: /vehicles/add");
+    exit;
+    break;
 
 //panel / Mes-devis
 case "Mes-devis":include ("panel/Mes-devis/Mes-devis.php");break;

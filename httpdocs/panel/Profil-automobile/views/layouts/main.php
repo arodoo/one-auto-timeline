@@ -32,6 +32,7 @@ global $path_cms_general;
     <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
     <!-- Custom JS -->
     <script src="<?php echo $path_cms_general; ?>panel/Profil-automobile/assets/js/vehicle.js"></script>
+    <script src="<?php echo $path_cms_general; ?>panel/Profil-automobile/assets/js/vehicle-enhanced.js"></script>
     <script src="<?php echo $path_cms_general; ?>panel/Profil-automobile/assets/js/datatables-config.js"></script>
     <script src="<?php echo $path_cms_general; ?>panel/Profil-automobile/assets/js/forms.js"></script>
 </body>
