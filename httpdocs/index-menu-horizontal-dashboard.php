@@ -1,4 +1,4 @@
-<script>
+<!-- <script>
 	document.addEventListener("DOMContentLoaded", function() {
 		let cartData = null; // Variable para almacenar los datos del carrito una sola vez
 
@@ -161,7 +161,7 @@
 			}
 		}
 	});
-</script>
+</script> -->
 
 
 
@@ -201,16 +201,18 @@
 							<span class="badge light text-white bg-primary rounded-circle"><?php echo $total_item_panier; ?></span>
 						</a>
 					</li> -->
-					<li class="nav-item dropdown notification_dropdown" id="cart-container">
-						<a class="nav-link bell bell-link" href="/Paiement" id="cart-icon">
-							<svg class="svg-icon" width="20" height="20" viewBox="0 0 24 24" fill="none"
-								xmlns="http://www.w3.org/2000/svg">
-								<path d="M7 4H3V6H5L8.68 14.39L7.24 17.04C7.09 17.32 7 17.65 7 18C7 18.55 7.45 19 8 19H19V17H8.42C8.28 17 8.17 16.89 8.17 16.75L8.2 16.65L9.1 14H16.55C17.3 14 17.96 13.55 18.3 12.87L21.88 6.48C21.96 6.34 22 6.17 22 6C22 5.45 21.55 5 21 5H8.1L7.34 3H3V5H7L7 4ZM9.16 12L11.55 7H19.04L16.55 12H9.16ZM7 20C6.45 20 6 20.45 6 21C6 21.55 6.45 22 7 22C7.55 22 8 21.55 8 21C8 20.45 7.55 20 7 20ZM17 20C16.45 20 16 20.45 16 21C16 21.55 16.45 22 17 22C17.55 22 18 21.55 18 21C18 20.45 17.55 20 17 20Z"
-									fill="currentColor" />
-							</svg>
-							<span class="badge light text-white bg-primary rounded-circle"><?php echo $total_item_panier; ?></span>
-						</a>
-					</li>
+					<?php if ($statut_compte_oo != 1) { ?>
+						<li class="nav-item dropdown notification_dropdown" id="cart-container">
+							<a class="nav-link bell bell-link" href="/Paiement" id="cart-icon">
+								<svg class="svg-icon" width="20" height="20" viewBox="0 0 24 24" fill="none"
+									xmlns="http://www.w3.org/2000/svg">
+									<path d="M7 4H3V6H5L8.68 14.39L7.24 17.04C7.09 17.32 7 17.65 7 18C7 18.55 7.45 19 8 19H19V17H8.42C8.28 17 8.17 16.89 8.17 16.75L8.2 16.65L9.1 14H16.55C17.3 14 17.96 13.55 18.3 12.87L21.88 6.48C21.96 6.34 22 6.17 22 6C22 5.45 21.55 5 21 5H8.1L7.34 3H3V5H7L7 4ZM9.16 12L11.55 7H19.04L16.55 12H9.16ZM7 20C6.45 20 6 20.45 6 21C6 21.55 6.45 22 7 22C7.55 22 8 21.55 8 21C8 20.45 7.55 20 7 20ZM17 20C16.45 20 16 20.45 16 21C16 21.55 16.45 22 17 22C17.55 22 18 21.55 18 21C18 20.45 17.55 20 17 20Z"
+										fill="currentColor" />
+								</svg>
+								<span class="badge light text-white bg-primary rounded-circle"><?php echo $total_item_panier; ?></span>
+							</a>
+						</li>
+					<?php } ?>
 
 
 
@@ -268,6 +270,19 @@
 								</svg>
 								<span class="ms-2">Informations</span>
 							</a>
+
+							<?php
+							//////////////////////////////////SI ADMIN
+							if ($admin_oo > 0) {
+							?>
+								<a href="/administration/index-admin.php" class="dropdown-item ai-icon">
+									<span class='uk-icon-cogs'></span>
+									<span class="ms-2">Admin</span>
+								</a>
+							<?php
+								
+							}
+							?>
 
 							<?php if ($statut_compte_oo == 1) { ?>
 
@@ -334,7 +349,8 @@
 							</a>
 
 
-							<?php if ($statut_compte_oo == 1) { ?>
+							<?php if ($statut_compte_oo != 1) { // Hide Documents if statut_compte_oo is 1 
+							?>
 								<a href="/Mes-documents" class="dropdown-item ai-icon">
 									<svg id="icon-documents" xmlns="http://www.w3.org/2000/svg" class="text-primary"
 										width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -347,7 +363,6 @@
 									</svg>
 									<span class="ms-2">Documents</span>
 								</a>
-
 							<?php } ?>
 
 							<a href="/Messagerie.html" class="dropdown-item ai-icon">
@@ -361,8 +376,8 @@
 								</svg>
 								<span class="ms-2">Messages </span>
 							</a>
-							
-							<?php 
+
+							<?php
 							// Determine if the user is an insurance agency by checking if they have client constats
 							$hasClientConstats = false;
 							if (!empty($mail_oo)) {
@@ -371,22 +386,21 @@
 								$hasClientConstats = !empty($clientConstats);
 							}
 
-							if ($hasClientConstats): 
+							if ($hasClientConstats):
 							?>
 								<a href="/panel/Constats/constats-client.php" class="dropdown-item ai-icon">
 									<svg xmlns="http://www.w3.org/2000/svg" class="text-primary" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-										<path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8z"></path>
-										<polyline points="14 2 14 8 20 8"></polyline>
-										<line x1="16" y1="13" x2="8" y2="13"></line>
-										<line x1="16" y1="17" x2="8" y2="17"></line>
-										<polyline points="10 9 9 9 8 9"></polyline>
+										<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+										<circle cx="9" cy="7" r="4"></circle>
+										<path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+										<path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
 									</svg>
 									<span class="ms-2">Constats clients</span>
 								</a>
 							<?php endif; ?>
 
 							<?php
-							////////COMPTE Dépanneur / Professionnel de la mécanique / Professionnel de la carrosserie / Professionnel du service
+							////////COMPTE Dépanneur / Professionnel de la mécanique / Professionnel de la carrosserie / Professionnel de la service
 							if ($statut_compte_oo == 2 || $statut_compte_oo == 3 || $statut_compte_oo == 4 || $statut_compte_oo == 6) {
 							?>
 
@@ -403,18 +417,21 @@
 
 							<?php } ?>
 
-							<a href="/Factures" class="dropdown-item ai-icon">
-								<svg xmlns="http://www.w3.org/2000/svg" class="text-primary" width="18" height="18"
-									viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-									stroke-linecap="round" stroke-linejoin="round">
-									<path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8z"></path>
-									<polyline points="14 2 14 8 20 8"></polyline>
-									<line x1="16" y1="13" x2="8" y2="13"></line>
-									<line x1="16" y1="17" x2="8" y2="17"></line>
-									<polyline points="10 9 9 9 8 9"></polyline>
-								</svg>
-								<span class="ms-2">Factures</span>
-							</a>
+							<?php if ($statut_compte_oo != 1) { // Hide Factures if statut_compte_oo is 1 
+							?>
+								<a href="/Factures" class="dropdown-item ai-icon">
+									<svg xmlns="http://www.w3.org/2000/svg" class="text-primary" width="18" height="18"
+										viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+										stroke-linecap="round" stroke-linejoin="round">
+										<path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8z"></path>
+										<polyline points="14 2 14 8 20 8"></polyline>
+										<line x1="16" y1="13" x2="8" y2="13"></line>
+										<line x1="16" y1="17" x2="8" y2="17"></line>
+										<polyline points="10 9 9 9 8 9"></polyline>
+									</svg>
+									<span class="ms-2">Factures</span>
+								</a>
+							<?php } ?>
 
 							<a href="#" class="dropdown-item ai-icon Deconnexion" onclick="return false;">
 								<svg id="icon-logout" xmlns="http://www.w3.org/2000/svg" class="text-primary" width="18"
